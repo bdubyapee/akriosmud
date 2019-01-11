@@ -1,0 +1,12 @@
+{
+    "creator": "belial",
+    "description": "{RHelp Topic{W: alias{x <argumemnt>(command) / <remove>(argument) / <list>\n\n{Walias (argument) (command):{x\n     This sets a command to said argument.\n\n{Walias remove (argument):{x\n     Removes the specified alias.\n\n{Walias list:{x\n     Shows you a list of aliases you currently have.",
+    "json_class_name": "__oneHelp__",
+    "json_version": 1,
+    "keywords": [
+        "alias"
+    ],
+    "section": "player",
+    "topics": "commands",
+    "viewable": "true"
+}

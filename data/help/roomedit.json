@@ -1,0 +1,12 @@
+{
+    "creator": "jubelo",
+    "description": "{RHelp Topic{W: Roomedit{x <vnum> / <new> (vnum) / reload\n\n{Wroomedit new (vnum):{x\n     This will start a new room with the vnum of (vnum).\n\n{Wroomedit (vnum):{x\n     This begins editing the room with vnum of (vnum).\n     \n{Wroomedit reload:{x\n     This saves and reloads the rooms in the current area.\n\n{WAvailable options while editing a room:{x\n     {Cbuilder{W:{x Sets the builders name for this room.\n     {Cname{W:{x Sets name of the room.\n     {Cvnum{W:{x Sets the vnum of the room you are editing.\n     {Cdescription{W:{x Enters you into the description editor buffer.\n     {Cpropertyvalue{W:{x Enter the property value of this room.\n     {Cflags{W:{x Enter the flags for this room.\n     {Csectortype{W:{x Enter the sector types.\n     {Cextradescriptions{W:{x Sets any extra descriptions for this room.\n\n{WWhen in the description buffer:{x\n     Please type {W.h{x while in the buffer for help regarding editing.",
+    "json_class_name": "__oneHelp__",
+    "json_version": 1,
+    "keywords": [
+        "roomedit"
+    ],
+    "section": "builder",
+    "topics": "builder",
+    "viewable": "true"
+}

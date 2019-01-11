@@ -1,0 +1,13 @@
+{
+    "description": "This island rests quietly in the middle of a pond of pure clear water. Along\nthe banks of the island round, red stained, wooden posts stand side by side\nsurrounding the small island. Short cut grass covers the ground and a few\nstone benches sit near the edges of the pond for people to sit on and gaze\nout onto the water. A red wooden bridge connects the island to the east bank\nof the tiny lake.",
+    "extradescriptions": {},
+    "flags": [],
+    "json_class_name": "__oneRoom__",
+    "json_version": 1,
+    "name": "a small island",
+    "propertyvalue": "",
+    "sectortype": [
+        "field"
+    ],
+    "vnum": 137
+}

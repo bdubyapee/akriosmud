@@ -1,0 +1,13 @@
+{
+    "creator": "belial",
+    "description": "{RHelp Topic{W: Dwarf, Dwarves{x\n\nDwarves are an industrious people, believing in working and playing hard.\nThey are great miners and forgers of metal. Dwarves are the only race that\nknow how to forge the world's strongest metals like mithril and adamantite.\nThey live under Aludria's Tears mining and forging precious metals. Dwarves\nare loud and obnoxious and extremely religious. They enjoy the simpiliar\npleasures in life like eating and drinking. They can be hot tempered at\ntimes, but it is mostly for show. Dwaves stand from 4'10\" to 5'6\" They are\nstrong physcially and have hearty constitutions. Their eye color ranges from\nbrown, blue, and green, and their hair color ranges from red, blonde, black,\nand brown.",
+    "json_class_name": "__oneHelp__",
+    "json_version": 1,
+    "keywords": [
+        "dwarf",
+        "dwarves"
+    ],
+    "section": "player",
+    "topics": "races",
+    "viewable": "true"
+}

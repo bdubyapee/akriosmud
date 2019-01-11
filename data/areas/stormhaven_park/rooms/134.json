@@ -1,0 +1,13 @@
+{
+    "description": "The tiny, overgrown trail suddenly empties out into a clearing that stands\nbefore a cave. Tall grass and bushes surround a semicircle of solid rock on\nthe ground. The cave appears to be nothing more than a large rock sitting\natop another with a gap between the two. Enormous trees loom over the\nclearing and cave as if trying to hide it from the outside world.",
+    "extradescriptions": {},
+    "flags": [],
+    "json_class_name": "__oneRoom__",
+    "json_version": 1,
+    "name": "before a cave",
+    "propertyvalue": "",
+    "sectortype": [
+        "field"
+    ],
+    "vnum": 134
+}

@@ -1,0 +1,1385 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta http-equiv="EXPIRES" content="0">
+<meta name="DATE" content="2004-08-22T01:42:15">
+<meta name="RESOURCE-TYPE" content="DOCUMENT">
+<meta name="DISTRIBUTION" content="GLOBAL">
+<meta name="AUTHOR" content="The Olc Pages!">
+<meta name="COPYRIGHT" content="Copyright (c) 2002 by The Olc Pages!">
+<meta name="KEYWORDS" content="Rom, mud, olc, Olc2, Ivan, aedit, redit, medit, mpedit, opedit, rpedit, sedit, hedit, oedit, asave">
+<meta name="DESCRIPTION" content="The OLC Pages were written primarily because of a lack of Documentation for Rom based OLC. These pages will (eventually) be a community maintained effort, driven at not one specific mud, but Rom OLC in general..">
+<meta name="ROBOTS" content="INDEX, FOLLOW">
+<meta name="REVISIT-AFTER" content="7 days">
+<meta name="RATING" content="GENERAL">
+<meta name="GENERATOR" content="The Olc Pages!">
+<link rel="StyleSheet" href="mpdocs.php_files/style.css" type="text/css">
+
+
+<title>The Olc Pages! :: -=Mob Prog Docs=-::</title></head>
+
+
+ <body background="mpdocs.php_files/background.jpg">
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td colspan="3" align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-6350985236781652";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_channel ="";
+google_ad_type = "text";
+google_color_border = "2D5893";
+google_color_bg = "99AACC";
+google_color_link = "000000";
+google_color_url = "000099";
+google_color_text = "003366";
+//--></script>
+<script type="text/javascript" src="mpdocs.php_files/show_ads">
+</script><iframe name="google_ads_frame" src="mpdocs.php_files/ads.htm" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" frameborder="0" height="90" scrolling="no" width="728">&lt;img&gt;</iframe>
+
+</td>
+</tr><tr><td valign="top" width="15%"><a href="http://olc.wolfstream.net/">Back Home</a><br>
+<a href="http://olc.wolfstream.net/aedit.php">Aedit</a><br>
+<a href="http://olc.wolfstream.net/redit.php">Redit</a><br>
+<a href="http://olc.wolfstream.net/medit.php">Medit</a><br>
+<a href="http://olc.wolfstream.net/oedit.php">Oedit</a><br>
+<a href="http://olc.wolfstream.net/mpedit.php">Prog Editor</a><br>
+<a href="http://olc.wolfstream.net/raedit.php">RAedit</a><br>
+<a href="http://olc.wolfstream.net/skedit.php">SKedit</a><br>
+<a href="http://olc.wolfstream.net/gedit.php">Gedit</a><br>
+<a href="http://olc.wolfstream.net/cedit.php">Cedit</a><br>
+<a href="http://olc.wolfstream.net/coedit.php">COedit</a><br>
+<a href="http://olc.wolfstream.net/hedit.php">Hedit</a><br>
+<a href="http://olc.wolfstream.net/sedit.php">Sedit</a><br>
+<a href="http://olc.wolfstream.net/specials.php">Special Flags</a><br>
+<a href="http://olc.wolfstream.net/variables.php">Variables</a><br>
+<a href="http://olc.wolfstream.net/examples.php">Examples</a><br>
+<a href="http://olc.wolfstream.net/off.php">Offensive Flags</a><br>
+<a href="http://olc.wolfstream.net/aff.php">Affect Flags</a><br>
+<a href="http://olc.wolfstream.net/immunities.php">Immunities</a><br>
+<a href="http://olc.wolfstream.net/exits.php">Exits</a><br>
+<a href="http://olc.wolfstream.net/resets.php">Resets</a><br>
+<a href="http://olc.wolfstream.net/act.php">Act Flags</a><br>
+<a href="http://olc.wolfstream.net/shops.php">Shops</a><br>
+<a href="http://olc.wolfstream.net/roomflags.php">Room Flags</a><br>
+<a href="http://olc.wolfstream.net/addapply.php">AddApply</a><br>
+<a href="http://olc.wolfstream.net/downloads">Olc Downloads!</a><br>
+<a href="http://olc.wolfstream.net/history.php">Page History</a><br></td><td colspan="2" align="left">
+<p>
+ Originally appeared in:<br>
+	Merc release 2.2<br>
+	Wednesday 24 November 1993<br>
+	Kahn<br>
+Modified for ROM 2.4 in January 1996<br>
+	Newt@Imperium Gothique<br>
+OBJ and ROOM progs added in December 2000<br>
+	Ralgha@Gateway to the Night<br>
+Originally appeared in:
+	Merc release 2.2
+	Wednesday 24 November 1993
+
+	N'atas-Ha natasha@gs118.sp.cs.cmu.edu
+	Kahn
+
+Modified for ROM 2.4 in January 1996
+	Newt@Imperium Gothique
+
+OBJ and ROOM progs added in December 2000
+	Ralgha@Gateway to the Night
+</p><p>
+TABLE OF CONTENTS</p>
+	<a href="#note">Publisher's Note</a><br>
+	<a href="#idea">The Basic Idea</a><br>
+	<a href="#about">About The Versions</a><br>
+	<a href="#syntax">MOBprogram Syntax</a><br>
+	<a href="#linking">Linking MOBprograms</a><br>
+	<a href="#triggers">Trigger Types</a><br>
+	<a href="#variables">Variables</a><br>
+	<a href="#flow">Control Flow Syntax</a><br>
+	<a href="#operator">Operators</a><br>
+	<a href="#checks">If_checks in Control Flow</a><br>
+	<a href="#newstuff">New Commands of Interest</a><br>
+	<a href="#cpu">Regarding CPU Slowdown</a><br>
+	<a href="http://olc.wolfstream.net/variables.php">Quick Reference Sheet For Variables</a><br>
+	<a href="http://olc.wolfstream.net/examples.php">Examples</a><br>
+	<p>
+
+<a name="note"></a>
+Publisher's Note:<br>
+A LOT of time has gone into the OLC at Dreamless Realms, and , the
+progs for it are rather unique. We're rather proud of our progs, of our
+unique objects and mobs. Unfortunately, MOST versions of OLC don't
+contain the room and object progs that can be found on Dreamless
+Realms, so quite a bit of this documentation won't apply to you, if
+you're from there. However, feel free to look through the documentation
+and use what you can.</p><p>
+<a name="idea"></a></p><p>
+<b></b></p><center><b>The Basic Idea</b></center><p>
+
+	Ever wonder why most muds either seem dead or overcrowded? The answer
+is probably partially due to the fact that the mobiles never do anything
+but wait to be slaughtered.  Unless someone has gone to great lengths
+and added many special procedures, most mobiles have no idea you are in
+the room with them and rarely listen to what you say. The typical Midgaard
+mayor wanders happily along even when the populace pokes him, waves his
+City Key about, unlocks his gates, or frenchs his secretary, etc. So a way to
+give the mobiles a bit more spirit would be neat. Enter the MOBprograms.
+</p><p>
+Ever wanted a room to trap someone?  Or an object to explode on contact?
+Enter OBJ and ROOM progs.
+</p><p>
+TRIGGERS AND SCRIPTS
+</p><p> The backbone of the Programs shall be called triggers from this
+point on. Essentially, they are procedure calls placed in sneaky places
+in
+the mud code which provide the context for what is going on around the
+mobile/object/room. So, if something happens and a trigger is
+activated, then a list of commands is sent to the interpreter in the
+mobile/object/room's name, thus making her/it/him do an appropriate
+something.
+</p><p>
+VARIABLES
+</p><p>
+	Since knowing the appropriate response for everything to every
+possible trigger is not easy, this command list shouldnt be a rigid script,
+but needs to be somehow unique for the thing and the situation.  However, in
+order to know the situation, a mobile/object/room needs to know more about the 
+trigger than that it just happened. So, we have to include some sort of variables
+as well to set the context appropriately.
+</p><p>
+MOBPROGRAMS VS. SPEC_PROCS
+</p><p>
+	As most implementors know, most area creators are not versed in
+coding, but usually have great ideas. Therefore, whatever system is used needs
+to be quite simple. This is not to demean creators in anyway. Simply, it is
+useless to have a powerful system, if the only person able to write anything
+is someone who finds C coding in general to be exciting and non frustrating. 
+If that is going to be the case, then stick to the special procedures, since
+there is no bound to what a complex special procedure can accomplish. Yet,
+from experience working on several muds, most admins and implementors prefer
+not to be writing one shot spec_procs to satisfy the needs of their creators.
+</p><p>
+	Thus, the basic idea: let mobiles react to a myriad of mud
+events/situations by having them perform a list of commands which can be
+tailored to the moment through a simple and unintimidating scheme usable by
+any creator.
+</p><p>
+<a name="about"></a>
+</p><center><b>Different Versions???</b></center><p>
+</p><center><i>About Newt's Version</i></center><p>
+
+	My implementation of MOBprograms owes a lot to the original MOBprogram
+code by Natasha. However, having heard reports about unstability of the code
+supplied, and because the code seemed unnecessarily complex to me, I decided
+to rewrite the MOBprogram driver. Admittedly, I have dropped out several
+features that were present in the original version, such as reacting to
+several triggers at once and string comparison in if_checks. On the other
+hand, the MOBprogram code has been simplified and made more stable (there
+are no memory leaks), and several new if_checks and MOBcommands have been
+added. The system of linking MOBprograms to mobiles has been changed to allow
+procedure-like calls.
+</p><p>	This version is an adaptation of my earlier MOBprogram system I
+created for Imperium Gothique MUD. The IG system has object and room programs
+as well, but I chose to omit them from this version.
+</p><p>
+	-- Newt
+</p><p>
+</p><center><i>About This Version</i></center><p>
+
+	I implemented OBJ and ROOM programs because I was wanting to have a more
+active world.  I couldn't find any code on the internet, so I adapted the current
+ROM2.4 MOBprograms to include objects and rooms.  Objects and rooms can not
+perform any normal MUD commands at this point, all of their actions will be
+obj or room calls.  No new if_checks have been added, and the object and room
+programs use most of the if_checks available to MOBprograms.
+</p><p>
+You can see these object and room programs in action on Gateway to the Night.
+</p><p>
+	--Ralgha
+</p><p>
+<a name="syntax"></a>
+</p><center><b>Program Syntax</b></center><p>
+
+	The simplest way to describe any syntax is by example, so here goes.
+First, define the notation: anything contained in braces {} is required,
+anything in brackets [] is optional, anything in quotes "" is a case
+insensitive literal, NL refers to a required new-line. The meanings of
+the labels used will be described following the syntax diagram.
+</p><p>
+To use MOBprograms, you must add a #MOBPROGS section(s) to your area
+file(s).  To use OBJprograms, you must add a #OBJPROGS section to your area
+file(s).  To use ROOMprograms, you must add a #ROOMPROGS section to your area
+file(s).
+</p><p>
+The syntax is identical for each program type, so only a MOBprog is given as 
+the example here.
+</p><p>
+Section syntax:
+</p><p>
+#MOBPROGS<br>
+#{Vnum}<br>
+{program_command_1} NL<br>
+{program_command_2} NL<br>
+{program_command_3} NL<br>
+     .   .   .<br>
+{program_command_N} NL<br>
+"~" NL<br>
+     .   .   .<br>
+#0<br>
+</p><p>
+-- Explanations<br>
+A VNUM is the Program virtual number that identifies the program.  The
+number must be unique across area files (like mobile and object vnums). 
+A PROGRAM_COMMAND can be any legal mud command (unless is is an object 
+or room program), or a control flow command.
+</p><p>
+NOTE 1: Any whitespaces (space, tab, newline) are NOT stripped from the
+programs when loading the database (why? because I'm too damn lazy to have
+implemented it). Thus, to save memory and execution time, omit all
+unnecessary spaces from your Program scripts. If you must have
+indentation, use TAB.
+</p><p>
+NOTE 2: Programs do NOT have to be in the same area file as the 
+mobile/object/room definitions, since the programs are linked to the 
+mobiles/objects/rooms after the database has been loaded. A Program can also 
+be used as a subroutine (see MOB CALL, OBJ CALL, ROOM CALL commands) without 
+having to be linked to any mobile/object/room.
+</p><p>
+-- MOBprogram Example<br>
+#MOBPROGS<br>
+#3001<br>
+say Hey, no loitering!<br>
+poke $n<br>
+~<br>
+#0<br>
+</p><p>
+-- OBJprogram Example<br>
+#OBJPROGS
+#3001<br>
+obj echo spikes shoot out of $i, impailing your hands!<br>
+obj damage $n 50 50<br>
+~<br>
+#0<br>
+</p><p>
+-- ROOMprogram Example<br>
+#ROOMPROGS<br>
+#3001<br>
+room echo A bright light flashes and you find yourself in a different place.<br>
+room transfer $n 3054<br>
+room force $n look<br>
+~<br>
+#0<br>
+<br></p><p>
+<a name="linking"></a>
+</p><center><i>Linking Programs</i></center><p>
+
+	Once you've written your Programs, you must link the programs
+to appropriate mobiles/objects/rooms. In the #MOBILES section, for each mobile 
+you wish to have a MOBprogram, add lines of the following type to the end of the
+</p><p>
+mobile definition:
+<br>
+	"M" {Keyword} {Vnum} {Argument}~ NL
+<br>
+For Objects:<br>
+	"O" {Keyword} {Vnum} {Argument}~ NL
+<br>
+For Rooms:<br>
+	"R" {Keyword} {Vnum} {Argument}~ NL
+</p><p>
+--Explanations<br>
+The KEYWORD is a single word, see below for explanations.<br>
+The VNUM is the Program virtual number.<br>
+The ARGUMENT is the argument that triggers the event.<br>
+--Example</p><p>
+<br>
+M act 3001 sits down~<br>
+In the above example, an ACT trigger is defined. When the mobile sees
+someone sitting down in the room, the mobile will execute program number
+3001 (defined in #MOBPROGS section).
+</p><p>
+Objects and rooms will react to anyone preforming the act regardless of there
+visibility status.  Immortals be careful, as of this writing, they don't check
+to see if you're wizi (consult the README to see any changes made after this writing).
+</p><p>
+NOTE: Several mobiles can use the same MOBprogram, i.e. MOBprograms can be
+SHARED with several mobiles. The keyword and trigger argument can be different
+for each mobile even if they share the same MOBprogram code.  Likewise for the
+objects and rooms.
+</p><p>
+
+<a name="triggers"></a></p><center><i>Trigger Types</i></center>
+<p>
+	Here's a summary of triggers:<br>
+</p><p>
+	Triggers are fairly easy to add, but this basic list should hold for
+most needs. Their names, argument list syntaxes, and translation into 
+more articulate english are given below:
+</p><p>
+ACT<br>
+Program types: MOB, OBJ, ROOM<br>
+Keyword	: 'act'<br>
+Argument: string<br>
+<br>
+	The argument is a phrase, a text string. The trigger is activated
+whenever the phrase is contained in the	act() message.
+<br>
+NOTE:  	Most general trigger. Applies to almost every event which happens
+	in the mud. Anytime the function act() is called with a message
+	to be delivered TO_CHAR,TO_VICT,TO_ROOM,etc. the act can be
+	triggered.  Basically this will trigger on almost everything
+	you'll ever want. Output of "say", "shout" and "emote" do not
+	trigger this event.
+</p><p>
+SPEECH<br>
+Program types: MOB, OBJ, ROOM<br>
+Keyword : 'speech'<br>
+Argument: string<br>
+NOTE:  	This is only triggered when the phrase is contained in a
+	message which has been said by a PC in the same room as the mob/obj/room.
+	The PC restriction is not necessary, but makes infinite loops
+	between two talking mobiles impossible. It also makes it impossible
+	for two NPC's to stand and discuss the weather however. 
+</p><p>
+RANDOM<br>
+Program types: MOB, OBJ, ROOM<br>
+Keyword : 'random'<br>
+Argument: number<br>
+	The argument is a number betweeen 0 and 99 inclusive.
+<br>
+NOTE:  	This trigger is checked at each PULSE_MOBILE and if the argument is
+	greater than a percentage roll the trigger is activated. This
+	will happen even if there is no PC in the room with the mob/object/room,
+	but there must be players in the same area. <br>
+	It is useful to give mobiles a bit of a personality. For instance
+	a janitor who stops to spit tobacco, or complain about the hours,
+	or wonder why there are no woman janitors on muds, or a fido which
+	barks or growls or pees on the curb is much more alive than one
+	which just sits there scavenging.<br>
+	Note that this trigger is checked only when there are players in
+	the area. If you want this event to be triggered always, you must
+	set the ACT_UPDATE_ALWAYS flag of the mobile.<br>
+	This trigger for objects is checked at each PULSE_TICK, and for rooms at
+	each PULSE_AREA.
+</p><p>
+GREET/GREET ALL
+<br>
+Program types: MOB, OBJ, ROOM<br>
+Keyword : 'greet'<br>
+Argument: number<br>
+	Again a percentage argument.<br>
+NOTE:  	Whenever someone enters the room with the mobile/object/room, and 
+	the mobile saw the person enter, this is checked. Good for shopkeepers 
+	who want to welcome customers, or for pseudo-aggressive mobiles which need to
+	discriminate on who they attack.<br>
+	Greet trigger activates only when the mobile is not busy (fighting,
+	sitting, sleeping etc.). If you want to be sure to catch all players,
+	use grall.<br>
+	Objects and rooms will always fire on this trigger regardless of the PC's 
+	visibility status.<br>
+</p><p>
+Program types: MOB<br>
+Keyword : 'grall'<br>
+Argument: number<br>
+	Again a percentage argument.<br>
+NOTE:  	Like greet, but it can be triggered even if the mobile didn't
+	see the	arrival (i.e. sneak, invis, etc) or is busy. Most useful for
+	faking teleport rooms or for impassable guardians.<br>
+	
+ENTRY</p><p>
+
+Program types: MOB<br>
+Keyword : 'entry'<br>
+Argument: number<br>
+
+	Again a percentage argument.<br>
+
+NOTE:  	The opposite of greet trigger. Whenver the mobile itself enters a new
+	room, this can be triggered.  Useful for looking around, or waving
+	or other things that real PCs do when they arrive at a crowded room.
+	IMPORTANT: In an entry program, the mobile can only refer to a
+	random pc ($r in if checks) -- there's no way to know how many PCs
+	exist in the room the mobile enters! Also, you must check visibility
+	of the target in your program.
+</p><p>
+EXIT/EXIT ALL<br>
+
+Program types: MOB, OBJ, ROOM<br>
+Keyword : 'exit'<br>
+Argument: number<br>
+	Argument is the exit number (0:north, 1:east, 2:south 3:west etc.)
+
+NOTE:  	The opposite of entry trigger. This is activated when PC tries to
+	leave a room through an exit indicated by the argument, and the
+	mobile/object/room sees the person leave. Useful for having a single guardian to
+	watch several exits. An exit trigger works better than an entry
+	trigger, since you can refer to a specific PC instead of a random PC.<br>
+	IMPORTANT: If this event is triggered, the victim will not move
+	through the exit. If necessary, you must move the character yourself
+	in your program (see MOB/OBJ/ROOM TRANSFER/MOB/OBJ/ROOM GTRANSFER). Also, 
+	this event is not triggered when a character flees from combat or the mobile
+	is not in its default position.
+<br>
+	Objects and rooms will always fire on this trigger regardless of the PC's
+	visibility status.
+</p><p>
+Program types: MOB<br>
+Keyword : 'exall'<br>
+Argument: number<br>
+	Argument is the exit number (0 = north etc.)<br>
+	The same as exit trigger, but it can be triggered even if the
+	mobile cannot see the person trying to leave the room or if
+	the mobile is busy.
+</p><p>
+GIVE <br>
+Program types: MOB, OBJ, ROOM<br>
+Keyword : 'give'<br>
+Argument: string or object vnum<br>
+
+	The argument is either the a string containing words to be
+	matched against the keywords of the object, or the word "all";
+	e.g. argument "long sword" will match to objects "long bow" and
+	"small sword".<br>
+	Alternatively, the argument can be the virtual number of a single
+	object.<br>
+
+MOB NOTE:  	This is triggered whenever something is given to the mobile.  Best
+	used for quests.  Since the first successful trigger is the only one
+	of this type which is processed, having an "all" argument in the
+	script at the end of the MOBprogram list is essentially a default
+	response.
+<br>
+OBJ NOTE:   This is triggered whenever the object is given to someone else.
+	Also, the argument is ignored in this case.
+<br>
+ROOM NOTE:  This is triggered whenever the object (according to argument) is 
+	given to someone in the room.
+</p><p>
+GET<br>
+Program types: OBJ, ROOM<br>
+Keyword: 'get'<br>
+Argument: string or object vnum<br>
+
+	The argument is either a string containing words to be matched against
+	the keywords of the object, or the word "all"; e.g. argument "long sword"
+	will match to objects "long bow" and "small sword".
+	Alternatively, the argument can be the virtual number of a single object.
+<br>
+OBJ NOTE: Fires whenever the object is picked up, argument is ignored.
+<br>
+ROOM NOTE: Fires whenever the object (according to argument) is picked up in the room.
+</p><p>
+DROP<br>
+Program types: OBJ, ROOM<br>
+Keyword: 'drop'<br>
+Argument: string or object vnum<br>
+	The argument is either a string containing words to be matched against
+	the keywords of the object, or the word "all"; e.g. argument "long sword"
+	will match to objects "long bow" and "small sword".<br>
+	Alternatively, the argument can be the virtual number of a single object.<br>
+
+OBJ NOTE: Fires whenever the object is dropped, argument is ignored.<br>
+ROOM NOTE: Fires whenever the object (according to argument) is dropped in the room.
+</p><p>
+BRIBE<br>
+Program types: MOB<br>
+Keyword : 'bribe'<br>
+Argument: number<br>
+
+	The argument is any positive integer number.<br>
+
+NOTE:  	This trigger is activated whenever money is given to the mobile.
+	If the amount given exceeds the number, then process the commands.
+	Note again, that an argument of '1' would act as a default response.
+	Also note that if the script is not triggered (because of too little
+	money having been given), the mobile still keeps the money...
+<br>
+	ROM 2.4 NOTE: Since ROM 2.4 has two different types of currency
+	(gold and silver coins), for bribe trigger the amount to be given
+	is converted to silver coins with the rate of 1 gold = 100 silver.
+	Thus, the number in the argument should be the expected amount in
+	silver coins.<br>
+	DR Note: See Above, but remember, plat = 100 gold, which is 100 silver<br>
+	</p><p>
+KILL<br>
+Program type: MOB<br>
+Keyword : 'kill'<br>
+Argument: number<br>
+
+	The argument is a percent once again.<br>
+NOTE:  	This trigger is checked whenever a PC attacks the mobile. The check
+	occurs only ONCE, in the beginning of combat. Useful for summoning
+	assistance etc. (See MOB MLOAD).
+</p><p>
+FIGHT<br>
+Program type: MOB, OBJ, ROOM<br>
+Keyword : 'fight'<br>
+Argument: number<br>
+<br>
+	The argument is a percentage.
+
+MOB NOTE:  	Useful for giving mobiles combat attitude. It is checked every
+	PULSE_VIOLENCE when the mobile is fighting. Can be used to cast
+	spells (see MOB CAST), curse at the opponent, or whatever. Only the
+	first successful one will be processed to save time.  Also, this
+	means that the mobile wont get lucky and 1. curse, cast a fireball
+	and 2. spit on the player, cast another fireball in the same pulse.
+<br>
+OBJ NOTE:	Fires when the object is worn when the player wearing it is fighting.
+		Targets the opponent.  Checked every PULSE_VIOLENCE.
+		<br>
+
+ROOM NOTE:	Fires when there is a fight going on in the room.  Targets the first
+		person fighting.  Checked every PULSE_VIOLENCE.
+</p><p>
+HIT POINT PERCENTAGE<br>
+
+Program type: MOB<br>
+Keyword : 'hpcnt'<br>
+Argument: number<br>
+
+	The argument is a percentage.<br>
+
+NOTE:  	Is activated at each PULSE_VIOLENCE when the mobile is fighting. It
+	checks to see if the hitpoints of the mobile are below the given
+	percentage. Multiple hpcnt triggers should be listed in increasing
+	order of percent since a 40% will always be activated before a 20%
+	and, only the first successful trigger is performed. (See also
+	MOB FLEE).
+	</p><p>
+DEATH<br>
+
+Program type: MOB<br>
+Keyword : 'death'<br>
+Argument: number<br>
+
+	The argument is a percent once again.<br>
+NOTE:  	When the mobile dies, if the random percentage is less than the
+	argument the mobile performs the MOBprogram commands rather than the
+	usual death_cry() sequence.  This is done before the corpse is made,
+	so the commands can be considered the mobiles last gasp. It could
+	perhaps	destroy the items it was holding (see MOB REMOVE and MOB
+	JUNK), or create some (see MOB OLOAD), or cast a spell (see MOB
+	CAST) on the killer and the room, or even goto a new location (see
+	MOB GOTO) and die there (with a text message, the corpse would seem
+	to vanish) The position of the mobile is set to STANDING, and so it
+	can do all the normal commands, without worrying about being DEAD.
+	However, even if the mobile restores itself to full hitpoints, it
+	will still die.<br>
+	This is not a way to immortal mobiles. However, the last thing this
+	mobile does could be to goto some vacant room, load a fresh version
+	of itself, drop all its items, force the new mobile to get all the
+	items and wear them, send the new mobile back to the character who
+	killed it and force the new mobile to attack that character. Along
+	with a text message which said the mobile restored itself, this
+	might be a convincing effect. (Note that your kitten could turn into
+	a dragon this way too).</p><p>
+
+
+DELAY<br>
+
+Program type: MOB, OBJ, ROOM<br>
+Keyword : 'delay'<br>
+Argument: number<br>
+
+	The argument is a percentage chance.<br>
+
+NOTE:  	This trigger activates when the delay of a mobile/object/room (set 
+	with the MOB/OBJ/ROOM DELAY command) expires. This trigger can be used 
+	to create staged mobile/object/room behavior, for example, a guardian could 
+	see a player entering a room, give a warning and activate a delay.
+	If the player is still present when the delay expires, the
+	guard would attack the player. (See also MOB REMEMBER).<br>
+	A mobile/object/room can have several delay triggers, but every time the
+	delay timer expires, all the triggers are checked and the first
+	successful one executed.</p><p>
+
+SURRENDER<br>
+
+Program type: MOB<br>
+Keyword : 'surr'<br>
+Argument: number<br>
+
+	The argument is a percentage.<br>
+
+NOTE:	This trigger activates when the mobile is fighting and the
+	opponent issues a "surrender" command. When triggered, both parties
+	will cease fighting, and the mobile can accept the surrender
+	(perhaps taking all equipment from the character with MOB REMOVE).
+	Note that if the mobile does not accept the surrender, it must
+	resume fighting with MOB KILL.<br>
+	If a character surrenders and the mobile does not have a surrender
+	trigger, or the trigger does not activate, the fight resumes
+	normally.</p><p>
+
+SIT<br>
+
+Program type: OBJ<br>
+Keyword: 'sit'<br>
+Argument: number<br>
+
+	The argument is a percentage.<br>
+NOTE:	This trigger activates when the object is sat on/in/at, rested on/in/at,<br>
+	slept on/in/at, or stood on/in/at.<br>
+
+</p><p>
+WEAR<br>
+
+Program type: OBJ<br>
+Keyword: 'wear'<br>
+Argument: number<br>
+
+	The argument is ignored<br>
+NOTE:	This trigger is activated when an object is worn.
+
+</p><p>
+REMOVE<br>
+
+Program type: OBJ<br>
+Keyword: 'remove'<br>
+Argument: number<br>
+
+	The argument is ignored.<br>
+NOTE: This trigger is activated when an object is removed</p><p>
+NOTE: No MOBprograms will be successful when the mobile is charmed
+(since it has no self volition, it should act like it has none) to protect
+mobiles which are given special powers from being implemented by a player.
+</p><p>
+<a name="variables"></a></p><center><i>Variables</i></center><p>
+
+	To make things come alive, variables are needed.  These are
+represented in the Programs by using a dollar sign convention as in the
+socials. When the mud command is processed, these variables are expanded into
+the values shown below. Usually, it is best to use the short descriptions
+of mobiles and the names of players when speaking them, but if you are
+performing an action to someone almost always you want the name. The
+title field for players is an extra that probably wont often be used.
+Without further hesitation... the variables:
+</p><ul>
+<li>$i	the first of the names of the mobile/object itself (doesn't work on rooms).
+</li><li>$I	the short description of the mobile/object itself or name of room.
+</li><li>$n	the name of whomever caused the trigger to happen.
+</li><li>$N	the name and title of whomever caused the trigger to happen.
+</li><li>$t	the name of a secondary character target (i.e A smiles at B)
+</li><li>$T	the short description, or name and title of target (NPC vs PC)
+</li><li>$r	the name of a random PC in the room
+</li><li>$R	the short description, or name and title of the random PC
+</li><li>$q	the name of the Program target (see MOB/OBJ/ROOM REMEMBER)
+</li><li>$Q	the short description of the Program target
+
+</li><li>$j	he,she,it based on sex of $i (doesn't work with rooms).
+</li><li>$e	he,she,it based on sex of $n.
+</li><li>$E	he,she,it based on sex of $t.
+</li><li>$J	he,she,it based on sex of $r.
+
+</li><li>$k	him,her,it based on sex of $i (doesn't work with rooms).
+</li><li>$m	him,her,it based on sex of $n.
+</li><li>$M	him,her,it based on sex of $t.
+</li><li>$K	him,her,it based on sex of $r.
+
+</li><li>$l	his,hers,its based on sex of $i (doesn't work with room).
+</li><li>$s	his,hers,its based on sex of $n.
+</li><li>$S	his,hers,its based on sex of $t.
+</li><li>$L	his,hers,its based on sex of $r.
+
+</li><li>$o	the first of the names of the primary object (i.e A drops B)
+</li><li>$O	the short description of the primary object
+</li><li>$p	the first of the names of the secondary object (i.e A puts B in C)
+</li><li>$P	the short description of the secondary object
+</li></ul><p>
+	Also, in if_checks, the accepted variables are the basic ones
+(i,n,t,r,o,p,q).  If a variable is referenced that doesnt exist, then the
+value is simply left blank or replaced with "someone"/"something" in
+output (i.e referring to $o when the trigger is: A kisses B)
+</p><p>
+	If variable $q has not been defined, it is automatically set to the
+last player that has triggered the program being executed (i.e. variable $n).
+Once $q has been defined, it can be modified with REMEMBER and
+FORGET commands in a program. Variable $q lets the mobile/object/room "remember" a player
+across different programs, which can be useful. Note that $q is set
+automatically only the FIRST TIME the mobile/object/room executes a program, every time
+thereafter it must be set with a REMEMBER command.
+</p><p>
+	The only problem with the variables is that the secondary object and
+the secondary target are passed by act() in the same location.  This means that
+if you reference $t in an  A puts B in C  situation, the result will probably
+be a happy mud crash or some weird side effect, espescially if $t is used in
+an if_check (i.e. if isnpc($t) in the above situation) The basic fix for this
+is to change everyone who calls the act() procedure to specify a secondary
+object and a secondary character. But that is a fairly comprehensive trivial
+twiddle, so we left it the way it is so that, you arent forced to make all 
+those twiddles to use the Programs.
+</p><p>
+<a name="flow"></a>
+</p><center><i>Control Flow Syntax</i></center><p>
+
+	Flow of control commands may also be used in the programs. Here is the syntax for a flow of control command.
+The parts between [ and ] are optional.<br>
+
+"if" " " {if_check_1} {argument} [ {operator} {value} ] NL<br>
+[ "or" " " {if_check_2} {argument} [ {operator} {value} ] NL ]<br>
+[ "or" " " {if_check_N} {argument} [ {operator} {value} ] NL ]<br>                    .           .           .
+[ "and" " " {if_check_N} {argument} [ {operator} {value} ] NL ]<br>
+[ "and" " " {if_check_N} {argument} [ {operator} {value} ] NL ]<br>
+			.	    .		.<br>
+
+	[ {program_command_1} NL ]<br>
+	[ {program_command_2} NL ]<br>
+	      .   .   .<br>
+	[ "break" NL ]<br>
+	      .   .   .<br>
+	[ {program_command_N} NL ]<br>
+<br>
+[ "else" NL ]<br>
+
+	[ {program_command_1} NL ]<br>
+	[ {program_command_2} NL ]<br>
+	      .   .   .<br>
+	[ "break" NL ]<br>
+	      .   .   .<br>
+	[ {program_command_N} NL ]<br>
+
+"endif" NL</p><p>
+
+	Basically, it is: an 'if' line, followed by zero or more 'or' lines,
+followed by zero of more 'and' lines ('and' and 'or' lines can be in any order)
+followed by zero or more legal mud commands, which may contain a 'break' line,
+possibly followed by an 'else' line , followed by zero or more legal mud
+commands, which may contain a 'break' line, followed by an 'endif' line.
+<br>
+The only new syntax labels are all in the IF/OR/AND line:
+</p><p>
+--Explanations
+<br>
+An IF_CHECK is a string which describes under what context to compare things.
+The ARGUMENT is the reference point from which the LHS of an expression comes.
+The OPERATOR indicates how the LHS and RHS are going to be compared.
+The VALUE is the RHS of the expression to be compared by the operator.
+<br>
+The BREAK command bails out of the entire Program regardless of the
+level if nesting. (END is a synonym for BREAK).
+<br>
+If that looks confusing, skip to the end of the document and review the
+examples. Hopefully that should clear things, otherwise you'll probably have
+to give me a mail since examples are the best way I know to explain syntax.
+</p><p>
+
+<a name="operator"></a></p><center><i>Operators</i></center>
+<p>
+	Most of the basic numeric operators are legal and perform the same
+function as in C.<br>
+Operators: == != &gt; &lt; &gt;= &lt;=
+</p><p><a name="checks"></a>
+</p><center><i>If_Checks In Control Flow</i></center>
+<p>
+	The provided list of if_checks and their arguments are below.  They
+should all be fairly obvious in what they do, but some of the more obtuse
+deserve a slight explanation. Any '==' operator can be replaced with any of
+the available ones described above.  The argument $* refers to any of the
+variables which make sense for that if_check (i.e. for an if_check which is
+referencing a person the only valid variables would be $i, $n, $t, $r or $q)
+A value type of string is a sequence of characters. It does not need to be
+included in quotes or anything like that (i.e. if name $n fido ).  The if_checks
+work for all types of programs unless otherwise noted.
+</p><p>
+There are five types of if checks:
+</p><p>
+</p><ol>
+<li>Type 1: Keyword and value
+<ul>
+<li>rand      num		   Is random percentage less than or equal to num
+</li><li>mobhere   vnum		   Is a NPC with this vnum in the room
+</li><li>mobhere   name		   Is a NPC with this name in the room
+</li><li>objhere   vnum		   Is an object with this vnum in the room
+</li><li>objhere   name		   Is an object with this name in the room
+</li><li>mobexists name		   Does NPC 'name' exist somewhere in the world
+</li><li>objexists name		   Does object 'name' exist somewhere in the world
+</li></ul>
+</li><li>Type 2: Keyword, comparison and value
+<ul>
+<li>people     ==	integer	   Is the number of people in the room equal to integer
+</li><li>players    ==	integer	   Is the number of PCs in the room equal to integer
+</li><li>mobs	   ==   integer    Is the number of NPCs in the room equal to integer
+</li><li>clones     ==	integer    Is the number of NPCs in the room with the same
+			    	vnum as the NPC who activated the program equal
+			     to integer.  ONLY WORKS WITH MOBprogs
+</li><li>order      ==	integer    Is the order (of several similar NPCs) of the NPC
+			     who activated the trigger equal to integer ONLY WORKS WITH MOBprogs
+</li><li>hour	   ==	integer    Is the hour (game time) equal to integer
+</li></ul>
+</li><li>Type 3: Keyword and actor
+
+</li><li>isnpc      $*		   Is $* an NPC
+</li><li>ispc       $*		   Is $* a PC
+</li><li>isgood     $*		   Does $* have a good alignment 
+</li><li>isneutral  $*		   Does $* have a neutral alignment
+</li><li>isevil     $*		   Does $* have an evil alignment
+</li><li>isimmort   $*		   Is $* an immortal (level of $* &gt; LEVEL_HERO)
+</li><li>ischarm    $*		   Is $* affected by charm
+</li><li>isfollow   $*		   Is $* a follower with their master in the room
+</li><li>isactive   $*		   Is $*'s position &gt; POS_SLEEPING
+</li><li>isdelay    $*		   Does $* have a delayed MOBprogram pending
+</li><li>isvisible  $*		   Is $* visible to NPC who activated the program
+</li><li>hastarget  $*		   Does $* have a MOBprogram target in the room
+</li><li>istarget   $*		   Is $* the target of NPC who activated the program
+
+</li><li>Type 4: Keyword, actor and value
+
+</li><li>affected   $*   'affect'   Is $* affected by 'affect'
+</li><li>act        $*   'act'      Is $*'s ACT bit 'act' set
+</li><li>off        $*   'off'      Is $*'s OFF bit 'off' set
+</li><li>imm        $*   'imm'      Is $*'s IMM bit 'imm' set
+</li><li>carries    $*   'name'     Is $* carrying object 'name'
+</li><li>wears      $*   'name'     Is $* wearing object 'name'
+</li><li>has        $*   'type'     Does $* have object of item_type 'type'
+</li><li>uses       $*   'type'     Is $* wearing object of item_type 'type'
+</li><li>name       $*   'name'     Is $*'s name 'name'
+</li><li>pos        $*   'position' Is $*'s position 'position' (sleeping etc.)
+</li><li>race       $*   'name'     Is $* of race 'name'
+</li><li>class      $*   'name'     Is $*'s class 'name'
+</li><li>objtype    $*   'type'     Is $*'s item_type 'type'
+
+</li><li>Type 5: Keyword, actor, comparison and value
+
+</li><li>vnum       $*  	== integer Is $*'s virtual number equal to integer
+</li><li>hpcnt      $*  	== integer Is $*'s hitpoint percentage equal to integer
+</li><li>room       $*  	== integer Is vnum of the room $* is in equal to integer
+</li><li>sex        $*  	== integer Is $*'s sex equal to integer
+</li><li>level      $*  	== integer Is $*'s level equal to integer
+</li><li>align      $*  	== integer Is $*'s alignment equal to integer
+</li><li>money      $*  	== integer Does $* have money (in silver) equal to integer
+</li><li>objval#	   $*	== integer Is $*-&gt;value[#] equal to integer (# from 0-4)</li>
+<br>For the following values, you may find the tables <a href="#drtable">here</a> helpful.<br>
+<li>disposition $*
+</li><li>odor 	$*
+</li><li>hair 	$*	
+</li><li>beard 	$*	
+</li></ol>
+<p>
+NOTE: The original MERC 2.2 MOBprograms used parenthesis '(' and ')'
+around variables. In this version, they are not allowed. Also,parameters
+MUST BE separated with spaces (if level $n&lt;10 is NOT valid, correct syntax
+is: if level $n &lt; 10).
+</p><p><a name="commands"></a>
+</p><center><i>New Commands Of Interest</i></center><p>
+1. GENERAL COMMANDS</p><p>
+
+Syntax: SURRENDER</p><p>
+
+	This command can be issued in combat. If the one giving the command
+	is a PC and the opponent is a NPC, the NPC will be checked for
+	a surrender trigger. If the trigger activates, the fight will be
+	terminated. Otherwise the combat will resume normally. Note that
+	the mobile can resume the combat in the MOBprogram (see MOB KILL).
+	If anyone (PC or NPC) surrenders to a PC, the combat will terminate.
+	The PC can resume the combat with 'kill' command.	
+	With this command, and the use of surrender trigger, non-lethal
+	combat can be implemented (arenas etc.).
+</p><p>
+2. DIAGNOSTIC COMMANDS<br>
+	
+	These six new commands are available to immortal players.<br>
+
+
+Syntax:  MPSTAT [mobile]<br>
+
+	Displays the triggers and MOBprogram vnums defined for the mobile.<br>
+
+Syntax:  MPDUMP [vnum]<br>
+
+	Displays the MOBprogram code of given vnum.<br>
+	
+Syntax: OPSTAT [object]<br>
+	Displays the triggers and OBJprogam vnums defined for the object.<br>
+Syntax: OPDUMP [vnum]<br>
+	Displays the OBJprogram code of given vnum.<br>
+Syntax: RPSTAT [vnum]<br>
+	Displays the triggers and ROOMprogram vnums defined for the room vnum.  If no vnum
+	is given, it shows the information for the current room.<br>
+
+Syntax: RPDUMP [vnum]<br>
+	Displays the ROOMprogram code of given vnum. <br>
+
+3. MOBCOMMANDS</p><p>
+
+	MOBcommands are special commands that allow mobiles to perform
+immortal-like actions within a MOBprogram (transferring players or loading
+items, for example). Most MOBcommands them are wiz commands which have been
+changed to allow for mobiles to perform the commands. In this version of
+Programs, players have been prevented from using these commands by adding
+a separate interpreter for MOBcommands. This also speeds up (in most cases)
+MOBprogram execution when MOBcommands are used. All MOBcommands are
+preceded with the word 'MOB' on the command line.
+<br>
+
+Syntax:  MOB ASOUND [string]<br>
+	 MOB ZECHO  [string]<br>
+	 MOB GECHO  [string]<br>
+</p><p>
+	ASOUND prints the text string to the rooms around the mobile in the
+	same manner as a death cry. This is really useful for powerful
+	aggressives and is also nice for wandering minstrels or mobiles like
+	that in concept.<br>
+	ZECHO prints the string to all players in the same area with the
+	mobile. GECHO prints the string to all players in the game.
+
+Syntax:  MOB ECHO                 [string]<br>
+	 MOB ECHOAT      [victim] [string]<br>
+	 MOB ECHOAROUND  [victim] [string]<br>
+</p><p>
+	ECHO displays the string to everyone in the room. ECHOAT displays
+	the string to the victim only. ECHOAROUND displays the string to
+	everyone except the victim.
+	The three options let you tailor the message to goto victims or to do
+	things sneaky like having a merchant do: <br>
+	mob at guard mob echoat guard rescue_please <br>
+	This coupled with a guard act trigger on rescue_please to:<br>
+	mob goto $n<br>
+	mob echo $I has arrived.<br>
+	It is an affective way of quickly bringing guards to the scene of
+	an attack. (Note that the merchant has to be the only one of its
+	kind in the game or have a unique name, otherwise the guard might
+	go to different mobile...).
+	</p><p>
+
+Syntax:  MOB MLOAD [vnum]<br>
+	 MOB OLOAD [vnum] [level] {'room'|'wear'}<br>
+</p><p>
+        MLOAD creates a mobile and places it in the same room with the
+	mobile.<br>
+	OLOAD loads the object into the inventory of the mobile. Even if the
+	item is non-takable, the mobile will receive it in the inventory.
+	This lets a mobile distribute a quest item or load a key or something.
+	The optional 3rd parameter can be specified; 'room' means to load
+	the object to the room, 'wear' means to force the mobile to wear
+	the object loaded (useful for equipping mobiles on the fly).
+</p><p>
+Syntax:  MOB KILL [victim]<br>
+</p><p>
+	Lets a mobile kill a player without having to murder. Lots of
+	MOBprograms end up with mpkill $n commands floating around. It
+	works on both mobiles and players.
+</p><p>
+Syntax:  MOB FLEE<br>
+</p><p>
+	Causes a mobile to unconditionally flee from combat. Can be used
+	for example with the hit point percentage trigger to simulate
+	"wimpy" behavior.
+</p><p>
+Syntax:  MOB REMOVE [victim] [vnum|'all']<br>
+</p><p>
+	Lets the mobile to strip an object of given vnum from the victim.
+	Objects removed are destroyed. If the vnum is replaced with "all",
+	the whole inventory of the victim is destroyed. This command is
+	probably most useful for extracting quest items from a player
+	after a quest has been completed.
+</p><p>
+
+Syntax:  MOB JUNK [object]</p><p>
+
+	Destroys the object refered to in the mobile's inventory. It prints
+	no message to the world and you can do things like junk all.bread or
+	junk all. This is nice for having janitor mobiles clean out their
+	inventory if they are carrying too much (have a MOBprogram trigger on
+	the 'full inventory')
+</p><p>
+Syntax:  MOB PURGE [argument]
+</p><p>
+	Destroys the argument from the room of the mobile. Without an argument
+	the result is the cleansing of all NPC's and items from the room with
+	the exception of the mobile itself.  However, mppurge $i will indeed
+	purge the mobile, but it MUST be the last command the mobile tries to
+	do, otherwise the mud cant reference the acting mobile trying to do the
+	commands and bad things happen.  
+</p><p>
+Syntax:  MOB AT [location] [command]
+</p><p>
+	Perfoms the command at the designated location. Very useful for doing
+	magic slight of hand tricks that leave players dumbfounded.. such as
+	metamorphing mobiles, or guard summoning, or corpse vanishing.
+</p><p>
+Syntax:  MOB GOTO [location]
+</p><p>
+	Moves the mobile to the room or mobile or object requested. It makes
+	no message of its departure or of its entrance, so these must be
+	supplied with echo commands if they are desired.
+</p><p>
+Syntax:  MOB TRANSFER  [victim|'all'] [location]<br>
+	 MOB GTRANSFER [victim]       [location]<br>
+	 MOB OTRANSFER [object]       [location]<br>
+</p><p>
+	Sends the victim to the destination or to the room of the mobile as a
+	default.  if the victim is "all" then all the characters in the room
+	of the mobile are transfered to the destination.  Good for starting
+	quests or things like that.  There is no message given to the player
+	that it has been transfered and the player doesnt do a look at the
+	new room unless the mob forces them to.
+	Gtransfer works like transfer, except that the group the victim
+	belongs	to is transferred with the victim. Otransfer transfers an
+	object in the room.
+</p><p>
+Syntax:  MOB FORCE  [victim|'all'] [command]<br>
+	 MOB GFORCE [victim]       [command]<br>
+	 MOB VFORCE [vnum]         [command]<br>
+</p><p>
+	Forces the victim to do the designated command. The victim is not told
+	that they are forced, they just do the command so usually some mpecho
+	message is nice.  You can force players to remove belongings and give
+	them to you, etc.  The player sees the normal command messages (such as
+	removing the item and giving it away in the above example)  Again, if
+	the victim is "all" then everyone in the mobiles room does the command.
+<br>
+	Gforce works like force except that it affects the group the victim
+	belongs to.
+<br>
+	Vforce affects all mobiles with given vnum in the game world. This
+	is useful for, for example, purging certain type of NPCs from the
+	game (by forcing them to purge themselves).
+</p><p>
+Syntax:  MOB CAST [spell] [victim]<br>
+</p><p>
+	Lets the mobile to cast spells. Beware, this does only crude validity
+	checking and does not use up any mana. All spells are available
+	regardless of the race or other abilities of the mobile. Casting the
+	spell occurs silently, but spell effects are displayed normally.
+</p><p>
+Syntax:  MOB DAMAGE [victim|'all'] [min] [max] {lethal}</p><p>
+
+	Causes unconditional damage to the victim. Specifying "all" as
+	victim causes damage to all characters in the room except the mobile.
+	Min and max parameters define the minimum and maximum amounts of
+	damage caused. By default, the damage is non-lethal, but by supplying
+	the optional 'lethal' parameter, the damage can kill the victim.
+	This command is silent, you must echo all messages yourself in the
+	program. Useful for implementing special attacks for mobiles.
+</p><p>
+Syntax:  MOB DELAY<br>
+	 MOB CANCEL<br>
+</p><p>
+	MOB DELAY sets the time in PULSE_MOBILE after which the mobile's
+	delay trigger is activated. If the mobile has a program defined
+	for delay trigger, the program is executed when the timer expires.
+	MOB CANCEL resets the delay timer.
+</p><p>
+
+Syntax:  MOB REMEMBER [victim]<br>
+	 MOB FORGET<br>
+</p><p>
+	This command enables the mobile to remember a player for future
+	reference in a MOBprogram. The player can subsequently be referred
+	as '$q' in programs activated by the mobile. MOB FORGET clears
+	the target. Note that if the first time the mobile runs a program,
+	$q is automatically set to the player who triggered the event.
+	Most commonly this command is used in delayed programs, where the
+	mobile has to remember the player who triggered the original
+	event, for example to continue conversation.
+</p><p>
+Syntax:  MOB CALL [vnum] {victim} {target1} {target2}
+</p><p>
+	This command lets you call MOBprograms from within a running one,
+	i.e. to call a MOBprogram subroutine. The first parameter is the
+	vnum of the program to execute, the second is the victim's name
+	(for example $n), and the third and fourth are optional object
+	names. All other parameters except vnum can be replaced with
+	word 'null' indicating ignored parameter.
+	MOBprograms can be called recursively, but as a safety measure,
+	parser allows only 5 recursions.
+</p><p>	
+4. OBJCOMMANDS
+</p><p>
+	OBJcommands are special commands that allow objects to perform
+immortal-like actions within an OBJprogram (transferring players or loading
+items, for example). Most OBJcommands them are wiz commands which have been
+changed to allow for objects to perform the commands. In this version of
+Programs, players have been prevented from using these commands by adding
+a separate interpreter for OBJcommands. This also speeds up (in most cases)
+MOBJprogram execution when OBJcommands are used. All OBJcommands are
+preceded with the word 'OBJ' on the command line.
+</p><p>
+Syntax:  OBJ ZECHO  [string]<br>
+	     OBJ GECHO  [string]<br>
+</p><p>
+	ZECHO prints the string to all players in the same area with the
+	object. GECHO prints the string to all players in the game.
+<br>
+Syntax:  OBJ ECHO                 [string]<br>
+	 OBJ ECHOAT      [victim] [string]<br>
+	 OBJ ECHOAROUND  [victim] [string]<br>
+</p><p>
+	ECHO displays the string to everyone in the room. ECHOAT displays
+	the string to the victim only. ECHOAROUND displays the string to
+	everyone except the victim.
+	The three options let you tailor the message to goto victims or do other
+	sneaky stuff:).
+</p><p>
+Syntax:  OBJ MLOAD [vnum]<br>
+	 OBJ OLOAD [vnum] [level]<br>
+</p><p>
+        MLOAD creates a mobile and places it in the same room with the
+	object.<br>
+	OLOAD loads the object into the room.<br>
+
+Syntax:  OBJ REMOVE [victim] [vnum|'all']</p><p>
+
+	Lets the object strip an object of given vnum from the victim.
+	Objects removed are destroyed. If the vnum is replaced with "all",
+	the whole inventory of the victim is destroyed. 
+</p><p>
+Syntax:  OBJ PURGE [argument]</p><p>
+
+	Destroys the argument from the room of the object. Without an argument
+	the result is the cleansing of all NPC's and items from the room with
+	the exception of the object itself.  However, mppurge $i will indeed
+	purge the object, but it MUST be the last command the object tries to
+	do, otherwise the mud cant reference the acting object trying to do the
+	commands and bad things happen.  
+</p><p>
+Syntax:  OBJ GOTO [location]</p><p>
+
+	Moves the object to the room or mobile or object requested. It makes
+	no message of its departure or of its entrance, so these must be
+	supplied with echo commands if they are desired.
+</p><p>
+Syntax:  OBJ TRANSFER  [victim|'all'] [location]<br>
+	 OBJ GTRANSFER [victim]       [location]<br>
+	 OBJ OTRANSFER [object]       [location]<br>
+</p><p>
+	Sends the victim to the destination or to the room of the object as a
+	default.  if the victim is "all" then all the characters in the room
+	of the object are transfered to the destination.  Good for starting
+	quests or things like that.  There is no message given to the player
+	that it has been transfered and the player doesnt do a look at the
+	new room unless the object forces them to.<br>
+	Gtransfer works like transfer, except that the group the victim
+	belongs	to is transferred with the victim. Otransfer transfers an
+	object in the room.</p><p>
+
+Syntax:  OBJ FORCE  [victim|'all'] [command]<br>
+	 OBJ GFORCE [victim]       [command]<br>
+	 OBJ VFORCE [vnum]         [command]<br>
+</p><p>
+	Forces the victim to do the designated command. The victim is not told
+	that they are forced, they just do the command so usually some opecho
+	message is nice.  You can force players to remove belongings and drop them,
+	etc.  The player sees the normal command messages (such as
+	removing the item and dropping it in the above example)  Again, if
+	the victim is "all" then everyone in the object's room does the command.
+	Gforce works like force except that it affects the group the victim
+	belongs to.<br>
+	Vforce affects all mobiles with given vnum in the game world. This
+	is useful for, for example, purging certain type of NPCs from the
+	game (by forcing them to purge themselves).
+</p><p>
+Syntax:  OBJ DAMAGE [victim|'all'] [min] [max] {lethal}</p><p>
+
+	Causes unconditional damage to the victim. Specifying "all" as
+	victim causes damage to all characters in the room.
+	Min and max parameters define the minimum and maximum amounts of
+	damage caused. By default, the damage is non-lethal, but by supplying
+	the optional 'lethal' parameter, the damage can kill the victim.
+	This command is silent, you must echo all messages yourself in the
+	program.
+</p><p>
+Syntax:  OBJ DELAY<br>
+	 OBJ CANCEL<br>
+</p><p>
+	OBJ DELAY sets the time in PULSE_TICK after which the object's
+	delay trigger is activated. If the object has a program defined
+	for delay trigger, the program is executed when the timer expires.
+	OBJ CANCEL resets the delay timer.
+</p><p>
+
+Syntax:  OBJ REMEMBER [victim]<br>
+	 OBJ FORGET<br>
+</p><p>
+	This command enables the object to remember a player for future
+	reference in a OBJprogram. The player can subsequently be referred
+	as '$q' in programs activated by the object. OBJ FORGET clears
+	the target. Note that if the first time the object runs a program,
+	$q is automatically set to the player who triggered the event.
+	Most commonly this command is used in delayed programs, where the
+	object has to remember the player who triggered the original
+	event.
+</p><p>
+Syntax:  OBJ CALL [vnum] {victim} {target1} {target2}<br>
+</p><p>
+	This command lets you call OBJprograms from within a running one,
+	i.e. to call a OBJprogram subroutine. The first parameter is the
+	vnum of the program to execute, the second is the victim's name
+	(for example $n), and the third and fourth are optional object
+	names. All other parameters except vnum can be replaced with
+	word 'null' indicating ignored parameter.
+	OBJprograms can be called recursively, but as a safety measure,
+	parser allows only 5 recursions.
+</p><p>
+5. ROOMCOMMANDS<br>
+</p><p>
+	ROOMcommands are special commands that allow rooms to perform
+immortal-like actions within a ROOMprogram (transferring players or loading
+items, for example). Most ROOMcommands them are wiz commands which have been
+changed to allow for rooms to perform the commands. In this version of
+Programs, players have been prevented from using these commands by adding
+a separate interpreter for ROOMcommands. This also speeds up (in most cases)
+ROOMprogram execution when ROOMcommands are used. All ROOMcommands are
+preceded with the word 'ROOM' on the command line.
+</p><p>
+
+Syntax:  ROOM ASOUND [string]<br>
+	 ROOM ZECHO  [string]<br>
+	 ROOM GECHO  [string]<br>
+</p><p>
+	ASOUND prints the text string to the rooms around the room in the
+	same manner as a death cry.<br>
+	ZECHO prints the string to all players in the same area. <br>
+	GECHO prints the string to all players in the game.<br>
+</p><p>
+Syntax:  ROOM ECHO                 [string]<br>
+	 ROOM ECHOAT      [victim] [string]<br>
+	 ROOM ECHOAROUND  [victim] [string]<br>
+</p><p>
+	ECHO displays the string to everyone in the room. ECHOAT displays
+	the string to the victim only. ECHOAROUND displays the string to
+	everyone except the victim.The three options let you tailor the message to goto victims or do
+	other sneaky stuff:).
+	</p><p>
+Syntax:  ROOM MLOAD [vnum]<br>
+	 ROOM OLOAD [vnum] [level]<br>
+</p><p>
+        MLOAD creates a mobile and places it in the room.<br>
+	OLOAD loads the object into the room.<br>
+</p><p>
+Syntax:  ROOM REMOVE [victim] [vnum|'all']<br>
+</p><p>
+	Lets the room strip an object of given vnum from the victim.
+	Objects removed are destroyed. If the vnum is replaced with "all",
+	the whole inventory of the victim is destroyed. This command is
+	probably most useful for extracting quest items from a player
+	after a quest has been completed.
+</p><p>
+Syntax:  ROOM PURGE [argument]<br>
+</p><p>
+	Destroys the argument from the room. Without an argument
+	the result is the cleansing of all NPC's and items from the room.
+</p><p>
+Syntax:  ROOM TRANSFER  [victim|'all'] [location]<br>
+	 ROOM GTRANSFER [victim]       [location]<br>
+	 ROOM OTRANSFER [object]       [location]<br>
+</p><p>
+	Sends the victim to the destination or to the room as a
+	default.  if the victim is "all" then all the characters in the room
+	are transfered to the destination.  Good for starting quests or things 
+	like that.  There is no message given to the player that it has been 
+	transfered and the player doesnt do a look at the new room unless 
+	the room forces them to.<br>
+	Gtransfer works like transfer, except that the group the victim
+	belongs	to is transferred with the victim.<br> Otransfer transfers an
+	object in the room.
+</p><p>
+Syntax:  ROOM FORCE  [victim|'all'] [command]<br>
+	 ROOM GFORCE [victim]       [command]<br>
+	 ROOM VFORCE [vnum]         [command]<br>
+</p><p>
+	Forces the victim to do the designated command. The victim is not told
+	that they are forced, they just do the command so usually some rpecho
+	message is nice.  You can force players to remove belongings and drop
+	them, etc.  The player sees the normal command messages (such as
+	removing the item and giving it away in the above example)  Again, if
+	the victim is "all" then everyone in the room does the command.<br>
+	Gforce works like force except that it affects the group the victim
+	belongs to.<br>
+	Vforce affects all mobiles with given vnum in the game world. This
+	is useful for, for example, purging certain type of NPCs from the
+	game (by forcing them to purge themselves).
+</p><p>
+Syntax:  ROOM DAMAGE [victim|'all'] [min] [max] {lethal}<br>
+</p><p>
+	Causes unconditional damage to the victim. Specifying "all" as
+	victim causes damage to all characters in the room.
+	Min and max parameters define the minimum and maximum amounts of
+	damage caused. By default, the damage is non-lethal, but by supplying
+	the optional 'lethal' parameter, the damage can kill the victim.
+	This command is silent, you must echo all messages yourself in the
+	program.
+</p><p>
+Syntax:  ROOM DELAY<br>
+	 ROOM CANCEL<br>
+</p><p>
+	ROOM DELAY sets the time in PULSE_AREA after which the room's
+	delay trigger is activated. If the room has a program defined
+	for delay trigger, the program is executed when the timer expires.<br>
+	ROOM CANCEL resets the delay timer.<br>
+</p><p>
+
+Syntax:  ROOM REMEMBER [victim]<br>
+	 ROOM FORGET<br>
+</p><p>
+	This command enables the room to remember a player for future
+	reference in a ROOMprogram. The player can subsequently be referred
+	as '$q' in programs activated by the room. ROOM FORGET clears
+	the target. Note that if the first time the room runs a program,
+	$q is automatically set to the player who triggered the event.
+	Most commonly this command is used in delayed programs, where the
+	room has to remember the player who triggered the original
+	event.
+</p><p>
+Syntax:  ROOM CALL [vnum] {victim} {target1} {target2}<br>
+</p><p>
+	This command lets you call ROOMprograms from within a running one,
+	i.e. to call a ROOMprogram subroutine. The first parameter is the
+	vnum of the program to execute, the second is the victim's name
+	(for example $n), and the third and fourth are optional object
+	names. All other parameters except vnum can be replaced with
+	word 'null' indicating ignored parameter.<br>
+	ROOMprograms can be called recursively, but as a safety measure,
+	parser allows only 5 recursions.
+	</p><p>
+<a name="cpu"></a></p><center><i>Regarding CPU Slowdown</i></center><p>
+
+In the original MERC 2.2 MOBprogram documentation Nata'sha and Kahn wrote:
+	"We have no real idea how slow this makes a mud. However, you will
+find that if you are judicious with your use of MOBprograms, you can either
+do little damage, or even reduce the effort on your server!  This means that
+mobile polling (including the rand_progs) need only be checked when players
+are around. This reduces computation of random_stuff a little, but it is
+still a polling method, and subject to a basic inefficiency there. However,
+aside from the rand_progs, the only additional slowdowns will be when the
+mobile is responding to the situation, and you would get that from a special
+procedure as well (although MOBprograms are surely not as efficient as
+compiled C code)"
+</p><p>
+	I have used Programs extensively in my own mud without adverse
+effects. This version of Programs polls random triggers only when there
+are players in the area, so the load is kept to minimum. I would venture
+to claim that in most cases, line lag will exceed machine lag even with
+ample and complex use of Programs, especially with the speed of today's servers..
+</p><p>
+<a name="drtable"></a></p><center><i>Dreamless Realms Tables</i></center><p>
+I've modified the code for Dreamless Realms to include a few things. Here are the tables for these, as 
+used by the code itself.<br><b><bl><i>PLEASE NOTE</i></bl></b><br>These must NOT NOT NOT be used on 
+non player characters. this will CRASH the game, and make <a href="mailto:wolf@wolfstream.net">Xantha</a> a very very unhappy god!</p><p> 
+</p><center><b>Disposition</b></center><br> 
+if char disposition &lt;= -350, char is chaotic<br>
+if char disposition &gt; -350 AND char disposition &lt; 350 char is neutral<br>
+if char disposition =&gt; 350, char is lawful<br>
+<p>
+</p><center><b>Odor</b></center><br>
+If char odor &lt;=15, char is clean (no shower needed)<br>
+if char odor &lt;=24, char needs a shower, but it's not that offensive (yet).<br>
+If char odor &lt;=40, char is stinking.<br>
+If char odor &lt;=60, char is filthy.<br>
+If char odor &lt;=80, char is gross.<br>
+If char odor (anything else), just disgusting.<br>
+<center><b>beard</b></center><br>
+Please note!!!<br>
+IF you have a beard check, you NEED to have a check for the sex of the pc
+<center><b>Please NOTE!!!</b></center><br>
+You WILL have to rewrite this code, this was JUST an example of the disposition guidelines as set forth 
+in the code. Syntax is exactly the same as align, or the rest of them:
+disposition $* == integer Is $*'s disp equal to integer 
+if hair $* == integer Is $*'s hair length equal to integer 
+if odor $* == integer Is $*'s odor  equal to integer 
+if beard $* == integer Is $*'s beard length equal to integer 
+if disposition $* == integer Is $*'s disp equal to integer 
+<center><br><b>Random Olc Tip</b> <hr> Color makes things much easier on the eyes. <hr></center>
+Unknown column 'page' in 'where clause'</td></tr></tbody></table></body></html>

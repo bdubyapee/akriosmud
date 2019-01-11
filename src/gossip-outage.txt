@@ -1,0 +1,25 @@
+Akrios is up and running in 0.149705 seconds.
+Traceback (most recent call last):
+  File "./akrios.py", line 14, in <module>
+    game.run()
+  File "/home/bwp/programming/muds/akrios/src/server.py", line 199, in run
+    event.heartbeat()
+  File "/home/bwp/programming/muds/akrios/src/event.py", line 112, in heartbeat
+    each_queue.events.update()
+  File "/home/bwp/programming/muds/akrios/src/event.py", line 59, in update
+    event.fire()
+  File "/home/bwp/programming/muds/akrios/src/event.py", line 90, in fire
+    self.func(self)
+  File "/home/bwp/programming/muds/akrios/src/event.py", line 245, in event_gossip_restart
+    gossip.gsocket = gossip.GossipSocket()
+  File "/home/bwp/programming/muds/akrios/src/gossip.py", line 364, in __init__
+    self.gsocket_connect()
+  File "/home/bwp/programming/muds/akrios/src/gossip.py", line 379, in gsocket_connect
+    result = self.connect("wss://gossip.haus/socket")
+  File "/home/bwp/.local/lib/python3.6/site-packages/websocket/_core.py", line 223, in connect
+    self.handshake_response = handshake(self.sock, *addrs, **options)
+  File "/home/bwp/.local/lib/python3.6/site-packages/websocket/_handshake.py", line 79, in handshake
+    status, resp = _get_resp_headers(sock)
+  File "/home/bwp/.local/lib/python3.6/site-packages/websocket/_handshake.py", line 152, in _get_resp_headers
+    raise WebSocketBadStatusException("Handshake status %d %s", status, status_message)
+websocket._exceptions.WebSocketBadStatusException: Handshake status 500 Internal Server Error

@@ -1,0 +1,12 @@
+{
+    "creator": "belial",
+    "description": "{RHelp Topic{W: arealist{x\n\nThis command will give you a list of all areas.",
+    "json_class_name": "__oneHelp__",
+    "json_version": 1,
+    "keywords": [
+        "arealist"
+    ],
+    "section": "player",
+    "topics": "commands",
+    "viewable": "true"
+}

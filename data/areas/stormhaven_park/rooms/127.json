@@ -1,0 +1,13 @@
+{
+    "description": "This small shed holds a variety of tools that the groundskeepers use to\nmaintain the pond and the clearing it sits in. The shed itself seems to be\nin fair condition with no missing boards or planks. Everything appears to be\norderly and clean. There are no windows, but there are several benches and\nracks upon which numerous tools rest. A door on the east wall leads back out\nto the clearing and pond.",
+    "extradescriptions": {},
+    "flags": [],
+    "json_class_name": "__oneRoom__",
+    "json_version": 1,
+    "name": "a tool shed",
+    "propertyvalue": "",
+    "sectortype": [
+        "inside"
+    ],
+    "vnum": 127
+}
