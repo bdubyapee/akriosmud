@@ -35,12 +35,9 @@ def mmtell(caller, args):
 
     message = ' '.join(message)
 
-    
-
-    for eachplayer in player.playerlist:
-        if eachplayer.name.capitalize() == target.capitalize():
-            caller.write("Just use in game channels to talk to players on Akrios.")
-            return
+    for game.lower() in ['akrios', 'akriosmud']:
+        caller.write("Just use in game channels to talk to players on Akrios.")
+        return
 
     gossip.gsocket.msg_gen_player_tells(caller.name.capitalize(), game, target, message)
 
