@@ -24,3 +24,4 @@ venv.bak
 src/__pycache__/
 src/nohup.out
 src/gossipkeys.py
+data/players/
