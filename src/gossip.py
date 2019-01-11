@@ -54,6 +54,27 @@
 #     jubelo@akriosmud.funcity.org
 # 
 
+'''
+    Module used to communicate with the Gossip.haus chat+ network.
+    https://gossip.haus
+    https://grapevine.haus
+    https://vineyard.haus
+
+    Classes:
+        GossipReeivedMessage is used to parse incoming JSON messages from the network.
+        __init__(self, message, gsock)
+            message is the JSON from the gossip network
+            gsock is the instance of GossipSocket for tracking foreign players locally
+ 
+        GOssipSocket is used to authentcate to and send messages to the gossip network.
+        __init__(self)
+
+    Module Variables of Note:
+        gsocket is an instance of GossipSocket, when this module is imported the authentication
+        portion is completed and working with gossip is done through the gsocket.
+'''
+
+
 import json
 import socket
 import datetime
@@ -78,12 +99,11 @@ class GossipReceivedMessage():
             setattr(self, eachkey, eachvalue)
 
         # Point an instance attribute to the module level gossip socket.
-        # Used for adding to and removing refs in some of the below methods.
+        # Used for adding to and removing refs as well as keeping the foreign player
+        # cache in the gsocket up to date.
         self.gsock = gsock
         
         # When we receive a websocket it will always have an event type.
-        # We utilize the event type as the key and associate a receiver method and gsock
-        # dependent on what we want to do with the received data.
         self.rcvr_func = {"heartbeat": (self.gsock.msg_gen_heartbeat, None),
                           "authenticate": (self.is_received_auth, None),
                           "restart": (self.is_received_restart, None),
@@ -100,12 +120,18 @@ class GossipReceivedMessage():
                           "tells/receive": (self.received_tells_message, None),
                           "channels/send": (self.received_message_confirm, gsock.sent_refs)}
 
-        # If we receive a restart, this will be updated.
+
         self.restart_downtime = 0
 
-    # Verify we have an attribute from the JSON that is 'event'.  If we have a key
-    # in the rcvr_func that matches, go ahead and execute.
     def parse_frame(self):
+        '''
+            Parse any received JSON from the Gossip network.
+
+            Verify we have an attribute from the JSON that is 'event'. If we have a key
+            in the rcvr_func that matches we will execute.
+
+            return whatever is returned by the method, or None.
+       '''
         if hasattr(self, "event") and self.event in self.rcvr_func:
             exec_func, args = self.rcvr_func[self.event]
             if args == None:
@@ -117,7 +143,11 @@ class GossipReceivedMessage():
                 return retvalue
 
     def is_event_status(self, status):
-        # A helper method to determine if the event we received is type of status
+        '''
+            A helper method to determine if the event we received is type of status.
+
+            return True/False
+        '''
         if hasattr(self, "event") and hasattr(self, "status"):
             if self.status == status:
                 return True
@@ -125,11 +155,15 @@ class GossipReceivedMessage():
                 return False
 
     def is_received_auth(self):
-        # We received an event Auth event type.
-        # Determine if we are already authenticated, if so subscribe to the channels
-        # as determined in msg_gen_chan_subscribed in the Gossip Socket Object.
-        # Otherwise, if we are not authenticated yet we send another authentication attempt
-        # via msg_gen_authenticate().  This is in place for path hiccups or restart events.
+        '''
+            We received an event Auth event type.
+            Determine if we are already authenticated, if so subscribe to the channels
+            as determined in msg_gen_chan_subscribed in the Gossip Socket Object.
+            Otherwise, if we are not authenticated yet we send another authentication attempt
+            via msg_gen_authenticate().  This is in place for path hiccups or restart events.
+
+            return None
+        '''
         if self.is_event_status("success"):
             self.gsock.state["authenticated"] = True
             self.gsock.msg_gen_chan_subscribe()
@@ -138,22 +172,23 @@ class GossipReceivedMessage():
             self.gsock.msg_gen_authenticate()
         
     def is_received_restart(self):
-        # We received a restart event. We'll asign the value to the restart_downtime
-        # attribute for access by the calling code.
+        '''
+        We received a restart event. We'll asign the value to the restart_downtime
+        attribute for access by the calling code.
+
+        return None
+        '''
         if hasattr(self, "payload"):
             self.restart_downtime = int(self.payload["downtime"])
 
-
-    # The below status successful methods are quite generic.  They are currently individualized
-    # placeholders so that code specific to those received successes can be written if required.
-    # For example, received_chan_sub versus received_player_login which we don't care too much
-    # about.
-
     def received_chan_sub(self, sent_refs):
-        # We have attempted to subscribe to a channel.  This is a response message
-        # from Gossip.
-        # If failure, we make sure we show unsubbed in our local list.
-        # if success, we make sure we show subscribed in our local list.
+        '''
+        We have attempted to subscribe to a channel.  This is a response message from Gossip.
+        If failure, we make sure we show unsubbed in our local list.
+        if success, we make sure we show subscribed in our local list.
+
+        return None
+        '''
         if hasattr(self, "ref") and self.ref in sent_refs:
             orig_req = sent_refs.pop(self.ref)
             if self.is_event_status("failure"):
@@ -166,14 +201,27 @@ class GossipReceivedMessage():
                 self.gsock.subscribed[channel] = True
 
     def received_chan_unsub(self, sent_refs):
-        # We at some point sent a channel unsubscribe. This is verifying Gossip
-        # received that.  We unsub in our local list.
+        '''
+        We at some point sent a channel unsubscribe. This is verifying Gossip
+        received that.  We unsub in our local list.
+
+        return None
+        '''
         if hasattr(self, "ref") and self.ref in sent_refs:
             orig_req = sent_refs.pop(self.ref)
             channel = orig_req["payload"]["channel"]
             self.gsock.subscribed[channel] = False
 
     def received_player_logout(self, sent_refs):
+        '''
+        We have received a "player/sign-out" message from Gossip.
+
+        Determine if it is a success message, which is an indication to us that Gossip
+        received a player logout from us and is acknowledging, or if it is a message from
+        another game on the Gossip network.
+
+        return None if it's an ack from gossip, return player info if it's foreign.
+        '''
         if hasattr(self, "ref"):
             # We are a success message from Gossip returned from our notification.
             if self.ref in sent_refs and self.is_event_status("success"):
@@ -189,6 +237,15 @@ class GossipReceivedMessage():
                     return (player, "signed out of", game)
 
     def received_player_login(self, sent_refs):
+        '''
+        We have received a "player/sign-in" message from Gossip.
+
+        Determine if it is a success message, which is an indication to us that Gossip
+        received a player login from us and is acknowledging, or if it is a message from
+        another game on the Gossip Network.
+
+        return None if it's an ack from gossip, return player info if it's foreign
+        '''
         if hasattr(self, "ref"):
             # We are a success message from Gossip returned from our notification.
             if self.ref in sent_refs and self.is_event_status("success"):
@@ -205,9 +262,13 @@ class GossipReceivedMessage():
                     return (player, "signed into", game)
 
     def received_player_status(self, sent_refs):
-        # We have requested a multi-game or single game status update.
-        # This is the response. We pop the valid Ref from our local list
-        # and add them to the local cache.
+        '''
+        We have requested a multi-game or single game status update.
+        This is the response. We pop the valid Ref from our local list
+        and add them to the local cache.
+
+        return None
+        '''
         if hasattr(self, "ref") and hasattr(self, "payload"):
             # On first receive we pop the ref just so it's gone from the queue
             if self.ref in sent_refs:
