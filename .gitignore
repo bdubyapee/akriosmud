@@ -25,5 +25,7 @@ src/__pycache__/
 src/nohup.out
 src/gossipkeys.py
 
+.gitignore
+
 # Temp #
 data/players/jubelo.json
