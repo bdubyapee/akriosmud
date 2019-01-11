@@ -1,0 +1,124 @@
+{
+    "age": 1,
+    "aid": "8f2559e2-ea49-4249-9eea-dd70dcf4e01e",
+    "alias": {
+        "d": "down",
+        "e": "east",
+        "gossip": "mmchat",
+        "l": "look",
+        "n": "north",
+        "ne": "northeast",
+        "nw": "northwest",
+        "page": "beep",
+        "s": "south",
+        "se": "southeast",
+        "sw": "southwest",
+        "u": "up",
+        "w": "west"
+    },
+    "alignment": "neutral",
+    "baceac": {
+        "bashing": 0,
+        "lashing": 0,
+        "piercing": 0,
+        "slashing": 0
+    },
+    "capability": [
+        "player"
+    ],
+    "clan": null,
+    "council": null,
+    "current_stat": {
+        "agility": 71,
+        "charisma": 60,
+        "constitution": 62,
+        "intelligence": 73,
+        "luck": 45,
+        "speed": 60,
+        "strength": 60,
+        "wisdom": 44
+    },
+    "currentac": {
+        "bashing": 0,
+        "lashing": 0,
+        "piercing": 0,
+        "slashing": 0
+    },
+    "currenthp": 1,
+    "currentmovement": 1,
+    "currentwillpower": 0,
+    "damroll": 0,
+    "deity": "",
+    "discipline": "mental",
+    "exp": {
+        "combat": 0,
+        "explore": 0,
+        "profession": 0
+    },
+    "family": null,
+    "gender": "female",
+    "guild": null,
+    "height": {
+        "feet": 5,
+        "inches": 1
+    },
+    "hitroll": 0,
+    "hunger": 0,
+    "inventory": [],
+    "json_class_name": "__Player__",
+    "json_version": 1,
+    "knownpeople": {},
+    "lasthost": "::1",
+    "lasttime": "Fri Jan 11 22:36:40 2019",
+    "level": 1,
+    "location": 101,
+    "long_description": "",
+    "maxhp": 1,
+    "maximum_stat": {
+        "agility": 71,
+        "charisma": 60,
+        "constitution": 62,
+        "intelligence": 73,
+        "luck": 45,
+        "speed": 60,
+        "strength": 60,
+        "wisdom": 44
+    },
+    "maxmovement": 1,
+    "maxwillpower": 0,
+    "memorizedspells": {},
+    "money": {
+        "copper": 0,
+        "gold": 0,
+        "platinum": 0,
+        "silver": 0
+    },
+    "name": "illiam",
+    "oocflags_stored": {
+        "mmchat": "true",
+        "newbie": "true"
+    },
+    "password": "$2b$12$HInxhGTGkfetaTI/OP5EQ.krhronYingFEhrFxn1NBIeltZx7A0ui",
+    "position": "standing",
+    "prompt": "{pAkriosMUD{g:{x ",
+    "race": "goblin",
+    "seen_as": "",
+    "short_description": "",
+    "skillpoints": 0,
+    "thirst": 0,
+    "title": "",
+    "totalmemoryslots": {
+        "eighth circle": 0,
+        "fifth circle": 0,
+        "first circle": 0,
+        "fourth circle": 0,
+        "ninth circle": 0,
+        "second circle": 0,
+        "seventh circle": 0,
+        "sixth circle": 0,
+        "third circle": 0
+    },
+    "weight": 1,
+    "wimpy": 0,
+    "worn": {}
+}
