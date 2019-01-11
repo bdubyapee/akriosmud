@@ -21,3 +21,4 @@ venv.bak
 
 # Folders #
 src/__pycache__/
+src/nohup.out
