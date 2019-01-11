@@ -183,7 +183,8 @@ class GossipReceivedMessage():
                 game = self.payload["game"].capitalize()
                 player = self.payload["name"].capitalize()
                 if player in self.gsock.other_games_players[game]:
-                    self.gsock.other_games_players[game].remove(player)
+                    if game in self.gsock.other_games_players:
+                        self.gsock.other_games_players[game].remove(player)
                     return (player, "signed out of", game)
 
     def received_player_login(self, sent_refs):
@@ -196,7 +197,10 @@ class GossipReceivedMessage():
                 game = self.payload["game"].capitalize()
                 player = self.payload["name"].capitalize()
                 if player not in self.gsock.other_games_players[game]:
-                    self.gsock.other_games_players[game].append(player)
+                    if game in self.gsock.other_games_players:
+                        self.gsock.other_games_players[game].append(player)
+                    else:
+                        self.gsock.other_games_players[game] = list(player)
                     return (player, "signed into", game)
 
     def received_player_status(self, sent_refs):
