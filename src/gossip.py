@@ -323,7 +323,7 @@ class GossipSocket(WebSocket):
     def __init__(self):
         super().__init__(sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY,1),))
         
-        self.debug = True
+        self.debug = False
 
         self.inbound_frame_buffer = []
         self.outbound_frame_buffer = []

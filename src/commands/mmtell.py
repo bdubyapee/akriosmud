@@ -35,7 +35,7 @@ def mmtell(caller, args):
 
     message = ' '.join(message)
 
-    for game.lower() in ['akrios', 'akriosmud']:
+    if game.lower() in ['akrios', 'akriosmud']:
         caller.write("Just use in game channels to talk to players on Akrios.")
         return
 
