@@ -65,6 +65,7 @@ from websocket import WebSocket
 # being commented, but others you will need to implement (like heartbeat player list).
 import comm
 import event
+from gossipkeys import CLIENT_ID, SECRET_KEY
 import player
 import world
 
@@ -337,8 +338,8 @@ class GossipSocket(WebSocket):
         
         # Replace the below with your specific information
         # XXX
-        self.client_id = "ee61b7f4-e5c6-498f-a317-0ab6d93a1601"
-        self.client_secret = "32c87aac-92f7-4e2f-b42c-f5102aba4906"
+        self.client_id = CLIENT_ID
+        self.client_secret = SECRET_KEY
         self.supports = ["channels", "games", "players", "tells"]
 
         # Populate the channels attribute if you want to subscribe to a specific
