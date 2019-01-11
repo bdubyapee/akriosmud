@@ -173,20 +173,31 @@ class GossipReceivedMessage():
             self.gsock.subscribed[channel] = False
 
     def received_player_logout(self, sent_refs):
-        # NOTE: This is a success message from Gossip indicating a player
-        # logout message WE sent was received successfully.  Don't get confused
-        # with a foreign player message sign-out which we deal with below.
         if hasattr(self, "ref"):
+            # We are a success message from Gossip returned from our notification.
             if self.ref in sent_refs and self.is_event_status("success"):
                 orig_req = sent_refs.pop(self.ref)
+                return
+            # We are receiving a player logout from another game.
+            if "game" in self.payload:
+                game = self.payload["game"].capitalize()
+                player = self.payload["name"].capitalize()
+                if player in self.gsock.other_games_players[game]:
+                    self.gsock.other_games_players[game].remove(player)
+                    return (player, "signed out of", game)
 
     def received_player_login(self, sent_refs):
-        # NOTE: This is a success message from Gossip indicating a player
-        # login message WE sent was received successfully. Don't get confused
-        # with a foreign player message sign-in which we deal with below.
         if hasattr(self, "ref"):
+            # We are a success message from Gossip returned from our notification.
             if self.ref in sent_refs and self.is_event_status("success"):
                 orig_req = sent_refs.pop(self.ref)
+                return
+            if "game" in self.payload:
+                game = self.payload["game"].capitalize()
+                player = self.payload["name"].capitalize()
+                if player not in self.gsock.other_games_players[game]:
+                    self.gsock.other_games_players[game].append(player)
+                    return (player, "signed into", game)
 
     def received_player_status(self, sent_refs):
         # We have requested a multi-game or single game status update.
@@ -281,28 +292,6 @@ class GossipReceivedMessage():
             else:
                 return False
 
-    def received_other_game_player_update(self):
-        # We verified externally that this is an update for a player from another game.
-        # Set the correct verbiage and return the information to be utilized for messaging.
-        # Also update our local cache of games/players.
-        in_or_out = ""
-        game = self.payload['game'].capitalize()
-        player = self.payload['name'][0].capitalize()
-        if self.gsock.debug:
-            print(f"Received other game player update: {player} @ {game}")
-        if self.event == "players/sign-in":
-            in_or_out = "signed into"
-            self.gsock.other_games_players[game].append(player)
-            if self.gsock.debug:
-                print(f"In: {self.gsock.other_games_players}")
-        elif self.event == "players/sign-out":
-            in_or_out = "signed out of"
-            self.gsock.other_games_players[game].remove(player)
-            if self.gsock.debug:
-                print(f"Out: {self.gsock.other_games_players}")
-
-        return (player, in_or_out, game)
-                
     def received_games_connected(self):
         # A foreign game has connected to the network, add the game to our local
         # cache of games/players and send a request for player list.
@@ -334,7 +323,7 @@ class GossipSocket(WebSocket):
     def __init__(self):
         super().__init__(sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY,1),))
         
-        self.debug = False
+        self.debug = True
 
         self.inbound_frame_buffer = []
         self.outbound_frame_buffer = []
@@ -351,7 +340,7 @@ class GossipSocket(WebSocket):
         # Populate the channels attribute if you want to subscribe to a specific
         # channel or channels during authentication.
         self.channels = []
-        self.version = "0.0.14"
+        self.version = "0.0.15"
         self.user_agent = "AkriosMUD v0.4.4"
 
         self.state = {"connected": False,

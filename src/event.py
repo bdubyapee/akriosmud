@@ -293,7 +293,7 @@ def event_gossip_receive_message(event_):
                     # We've received a game status request response from
                     # gossip.  Do what you will here with the information,
                     # Not going to do anything with it in Akrios at the moment.
-                    pass
+                    return
 
 
             # Received Gossip Info that goes to all players goes here.
@@ -304,7 +304,6 @@ def event_gossip_receive_message(event_):
             if rcvd_msg.event == "games/disconnect":
                 game = ret_value.capitalize()
                 message = f"\n\r{{GMultiMUD Status Update: {game} disconnected from network{{x"
-
             if rcvd_msg.event == "channels/broadcast":
                 name, game, message = ret_value
                 message = (f"\n\r{{GMultiMUD Chat{{x:{{y{name.capitalize()}"
@@ -314,13 +313,11 @@ def event_gossip_receive_message(event_):
                 message = (f"\n\r{{GMultiMUD Chat{{x: {{y{name.capitalize()}{{G "
                            f"has {inout} {{Y{game.capitalize()}{{x.")
 
-
             if message != "":
                 for eachplayer in player.playerlist:
                     if eachplayer.oocflags_stored['mmchat'] == 'true':
                         eachplayer.write(message)
                 return
-
 
         if hasattr(rcvd_msg, "event") and rcvd_msg.event == "restart":
             comm.log(world.serverlog, "Received restart event from Gossip.")
