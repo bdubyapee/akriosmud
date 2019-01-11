@@ -6,10 +6,13 @@
 # 
 # By: Jubelo
 
-#import cProfile
+'''
+    Starting point for launching AkriosMUD.
+'''
+
+
 import server
     
 if __name__ == "__main__":
     game = server.Server()
     game.run()
-    #cProfile.run(game.run())
