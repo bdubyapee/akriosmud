@@ -19,11 +19,11 @@ def toggle(caller, args):
     if args == 'newbie':
         if caller.oocflags_stored['newbie'] == 'true':
             caller.oocflags_stored['newbie'] = 'false'
-            caller.write("{WNewbie Tip mode disabled.{x")
+            caller.write("\n\r{WNewbie Tip mode disabled.{x")
             caller.events.remove_event_type(eventtype="newbie tips")
         else:
             caller.oocflags_stored['newbie'] = 'true'
-            caller.write('{WNewbie Tip mode enabled.{x')
+            caller.write('\n\r{WNewbie Tip mode enabled.{x')
 
             newevent = event.Event()
             newevent.owner = caller
@@ -37,10 +37,19 @@ def toggle(caller, args):
     if args == 'mmchat':
         if caller.oocflags_stored['mmchat'] == 'true':
             caller.oocflags_stored['mmchat'] = 'false'
-            caller.write("{WMultiMUD Chat disabled.{x")
+            caller.write("\n\r{WMultiMUD Chat disabled.{x")
         else:
             caller.oocflags_stored['mmchat'] = 'true'
-            caller.write("{WMultiMUD Chat enabled.{x")
+            caller.write("\n\r{WMultiMUD Chat enabled.{x")
+
+    if caller.is_admin:
+        if args == 'gdebug':
+            if gossip.gsocket.debug:
+                gossip.gsocket.debug = False
+                caller.write("\n\r{Wgdebug Gossip Network Debug has been disabled.{x")
+            else:
+                gossip.gsocket.debug = True
+                caller.write("\n\r{Wgdebug Gossip Network Debug has been enabled.{x")
 
 
     if caller.oocflags_stored['newbie'] == 'true':
@@ -53,6 +62,10 @@ def toggle(caller, args):
     else:
         mmchat = "Disabled"
 
-    caller.write("Currently available settings to toggle:")
+    caller.write("\n\rCurrently available settings to toggle:")
     caller.write(f"    {{Wnewbie{{x : {{R{newbie}{{x")
     caller.write(f"    {{Wmmchat{{x : {{R{mmchat}{{x")
+    caller.write(f"")
+    if caller.is_admin:
+        caller.write(f"    {{Wgdebug{{x : {{R{gossip.gsocket.debug}{{x")
+

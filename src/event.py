@@ -283,7 +283,7 @@ def event_gossip_receive_message(event_):
                 message = (f"\n\r{{GMultiMUD Tell from {{y{sender}@{game}{{x: "
                            f"{{G{message}{{x.\n\rReceived at : {sent}.")
                 for eachplayer in player.playerlist:
-                    if eachplayer.name.capitalize() == target:
+                    if eachplayer.name.capitalize() == target.capitalize():
                         if eachplayer.oocflags_stored['mmchat'] == 'true':
                             eachplayer.write(message)
                             return
