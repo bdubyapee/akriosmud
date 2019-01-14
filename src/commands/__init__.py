@@ -47,7 +47,18 @@ class Command(object):
         def wrapped_f(*args, **kwargs):
             caller, _args = args
             if self.decorator_kwargs['capability'] in caller.capability:
-                command(caller, _args, **kwargs)
+                try:
+                    command(caller, _args, **kwargs)
+                except Exception as err:
+                    to_log = (f"Error in command execution:\n\r"
+                              f"Player: {caller.name}\n\r"
+                              f"Command: {command}\n\r"
+                              f"Args: {_args}\n\r"
+                              f"KwArgs: {kwargs}\n\r"
+                              f"Error: {err}")
+                    comm.log(world.serverlog, f"{to_log}")
+                    caller.write("Something terrible has happened. Sorry!")
+                    return
             elif 'disabled' in kwargs:
                 caller.write("That command is disabled")
             else:

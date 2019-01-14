@@ -1048,4 +1048,84 @@ Sat Jan  5 22:42:16 2019 : Sending Auth to Gossip Network.
 Sun Jan 13 21:39:41 2019 : 
 
 {YWiznet: ::1 disconnecting from Akrios.{x
+Sun Jan 13 21:41:16 2019 : Sending Auth to Gossip Network.
+Mon Jan 14 00:18:26 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:71.196.140.88{x
+Mon Jan 14 00:18:43 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Mon Jan 14 00:18:46 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Mon Jan 14 01:00:24 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:71.196.140.88{x
+Mon Jan 14 01:00:40 2019 : 
+
+{YWiznet: Jubelo logging out of Akrios.{x
+Mon Jan 14 01:00:42 2019 : 
+
+{YWiznet: ::ffff:71.196.140.88 disconnecting from Akrios.{x
+Mon Jan 14 01:00:55 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Mon Jan 14 01:00:56 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Mon Jan 14 01:02:12 2019 : 
+
+{YWiznet: Jubelo logging out of Akrios.{x
+Mon Jan 14 01:02:13 2019 : 
+
+{YWiznet: ::ffff:71.196.140.88 disconnecting from Akrios.{x
+Mon Jan 14 01:08:55 2019 : 
+
+{YWiznet: Accepting connection from: ::1{x
+Mon Jan 14 01:09:00 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Mon Jan 14 01:09:01 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Mon Jan 14 01:09:18 2019 : Sending Auth to Gossip Network.
+Mon Jan 14 01:09:26 2019 : 
+
+{YWiznet: Accepting connection from: ::1{x
+Mon Jan 14 01:09:31 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Mon Jan 14 01:09:32 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Mon Jan 14 01:12:31 2019 : Sending Auth to Gossip Network.
+Mon Jan 14 01:12:40 2019 : 
+
+{YWiznet: Accepting connection from: ::1{x
+Mon Jan 14 01:12:45 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Mon Jan 14 01:12:46 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Mon Jan 14 01:12:50 2019 : Error in command execution:
+Player: jubelo
+Args: Test
+KwArgs: {}Error: name 'createerror' is not defined
+Mon Jan 14 01:14:41 2019 : Sending Auth to Gossip Network.
+Mon Jan 14 01:14:47 2019 : 
+
+{YWiznet: Accepting connection from: ::1{x
+Mon Jan 14 01:14:51 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Mon Jan 14 01:14:52 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Mon Jan 14 01:14:55 2019 : Error in command execution:
+Player: jubelo
+Command: <function ooc at 0x7f27f729ef28>
+Args: Test
+KwArgs: {}
+Error: name 'createerror' is not defined
 

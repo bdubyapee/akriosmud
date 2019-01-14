@@ -18,7 +18,7 @@ def ooc(caller, args):
     if len(args.split()) == 0:
         caller.write("Did you have something to say or not?")
         return
-    
+ 
     for person in player.playerlist:
         if person == caller:
             name = "You"
