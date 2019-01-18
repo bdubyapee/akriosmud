@@ -12,6 +12,7 @@ import json
 import re
 import glob
 
+import comm
 import olc
 import room
 import event
@@ -166,7 +167,7 @@ class oneArea(olc.Editable):
                 roomvnum = fullpath.split('/')[-1:][0]
                 attached_room = roomByVnum(int(roomvnum))
                 if attached_room == False:
-                    print(f"roomByVnum failed in exit load in area.py: {roomvnum}")
+                    comm.log(world.serverlog, f"roomByVnum failed in exit load in area.py: {roomvnum}")
                 else:
                     exits.Exit(attached_room, direction_fn, thefile.read())
 

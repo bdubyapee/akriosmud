@@ -92,7 +92,13 @@ class ConnSocket(asyncore.dispatcher):
         # We check for that below.  Kinda ugly, but not sure how to handle it otherwise.
         if text.startswith(b"\xff"):
             return ''
-        text = text.decode("utf8")
+        try:
+            text = text.decode("utf8")
+        except Exception as err:
+            to_log = (f"Error parsing input:\n\r",
+                      f"Host: {self.host}\n\r",
+                      f"Error: {err}\n\r")
+            comm.log(world.serverlog, f"{to_log}")
         # Here we check if there has just been an enter pressed.
         if text == "\r\n":
             return text
@@ -112,8 +118,8 @@ class ConnSocket(asyncore.dispatcher):
     def handle_read(self):
         try:
             indata = self.recv(4096)
-        except ConnectionResetError as msg:
-            comm.log(world.serverlog, f"Error in handle_read:server.py : {msg}")
+        except Exception as err:
+            comm.log(world.serverlog, f"Error in handle_read:server.py : {err}")
      
 
         # Clients usually send the Suppress-Go-Ahead on connection.  This
@@ -147,7 +153,7 @@ class ConnSocket(asyncore.dispatcher):
                 output = color.colorize(f"\n\r{pretext}{self.owner.prompt}")
                 self.send(output.encode("utf8"))
         except Exception as err:
-            print(f"Error in handle_write:server.py - {err}")
+            comm.log(world.serverlog, f"Error in handle_write:server.py - {err}")
 
     def handle_close(self):
         self.handle_write()

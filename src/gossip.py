@@ -411,7 +411,7 @@ class GossipSocket(WebSocket):
         # Populate the channels attribute if you want to subscribe to a specific
         # channel or channels during authentication.
         self.channels = []
-        self.version = "0.0.15"
+        self.version = "0.1.6"
         self.user_agent = "AkriosMUD v0.4.4"
 
         self.state = {"connected": False,
@@ -421,8 +421,11 @@ class GossipSocket(WebSocket):
         for each_channel in self.channels:
             self.subscribed[each_channel] = False
 
-        self.gsocket_connect()
-        
+        if self.state["connected"] == False:
+            successful_connect = self.gsocket_connect()
+            if not successful_connect:
+                self.gsocket_diconnect()        
+
         # This event initialization is specific to AkriosMUD. This would be a good
         # spot to initialize in your event system if required.  Otherwise comment/delete this line.
         event.init_events_gossip(self)
@@ -436,7 +439,10 @@ class GossipSocket(WebSocket):
 
 
     def gsocket_connect(self):
-        result = self.connect("wss://gossip.haus/socket")
+        try:
+            result = self.connect("wss://gossip.haus/socket")
+        except:
+            return False
         # We need to set the below on the socket as websockets.WebSocket is 
         # blocking by default.  :(
         self.sock.setblocking(0)
@@ -446,6 +452,7 @@ class GossipSocket(WebSocket):
         # The below is a log specific to Akrios.  Leave commented or replace.
         # XXX
         comm.log(world.serverlog, "Sending Auth to Gossip Network.")
+        return True
 
     def gsocket_disconnect(self):
         self.state["connected"] = False

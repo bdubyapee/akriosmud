@@ -150,6 +150,15 @@ def init_events_gossip(gossip_):
     event.totalpasses = event.passes
     gossip_.events.add(event)
 
+    event = Event()
+    event.owner = gossip_
+    event.ownertype = "gossip"
+    event.eventtype = "gossip state check"
+    event.func = event_gossip_state_check
+    event.passes = 5 * PULSE_PER_MINUTE
+    event.totalpasses = event.passes
+    gossip_.events.add(event)
+
 def init_events_area(area):
     pass
 
@@ -240,6 +249,7 @@ def reoccuring_event(func_to_decorate):
 
     return new_func
 
+
 def event_gossip_restart(event_):
     del(gossip.gsocket)
     gossip.gsocket = gossip.GossipSocket()
@@ -322,7 +332,7 @@ def event_gossip_receive_message(event_):
         if hasattr(rcvd_msg, "event") and rcvd_msg.event == "restart":
             comm.log(world.serverlog, "Received restart event from Gossip.")
             restart_time = rcvd_msg.restart_downtime * PULSE_PER_SECOND
-            restart_fuzz = 10 * PULSE_PER_SECOND
+            restart_fuzz = 20 * PULSE_PER_SECOND
  
             gossip.gsocket.gsocket_disconnect()
 
@@ -334,6 +344,24 @@ def event_gossip_receive_message(event_):
             nextevent.passes = restart_time + restart_fuzz
             nextevent.totalpasses = nextevent.passes
             gossip.gsocket.events.add(nextevent)
+
+@reoccuring_event
+def event_gossip_state_check(event_):
+    gossip_ = event_.owner
+    if gossip_.state["connected"] == True:
+        return
+    else:
+        gossip.gsocket.gsocket_disconnect()
+        
+        nextevent = Event()
+        nextevent.owner = gossip.gsocket
+        nextevent.ownertype = "gossip"
+        nextevent.eventtype = "gossip restart"
+        nextevent.func = event_gossip_restart
+        nextevent.passes = 5 * PULSE_PER_MINUTE
+        nextevent.totalpasses = nextevent.passes
+        gossip.gsocket.events.add(nextevent)
+
 
 @reoccuring_event
 def event_admin_system_status(event_):

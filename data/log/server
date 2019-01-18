@@ -1128,4 +1128,121 @@ Sat Jan  5 22:42:16 2019 : Sending Auth to Gossip Network.
 Args: Test
 KwArgs: {}
 Error: name 'createerror' is not defined
+Mon Jan 14 01:16:45 2019 : Sending Auth to Gossip Network.
+Mon Jan 14 01:16:57 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:71.196.140.88{x
+Mon Jan 14 01:17:02 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Mon Jan 14 01:17:03 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Mon Jan 14 01:17:12 2019 : 
+
+{YWiznet: Jubelo logging out of Akrios.{x
+Mon Jan 14 01:17:12 2019 : 
+
+{YWiznet: ::ffff:71.196.140.88 disconnecting from Akrios.{x
+Mon Jan 14 20:53:34 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:194.93.59.111{x
+Tue Jan 15 02:06:17 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:71.196.140.88{x
+Tue Jan 15 02:06:34 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Tue Jan 15 02:06:37 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Tue Jan 15 02:08:51 2019 : 
+
+{YWiznet: Jubelo logging out of Akrios.{x
+Tue Jan 15 02:08:53 2019 : 
+
+{YWiznet: ::ffff:71.196.140.88 disconnecting from Akrios.{x
+Tue Jan 15 02:16:12 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:71.196.140.88{x
+Tue Jan 15 02:16:42 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Tue Jan 15 02:16:45 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Tue Jan 15 02:16:50 2019 : 
+
+{YWiznet: Jubelo logging out of Akrios.{x
+Tue Jan 15 02:16:52 2019 : 
+
+{YWiznet: ::ffff:71.196.140.88 disconnecting from Akrios.{x
+Tue Jan 15 06:29:34 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:92.53.76.214{x
+Tue Jan 15 20:52:54 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:185.53.91.26{x
+Wed Jan 16 06:43:47 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:92.53.65.186{x
+Thu Jan 17 20:03:42 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:185.143.223.76{x
+Thu Jan 17 23:34:26 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:77.72.83.225{x
+Fri Jan 18 00:55:21 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:71.196.140.88{x
+Fri Jan 18 00:56:21 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Fri Jan 18 00:56:23 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Fri Jan 18 00:57:24 2019 : 
+
+{YWiznet: Jubelo logging out of Akrios.{x
+Fri Jan 18 00:57:27 2019 : 
+
+{YWiznet: ::ffff:71.196.140.88 disconnecting from Akrios.{x
+Fri Jan 18 06:54:27 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:149.202.64.82{x
+Fri Jan 18 06:54:27 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:149.202.64.82{x
+Fri Jan 18 06:54:32 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:149.202.64.82{x
+Fri Jan 18 06:54:37 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:149.202.64.82{x
+Fri Jan 18 09:29:17 2019 : 
+
+{YWiznet: Accepting connection from: ::ffff:185.143.223.76{x
+Fri Jan 18 15:16:44 2019 : Received restart event from Gossip.
+Fri Jan 18 15:17:15 2019 : Sending Auth to Gossip Network.
+Fri Jan 18 16:05:56 2019 : Received restart event from Gossip.
+Fri Jan 18 21:04:35 2019 : Sending Auth to Gossip Network.
+Fri Jan 18 21:04:43 2019 : 
+
+{YWiznet: Accepting connection from: ::1{x
+Fri Jan 18 21:04:48 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Fri Jan 18 21:04:49 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
+Fri Jan 18 21:05:28 2019 : Sending Auth to Gossip Network.
+Fri Jan 18 21:05:31 2019 : 
+
+{YWiznet: Accepting connection from: ::1{x
+Fri Jan 18 21:05:35 2019 : 
+
+{YWiznet: Jubelo logged into main menu.{x
+Fri Jan 18 21:05:35 2019 : 
+
+{YWiznet: Jubelo logging into Akrios.{x
 
