@@ -24,6 +24,7 @@ venv.bak
 src/__pycache__/
 src/nohup.out
 src/gossipkeys.py
+data/log/*.log
 
 # Temp #
 data/players/jubelo.json

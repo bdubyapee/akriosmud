@@ -18,7 +18,7 @@ playerDir = os.path.join(dataDir, "players")
 raceDir = os.path.join(dataDir, "races")
 areaDir = os.path.join(dataDir, "areas")
 
-serverlog = os.path.join(logDir, "server")
+serverlog = os.path.join(logDir, "server.log")
 
 
 # Generic Configurables

@@ -206,7 +206,7 @@ class Login:
             comm.wiznet(f"{newobject.name.capitalize()} logging into Akrios.")
             player.playerlist.append(newobject)
             event.init_events_player(newobject)
-            newobject.logpath = os.path.join(world.logDir, newobject.name)
+            newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             comm.log(newobject.logpath, f"Logging in from: {newobject.sock.host}")
             newobject.interp("look")
             #Notify Gossip of return player Login.
@@ -285,9 +285,9 @@ class Login:
             self.sock.dispatch("")
             self.sock.dispatch("{W*** You rolled a 1d20 bonus! ***{x")
         if dice(1,100) == 100:
+            bonus += 20
             self.sock.dispatch("")
             self.sock.dispatch("{R!!! You rolled a 1d100 bonus! !!!{x")
-            bonus += 20
         self.newstats['strength'] = dice(6, 18, bonus)
         self.newstats['intelligence'] = dice(6, 18, bonus)
         self.newstats['wisdom'] = dice(6, 18, bonus)
