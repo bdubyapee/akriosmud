@@ -32,7 +32,7 @@ def message_to_room(room, sender, message=""):
         return
     for eachthing in room.contents:
         if eachthing != sender and eachthing.is_player:
-            eachthing.write(message)
+            eachthing.write(f"\n\r\n\r{message}")
 
 def message_to_area(area, sender, message=""):
     if message == "":

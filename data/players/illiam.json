@@ -1,6 +1,6 @@
 {
     "age": 1,
-    "aid": "8f2559e2-ea49-4249-9eea-dd70dcf4e01e",
+    "aid": "99511fc2-c1ea-4196-83ef-6ec64cd74243",
     "alias": {
         "d": "down",
         "e": "east",
@@ -29,14 +29,14 @@
     "clan": null,
     "council": null,
     "current_stat": {
-        "agility": 71,
-        "charisma": 60,
-        "constitution": 62,
-        "intelligence": 73,
-        "luck": 45,
-        "speed": 60,
-        "strength": 60,
-        "wisdom": 44
+        "agility": 78,
+        "charisma": 62,
+        "constitution": 39,
+        "intelligence": 62,
+        "luck": 56,
+        "speed": 83,
+        "strength": 84,
+        "wisdom": 70
     },
     "currentac": {
         "bashing": 0,
@@ -56,7 +56,7 @@
         "profession": 0
     },
     "family": null,
-    "gender": "female",
+    "gender": "male",
     "guild": null,
     "height": {
         "feet": 5,
@@ -69,20 +69,20 @@
     "json_version": 1,
     "knownpeople": {},
     "lasthost": "::1",
-    "lasttime": "Sun Jan 13 21:39:19 2019",
+    "lasttime": "Fri Jan 18 21:43:10 2019",
     "level": 1,
     "location": 101,
     "long_description": "",
     "maxhp": 1,
     "maximum_stat": {
-        "agility": 71,
-        "charisma": 60,
-        "constitution": 62,
-        "intelligence": 73,
-        "luck": 45,
-        "speed": 60,
-        "strength": 60,
-        "wisdom": 44
+        "agility": 78,
+        "charisma": 62,
+        "constitution": 39,
+        "intelligence": 62,
+        "luck": 56,
+        "speed": 83,
+        "strength": 84,
+        "wisdom": 70
     },
     "maxmovement": 1,
     "maxwillpower": 0,
@@ -98,10 +98,10 @@
         "mmchat": "true",
         "newbie": "true"
     },
-    "password": "$2b$12$HInxhGTGkfetaTI/OP5EQ.krhronYingFEhrFxn1NBIeltZx7A0ui",
+    "password": "$2b$12$G9WaR6whBHpB42/4eJP/LOuFljuFtkDWh/I9B39KER1vXrP1z7GGe",
     "position": "standing",
     "prompt": "{pAkriosMUD{g:{x ",
-    "race": "goblin",
+    "race": "aroch",
     "seen_as": "",
     "short_description": "",
     "skillpoints": 0,
