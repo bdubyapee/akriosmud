@@ -69,7 +69,7 @@
     "json_version": 1,
     "knownpeople": {},
     "lasthost": "::1",
-    "lasttime": "Sat Jan 19 21:05:04 2019",
+    "lasttime": "Sat Jan 19 21:13:37 2019",
     "level": 1,
     "location": 101,
     "long_description": "",
@@ -99,7 +99,7 @@
         "newbie": "true"
     },
     "password": "$2b$12$G9WaR6whBHpB42/4eJP/LOuFljuFtkDWh/I9B39KER1vXrP1z7GGe",
-    "position": "sitting",
+    "position": "standing",
     "prompt": "{pAkriosMUD{g:{x ",
     "race": "aroch",
     "seen_as": "",

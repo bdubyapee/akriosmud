@@ -23,12 +23,14 @@ def stand(caller, args):
         elif caller.position == "sitting":
             caller.position = "standing"
             caller.write("You stand up.")
-            comm.message_to_room(f"{caller.name.capitalize()} stands up.")
+            message = f"{caller.name.capitalize()} stands up."
+            comm.message_to_room(caller.location, caller, message)
             return
         elif caller.position == "sleeping":
             caller.position = "standing"
             caller.write("You awaken and stand up.")
-            comm.message_to_room(f"{caller.name.capitalize()} stands up.")
+            message = f"{caller.name.capitalize()} stands up."
+            comm.message_to_room(caller.location, caller, message)
             caller.interp("look")
             return
 
