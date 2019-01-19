@@ -24,6 +24,6 @@ def sleep(caller, args):
             caller.position = "sleeping"
             caller.write("You lay down and go to sleep.")
             message = f"{caller.name.capitalize()} lays down to sleep."
-            comm.message_to_room(caller.location, caller, message))
+            comm.message_to_room(caller.location, caller, message)
             return
 

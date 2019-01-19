@@ -30,7 +30,7 @@ def sit(caller, args):
             caller.position = "sitting"
             caller.write("You wake up and begin sitting")
             message = f"{caller.name.capitalize()} sits up and looks around."
-            comm.message_to_room(caller.location, caller, message))
+            comm.message_to_room(caller.location, caller, message)
             caller.interp("look")
             return
 
