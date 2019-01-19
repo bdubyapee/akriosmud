@@ -49,7 +49,7 @@ def look(caller, args, **kwargs):
                     pretext = "{W[{RAFK{W]{x"
                 else:
                     pretext = ""
-                caller.write(f"   {pretext} {dude.name.capitalize()} is {caller.position} here.")
+                caller.write(f"   {pretext} {dude.name.capitalize()} is {dude.position} here.")
     elif len(args) > 0:
         # Is it a room extra description?
         if args in caller.location.extradescriptions:
