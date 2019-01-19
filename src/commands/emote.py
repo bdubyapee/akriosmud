@@ -12,7 +12,12 @@ from commands import *
 name = "emote"
 version = 1
 
-@Command(capability="player")
+
+requirements = {'capability': 'player',
+                'truth_checks':  [],
+                'false_checks': ['is_sleeping']}
+
+@Command(**requirements)
 def emote(caller, args):
     if args == '':
         caller.write("See {Whelp emote{x for help with this command.")

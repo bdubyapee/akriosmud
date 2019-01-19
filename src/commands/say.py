@@ -12,7 +12,12 @@ from commands import *
 name = "say"
 version = 1
 
-@Command(capability="player")
+
+requirements = {'capability': 'player',
+                'truth_checks':  [],
+                'false_checks': ['is_sleeping']}
+
+@Command(**requirements)
 def say(caller, args):
     args = args.split()
     if len(args) <= 0:

@@ -12,7 +12,11 @@ from commands import *
 name = "dig"
 version = 1
 
-@Command(capability="builder")
+requirements = {'capability': 'builder',
+                'truth_checks':  ['is_standing'],
+                'false_checks': []}
+
+@Command(**requirements)
 def dig(caller, args):
     helpstring = "Please see {Whelp dig{x for instructions."
     args = args.split()

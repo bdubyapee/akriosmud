@@ -13,7 +13,12 @@ from commands import *
 name = "close"
 version = 1
 
-@Command(capability="player")
+
+requirements = {'capability': 'player',
+                'truth_checks':  [],
+                'false_checks': ['is_sleeping']}
+
+@Command(**requirements)
 def close(caller, args):
     if args in caller.location.exits.keys():
         exit = caller.location.exits[args]

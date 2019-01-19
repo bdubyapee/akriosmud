@@ -36,21 +36,21 @@ import world
 # Temporary test to see how command requirements go.
 
 def is_standing(thing):
-    fail_msg = "You cannot do that in your current position."
+    fail_msg = "You cannot do that while standing."
     if hasattr(thing, "position") and thing.position == "standing":
         return (True, fail_msg)
     else:
         return (False, fail_msg)
 
 def is_sitting(thing):
-    fail_msg = "You cannot do that in your current position."
+    fail_msg = "You cannot do that while sitting."
     if hasattr(thing, "position") and thing.position == "sitting":
         return (True, fail_msg)
     else:
         return (False, fail_msg)
 
 def is_sleeping(thing):
-    fail_msg = "You cannot do that in your current position."
+    fail_msg = "You cannot do that while sleeping."
     if hasattr(thing, "position") and thing.position == "sleeping":
         return (True, fail_msg)
     else:
