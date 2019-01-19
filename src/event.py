@@ -352,15 +352,6 @@ def event_gossip_state_check(event_):
         return
     else:
         gossip.gsocket.gsocket_disconnect()
-        
-        nextevent = Event()
-        nextevent.owner = gossip.gsocket
-        nextevent.ownertype = "gossip"
-        nextevent.eventtype = "gossip restart"
-        nextevent.func = event_gossip_restart
-        nextevent.passes = 5 * PULSE_PER_MINUTE
-        nextevent.totalpasses = nextevent.passes
-        gossip.gsocket.events.add(nextevent)
 
 
 @reoccuring_event
@@ -407,17 +398,17 @@ def event_player_idle_check(event_):
     if event_.owner.is_building or event_.owner.is_editing or event_.owner.is_admin:
         return
 
-    if int(idle_time) >= 10 * 60:
+    if idle_time >= 10 * 60:
         event_.owner.write("\n\r{WYou have been idle for over 10 minutes.  Logging you out.{x")
         event_.owner.interp('quit force')
         return
 
-    if int(idle_time) >= 8 * 60:
+    if idle_time > 8 * 60:
         event_.owner.write("\n\r{WYou have been idle for over 8 mimutes. Auto logout in 2 minutes.{x")
         event_.owner.sock.send(b'\x07')
         return
 
-    if int(idle_time) >= 5 * 60:
+    if idle_time >= 5 * 60:
         event_.owner.save()
         if event_.owner.oocflags['afk'] == True:
             return
