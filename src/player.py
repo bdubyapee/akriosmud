@@ -29,7 +29,8 @@ WRITE_NEW_FILE_VERSION = False
 
 
 playerlist = []
-
+playerlist_by_name = {}
+playerlist_by_aid = {}
 
 class Player(livingthing.LivingThing):
     CLASS_NAME = "__Player__"
@@ -166,13 +167,11 @@ class Player(livingthing.LivingThing):
         if inp[0] in self.alias:
             inp[0] = self.alias[inp[0]]
 
-
         comfind = []
 
         if len(inp) <= 0:
             inp = ['']     # Added for OLC code to operate properly.
 
-        # Fix this cluster XXX
         for item in sorted(commands.Command.commandhash.keys()):
             if item.startswith(inp[0].lower()):
                 comfind.append(commands.Command.commandhash[item])
@@ -183,7 +182,7 @@ class Player(livingthing.LivingThing):
                      area.oneArea: 'areaedit',
                      room.oneRoom: 'roomedit',
                      exits.Exit: 'exitedit'}
-            if self.building.__class__ in list(types.keys()):
+            if self.building.__class__ in types:
                 comfind.append(commands.Command.commandhash[types[self.building.__class__]])
                 # If the person is building we prepend the command they are using.
                 inp.insert(0, types[self.building.__class__])
@@ -246,24 +245,29 @@ class Player(livingthing.LivingThing):
             return True
         else:
             return False
+
+
             
-    # This doesn't belong here, put somewhere else.
-    def statWords(self, statvalue = 55):
-        if statvalue < 40:
-            return "abismal"
-        elif statvalue <= 44:
-            return "terrible"
-        elif statvalue <= 49:
-            return "bad"
-        elif statvalue <= 54:
-            return "poor"
-        elif statvalue <= 59:
-            return "average"
-        elif statvalue <= 64:
-            return "fair"
-        elif statvalue <= 69:
-            return "good"
-        elif statvalue <= 74:
-            return "excellent"
-        else:
-            return "amazing"
+# This doesn't belong here, put somewhere else.
+def statWords(self, statvalue = 55):
+    if statvalue < 40:
+        return "abismal"
+    elif statvalue <= 44:
+        return "terrible"
+    elif statvalue <= 49:
+        return "bad"
+    elif statvalue <= 54:
+        return "poor"
+    elif statvalue <= 59:
+        return "average"
+    elif statvalue <= 64:
+        return "fair"
+    elif statvalue <= 69:
+        return "good"
+    elif statvalue <= 74:
+        return "excellent"
+    else:
+        return "amazing"
+
+
+

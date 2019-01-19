@@ -13,7 +13,12 @@ from commands import *
 name = "move"
 version = 1
 
-@Command(capability="player")
+
+requirements = {'capability': 'player',
+                'truth_checks':  ['is_standing'],
+                'false_checks': []}
+
+@Command(**requirements)
 def move(caller, args):
     if args in caller.location.exits.keys():
         exit = caller.location.exits[args]

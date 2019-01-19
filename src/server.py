@@ -99,6 +99,7 @@ class ConnSocket(asyncore.dispatcher):
                       f"Host: {self.host}\n\r",
                       f"Error: {err}\n\r")
             comm.log(world.serverlog, f"{to_log}")
+            return
         # Here we check if there has just been an enter pressed.
         if text == "\r\n":
             return text

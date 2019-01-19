@@ -205,6 +205,8 @@ class Login:
             newobject.write("")
             comm.wiznet(f"{newobject.name.capitalize()} logging into Akrios.")
             player.playerlist.append(newobject)
+            player.playerlist_by_name[newobject.name] = newobject
+            player.playerlist_by_aid[newobject.aid] = newobject
             event.init_events_player(newobject)
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             comm.log(newobject.logpath, f"Logging in from: {newobject.sock.host}")
@@ -235,7 +237,7 @@ class Login:
                         
     def get_race(self, inp):
         inp = inp.lower()
-        if inp in list(races.racesdict.keys()):
+        if inp in races.racesdict:
             self.newchar['race'] = races.racebyname(inp)
             self.newchar['aid'] = str(uuid.uuid4())
             self.sock.dispatch('')
@@ -331,6 +333,8 @@ class Login:
             newplayer.sock.promptable = True
             newplayer.write = newplayer.sock.dispatch
             player.playerlist.append(newplayer)
+            player.playerlist_by_name[newplayer.name] = newplayer
+            player.playerlist_by_aid[newplayer.aid] = newplayer
             newroom = area.roomByVnum(101)
             newplayer.move(newroom)
             newplayer.alias['s'] = 'south'

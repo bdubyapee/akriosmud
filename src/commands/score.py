@@ -20,6 +20,7 @@ def score(caller, args):
     caller.write("Gender: {0}  Race: {1} Discipline: {2}".format(caller.gender.capitalize(), caller.race.name.capitalize(), caller.discipline.capitalize()))
     caller.write("Short Desc: {0}".format(caller.short_description))
     caller.write("Capabilities: {0}".format(', '.join(caller.capability)))
+    caller.write(f"Position: {caller.position.capitalize()}")
     caller.write("Alignment: {0}  Age: {1} Weight: {2} Height: {3}'{4}".format(caller.alignment, caller.age, caller.weight, caller.height['feet'], caller.height['inches']))
     caller.write("")
     caller.write("Platinum: {0} Gold: {1} Silver: {2} Copper: {3}".format(caller.money['platinum'], caller.money['gold'], caller.money['silver'], caller.money['copper']))

@@ -31,7 +31,12 @@ def quit(caller, args, **kwargs):
     caller.events.clear()
     conn = login.Login(caller.name)
     testsock = caller.sock
-    player.playerlist.remove(caller)
+    if caller in player.playerlist:
+        player.playerlist.remove(caller)
+    if caller.name in player.playerlist_by_name:
+        player.playerlist_by_name.pop(caller.name)
+    if caller.aid in player.playerlist_by_aid:
+        player.playerlist_by_aid.pop(caller.aid)
     if args == "force":
         reason = "[IDLE TIMEOUT] "
     else:

@@ -14,9 +14,12 @@ name = "look"
 version = 1
 
 
-@Command(capability='player')
-def look(caller, args, **kwargs):
+requirements = {'capability': 'player',
+                'truth_checks':  [],
+                'false_checks': ['is_sleeping']}
 
+@Command(**requirements)
+def look(caller, args, **kwargs):
     if caller.location != 0 and len(args) <= 0:
         if caller.oocflags['viewOLCdetails'] == True:
             namepretext = f"{{W[{{xVNUM: {{B{caller.location.vnum}{{W]{{x "
@@ -46,7 +49,7 @@ def look(caller, args, **kwargs):
                     pretext = "{W[{RAFK{W]{x"
                 else:
                     pretext = ""
-                caller.write(f"   {pretext} {dude.name.capitalize()} is here.")
+                caller.write(f"   {pretext} {dude.name.capitalize()} is {caller.position} here.")
     elif len(args) > 0:
         # Is it a room extra description?
         if args in caller.location.extradescriptions:
