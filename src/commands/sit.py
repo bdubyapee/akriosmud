@@ -23,9 +23,12 @@ def sit(caller, args):
         elif caller.position == "standing":
             caller.position = "sitting"
             caller.write("You sit down.")
+            comm.message_to_room(f"{caller.name.capitalize()} sits down.")
             return
         elif caller.position == "sleeping":
             caller.position = "sitting"
             caller.write("You wake up and begin sitting")
+            comm.message_to_room(f"{caller.name.capitalize()} sits up and looks around.")
+            caller.interp("look")
             return
 
