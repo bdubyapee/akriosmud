@@ -3,7 +3,7 @@
 #
 # Capability: player
 #
-# Command Description: Seends a beep command to another player to get their attention
+# Command Description: Sends a beep command to another player to get their attention
 #
 # By: Jubelo
 
@@ -12,18 +12,18 @@ from commands import *
 name = "beep"
 version = 1
 
-@Command(capability="player")
-def beep(caller, args):
-    if len(args.split()) == 0:
-        caller.write("See {Whelp beep{x for help with this command.")
-        return
-    else:
-        for person in player.playerlist:
-            if person.name in args.lower():
-                person.sock.send(b'\x07')
-                person.write(f"\n\rYou have been paged by {caller.name.capitalize()}.")
-                caller.write("They have been paged.")
-                return
-        caller.write("That person cannot be located")
+
+requirements = {'capability': 'player',
+                'generic_fail' : "See {WHelp beep{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': [],
+                'target': 'nopre_single_player_game_nopost'}
+
+@Command(**requirements)
+def beep(caller, args, **kwargs):
+    target = kwargs['target']
+    target.sock.send(b'\x07')
+    target.write(f"\n\rYou have been paged by {caller.name_cap}")
+    caller.write("They have been paged")
 
 

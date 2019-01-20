@@ -205,6 +205,10 @@ class Player(livingthing.LivingThing):
             self.write("Huh?")
 
     @property
+    def name_cap(self):
+        return self.name.capitalize()
+
+    @property
     def is_admin(self):
         if 'admin' in self.capability:
             return True
