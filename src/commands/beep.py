@@ -17,7 +17,7 @@ requirements = {'capability': 'player',
                 'generic_fail' : "See {WHelp beep{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': [],
-                'target': 'nopre_single_player_game_nopost'}
+                'target': 'nospell_single_player_game_nopost'}
 
 @Command(**requirements)
 def beep(caller, args, **kwargs):

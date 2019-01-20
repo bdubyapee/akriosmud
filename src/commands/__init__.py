@@ -58,14 +58,14 @@ def is_sleeping(thing):
 
 # Target verification / matching
 
-def nopre_target_single_player_game_nopost(args):
+def nospell_target_single_player_game_nopost(args):
     args = args.lower()
     if args in player.playerlist_by_name:
         return (None, player.playerlist_by_name[args], None)
     else:
         return (None, False, None)
 
-def nopre_target_single_player_game_post(args):
+def nospell_target_single_player_game_post(args):
     target, *args = args.split()
     target = target.lower()
     if target in player.playerlist_by_name:
@@ -74,17 +74,15 @@ def nopre_target_single_player_game_post(args):
         return (None, False, None)
 
 class Command(object):
-    # Dictionary for each command mapping 'stringname' : func()
     commandhash = {}
-    # Dictionary for each command mapping 'stringname' : 'capability'
     commandcapability = {}
 
     checks = {"is_standing": is_standing,
               "is_sitting": is_sitting,
               "is_sleeping": is_sleeping}
 
-    targets = {"nopre_single_player_game_nopost": nopre_target_single_player_game_nopost,
-               "nopre_single_player_game_post": nopre_target_single_player_game_post}
+    targets = {"nospell_single_player_game_nopost": nospell_target_single_player_game_nopost,
+               "nospell_single_player_game_post": nospell_target_single_player_game_post}
 
     def __init__(self, *args, **kwargs):
         self.dec_args = args
@@ -106,15 +104,14 @@ class Command(object):
 
             # If the command has target reqs perform those here, else write generic fail msg.
             if 'target' in self.dec_kwargs:
-                results = Command.targets[self.dec_kwargs['target']](args_)
-                pre, target, post = results
+                spell, target, post = Command.targets[self.dec_kwargs['target']](args_)
 
                 if target == False:
                     caller.write("\n\rNot a valid target.")
                     caller.write(self.dec_kwargs['generic_fail'])
                     return
                 else:
-                    kwargs_['pre'] = pre
+                    kwargs_['spell'] = spell
                     kwargs_['target'] = target
                     kwargs_['post'] = post
 
