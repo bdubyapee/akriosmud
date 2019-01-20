@@ -23,14 +23,10 @@ requirements = {'capability': 'player',
 def say(caller, args, **kwargs):
     target_list = kwargs['target']
     message = kwargs['post']
-        
+       
+    caller.write(f"\n\r{{cYou say, '{message[:300]}'{{x.")
+ 
     for person in target_list:
-        if person == caller:
-            name = "You"
-            plural = ''
-        else:
-            name = caller.name_cap
-            plural = 's'
-            name = '\n\r' + name
-        person.write(f"{{c{name} say{plural}, '{args[:300]}'{{x")
+        if person != caller:
+           person.write(f"\n\r\n\r{{c{caller.name_cap} says, '{message[:300]}'{{x.")
 

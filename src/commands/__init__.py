@@ -70,19 +70,28 @@ def nospell_target_single_player_game_post(caller, args):
     target = target.lower()
     if target in player.playerlist_by_name and len(args) > 0:
         return (None, player.playerlist_by_name[target], ' '.join(args))
+    elif target in player.playerlist_by_name and len(args) <= 0:
+        return (None, player.playerlist_by_name[target], False)
     else:
         return (None, False, None)
 
 def nospell_target_single_player_room_post(caller, args):
     target, *args = args.split()
     target = target.lower()
+
+    if len(args) <= 0:
+        return (None, False, False)
+
     for eachthing in caller.location.contents:
         if eachthing.is_player and eachthing.name == target and len(args) > 0:
             return (None, player.playerlist_by_name[target], ' '.join(args))
-    else:
-        return (None, False, None)
+        
+    return (None, False, None)
 
 def nospell_target_all_player_room_post(caller, args):
+    if len(args) <= 0:
+        return (None, False, False)
+
     target = [target for target in caller.location.contents if target.is_player]
     if len(target) > 0 and len(args) > 0:
         return (None, target, args)
@@ -125,11 +134,12 @@ class Command(object):
             if 'target' in self.dec_kwargs:
                 spell, target, post = Command.targets[self.dec_kwargs['target']](caller, args_)
 
-                if target == False:
-                    if len(post) > 0:
-                        caller.write("\n\rNot a valid target.")
-                    if len(post) <= 0:
-                        caller.write("\n\rArguments are required for this command.")
+                if target == False and post is None:
+                    caller.write("\n\rNot a valid target.")
+                    caller.write(self.dec_kwargs['generic_fail'])
+                    return
+                elif post is False:
+                    caller.write("\n\rArguments are required for this command.")
                     caller.write(self.dec_kwargs['generic_fail'])
                     return
                 else:
