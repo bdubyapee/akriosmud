@@ -58,20 +58,37 @@ def is_sleeping(thing):
 
 # Target verification / matching
 
-def nospell_target_single_player_game_nopost(args):
+def nospell_target_single_player_game_nopost(caller, args):
     args = args.lower()
     if args in player.playerlist_by_name:
         return (None, player.playerlist_by_name[args], None)
     else:
         return (None, False, None)
 
-def nospell_target_single_player_game_post(args):
+def nospell_target_single_player_game_post(caller, args):
     target, *args = args.split()
     target = target.lower()
-    if target in player.playerlist_by_name:
+    if target in player.playerlist_by_name and len(args) > 0:
         return (None, player.playerlist_by_name[target], ' '.join(args))
     else:
         return (None, False, None)
+
+def nospell_target_single_player_room_post(caller, args):
+    target, *args = args.split()
+    target = target.lower()
+    for eachthing in caller.location.contents:
+        if eachthing.is_player and eachthing.name == target and len(args) > 0:
+            return (None, player.playerlist_by_name[target], ' '.join(args))
+    else:
+        return (None, False, None)
+
+def nospell_target_all_player_room_post(caller, args):
+    target = [target for target in caller.location.contents if target.is_player]
+    if len(target) > 0 and len(args) > 0:
+        return (None, target, args)
+    else:
+        return (None, False, None)
+
 
 class Command(object):
     commandhash = {}
@@ -82,7 +99,9 @@ class Command(object):
               "is_sleeping": is_sleeping}
 
     targets = {"nospell_single_player_game_nopost": nospell_target_single_player_game_nopost,
-               "nospell_single_player_game_post": nospell_target_single_player_game_post}
+               "nospell_single_player_game_post": nospell_target_single_player_game_post,
+               "nospell_single_player_room_post": nospell_target_single_player_room_post,
+               "nospell_all_player_room_post": nospell_target_all_player_room_post}
 
     def __init__(self, *args, **kwargs):
         self.dec_args = args
@@ -104,10 +123,13 @@ class Command(object):
 
             # If the command has target reqs perform those here, else write generic fail msg.
             if 'target' in self.dec_kwargs:
-                spell, target, post = Command.targets[self.dec_kwargs['target']](args_)
+                spell, target, post = Command.targets[self.dec_kwargs['target']](caller, args_)
 
                 if target == False:
-                    caller.write("\n\rNot a valid target.")
+                    if len(post) > 0:
+                        caller.write("\n\rNot a valid target.")
+                    if len(post) <= 0:
+                        caller.write("\n\rArguments are required for this command.")
                     caller.write(self.dec_kwargs['generic_fail'])
                     return
                 else:
@@ -207,6 +229,7 @@ from . import title
 from . import toggle
 from . import up
 from . import west
+from . import whisper
 from . import who
 
 

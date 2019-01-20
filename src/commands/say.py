@@ -14,23 +14,23 @@ version = 1
 
 
 requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp say{x for help with this command.",
                 'truth_checks':  [],
-                'false_checks': ['is_sleeping']}
+                'false_checks': ['is_sleeping'],
+                'target': 'nospell_all_player_room_post'}
 
 @Command(**requirements)
-def say(caller, args):
-    args = args.split()
-    if len(args) <= 0:
-        caller.write("Did you have something to say or not?")
-        return
+def say(caller, args, **kwargs):
+    target_list = kwargs['target']
+    message = kwargs['post']
         
-    for person in caller.location.contents:
+    for person in target_list:
         if person == caller:
             name = "You"
             plural = ''
         else:
-            name = caller.name.capitalize()
+            name = caller.name_cap
             plural = 's'
             name = '\n\r' + name
-        person.write(f"{{c{name} say{plural}, '{' '.join(args[:300])}'{{x")
+        person.write(f"{{c{name} say{plural}, '{args[:300]}'{{x")
 
