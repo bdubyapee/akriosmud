@@ -12,12 +12,11 @@ from commands import *
 name = "beep"
 version = 1
 
-
 requirements = {'capability': 'player',
                 'generic_fail' : "See {WHelp beep{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': [],
-                'target': 'nospell_single_player_game_nopost'}
+                'target': 'target_single_player_game_nopost'}
 
 @Command(**requirements)
 def beep(caller, args, **kwargs):

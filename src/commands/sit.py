@@ -14,7 +14,12 @@ from commands import *
 name = "sit"
 version = 1
 
-@Command(capability='player')
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp sit{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def sit(caller, args):
     if hasattr(caller, "position"):
         if caller.position == "sitting":

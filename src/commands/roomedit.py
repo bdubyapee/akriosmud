@@ -12,7 +12,12 @@ from commands import *
 name = "roomedit"
 version = 1
 
-@Command(capability="builder")
+requirements = {'capability': 'builder',
+                'generic_fail': "See {WHelp roomedit{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def roomedit(caller, args):
     helpstring = "Please see {Whelp roomedit{x for instructions."
     args = args.split()

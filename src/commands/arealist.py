@@ -12,7 +12,12 @@ from commands import *
 name = "arealist"
 version = 1
 
-@Command(capability="player")
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp arealist{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def arealist(caller, args):
     
     if caller.is_deity or caller.is_builder or caller.is_admin:

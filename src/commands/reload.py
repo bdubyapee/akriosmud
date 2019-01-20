@@ -14,7 +14,12 @@ from commands import *
 name = "reload"
 version = 1
 
-@Command(capability='admin')
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp reload{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def reload(caller, args):
     caller.write("We'll never make it to this line")
 

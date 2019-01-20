@@ -12,7 +12,12 @@ from commands import *
 name = "viewolcdetails"
 version = 1
 
-@Command(capability='builder')
+requirements = {'capability': 'builder',
+                'generic_fail': "See {WHelp viewolcdetails{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def viewolcdetails(caller, args):
     if caller.oocflags['viewOLCdetails'] == True:
         caller.oocflags['viewOLCdetails'] = False

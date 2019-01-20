@@ -3,7 +3,7 @@
 #
 # Capability: player
 # 
-# Command Description: Underlying command for a player to close an exit
+# Command Description: Allows a player to close a thing.  Exits only for now.
 #
 #
 # By: Jubelo
@@ -13,8 +13,8 @@ from commands import *
 name = "close"
 version = 1
 
-
 requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp close{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 

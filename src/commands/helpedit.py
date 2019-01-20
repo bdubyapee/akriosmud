@@ -12,7 +12,12 @@ from commands import *
 name = "helpedit"
 version = 1
 
-@Command(capability="admin")
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp helpedit{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def helpedit(caller, args):
     helpstring = "Please see {Whelp helpedit{x for instructions."
     args = args.split()

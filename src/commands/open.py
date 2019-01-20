@@ -13,8 +13,8 @@ from commands import *
 name = "open"
 version = 1
 
-
 requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp open{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 

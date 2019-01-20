@@ -14,7 +14,12 @@ from commands import *
 name = "toggle"
 version = 1
 
-@Command(capability='player')
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp toggle{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def toggle(caller, args):
     if args == 'newbie':
         if caller.oocflags_stored['newbie'] == 'true':

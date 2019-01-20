@@ -12,7 +12,12 @@ from commands import *
 name = "exitedit"
 version = 1
 
-@Command(capability="builder")
+requirements = {'capability': 'builder',
+                'generic_fail': "See {WHelp exitedit{x for help with this command.",
+                'truth_checks':  ['is_standing'],
+                'false_checks': []}
+
+@Command(**requirements)
 def exitedit(caller, args):
     helpstring = "Please see {Whelp exitedit{x for instructions."
     args = args.split()

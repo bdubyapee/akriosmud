@@ -15,6 +15,7 @@ version = 1
 
 
 requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp move{x for help with this command.",
                 'truth_checks':  ['is_standing'],
                 'false_checks': []}
 

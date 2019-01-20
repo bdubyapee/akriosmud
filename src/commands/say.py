@@ -17,7 +17,7 @@ requirements = {'capability': 'player',
                 'generic_fail': "See {WHelp say{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping'],
-                'target': 'nospell_all_player_room_post'}
+                'target': 'target_all_player_room_post'}
 
 @Command(**requirements)
 def say(caller, args, **kwargs):

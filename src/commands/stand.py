@@ -14,7 +14,12 @@ from commands import *
 name = "stand"
 version = 1
 
-@Command(capability='player')
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp stand{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def stand(caller, args):
     if hasattr(caller, "position"):
         if caller.position == "standing":

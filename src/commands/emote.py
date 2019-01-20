@@ -14,6 +14,7 @@ version = 1
 
 
 requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp emote{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 

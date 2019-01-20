@@ -12,7 +12,12 @@ from commands import *
 name = "areastats"
 version = 1
 
-@Command(capability="builder")
+requirements = {'capability': 'builder',
+                'generic_fail': "See {WHelp areastats{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def areastats(caller, args):
     caller.write(caller.location.area.display())
     caller.write("")

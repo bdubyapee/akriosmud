@@ -12,11 +12,15 @@ from commands import *
 name = "playerinfo"
 version = 1
 
-@Command(capability="admin")
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp playerinfo{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def playerinfo(caller, args):
     for person in player.playerlist:
-        # This won't be called often, and it's a hell of a lot cleaner looking like this.
-        name = person.name.capitalize()
+        name = person.name_cap
         host = person.sock.host
         fileno = person.sock.socket.fileno()
 

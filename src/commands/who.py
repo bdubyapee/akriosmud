@@ -14,8 +14,12 @@ from commands import *
 name = "who"
 version = 1
 
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp who{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
 
-@Command(capability="player")
+@Command(**requirements)
 def who(caller, args):
     
     caller.write("       {W,         {W/|\\")

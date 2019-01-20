@@ -17,7 +17,7 @@ requirements = {'capability': 'player',
                 'generic_fail' : "See {WHelp tell{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': [],
-                'target': 'nospell_single_player_game_post'}
+                'target': 'target_single_player_game_post'}
 
 @Command(**requirements)
 def tell(caller, args, **kwargs):

@@ -12,7 +12,12 @@ from commands import *
 name = "quote"
 version = 1
 
-@Command(capability="player")
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp quote{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def quote(caller, args):
     if len(args.split()) == 0:
         caller.write("Did you have something to quote or not?")

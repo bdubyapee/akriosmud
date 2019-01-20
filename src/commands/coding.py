@@ -13,7 +13,12 @@ from commands import *
 name = "coding"
 version = 1
 
-@Command(capability="admin")
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp coding{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def coding(caller, args):
     if caller.oocflags['coding'] == False:
         caller.oocflags['coding'] = True

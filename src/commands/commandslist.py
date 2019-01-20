@@ -12,7 +12,12 @@ from commands import *
 name = "commandslist"
 version = 1
 
-@Command(capability="player")
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp commandlist{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def commandslist(caller, args):
 
     commandhash = Command.commandhash

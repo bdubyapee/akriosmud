@@ -12,7 +12,12 @@ from commands import *
 name = "goto"
 version = 1
 
-@Command(capability="admin")
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp goto{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def goto(caller, args):
     args = args.split()
     try:

@@ -14,7 +14,12 @@ from commands import *
 name = "sleep"
 version = 1
 
-@Command(capability='player')
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp sleep{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def sleep(caller, args):
     if hasattr(caller, "position"):
         if caller.position == "sleeping":

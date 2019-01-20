@@ -13,7 +13,12 @@ from commands import *
 name = "ooc"
 version = 1
 
-@Command(capability="player")
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp ooc{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def ooc(caller, args):
     if len(args.split()) == 0:
         caller.write("Did you have something to say or not?")

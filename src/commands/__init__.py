@@ -58,45 +58,102 @@ def is_sleeping(thing):
 
 # Target verification / matching
 
-def nospell_target_single_player_game_nopost(caller, args):
+def target_single_player_game_nopost(caller, args):
+    '''
+        Expect: target
+        Target must be a player, can be anywhere in game, no post target args.
+    '''
     args = args.lower()
     if args in player.playerlist_by_name:
-        return (None, player.playerlist_by_name[args], None)
+        return (player.playerlist_by_name[args], None)
     else:
-        return (None, False, None)
+        return (False, None)
 
-def nospell_target_single_player_game_post(caller, args):
+def target_single_player_game_post(caller, args):
+    '''
+        Expect: target <one or more character/words args>
+        Target must be a player, can be anywhere in game, must have arguments.
+    '''
     target, *args = args.split()
     target = target.lower()
     if target in player.playerlist_by_name and len(args) > 0:
-        return (None, player.playerlist_by_name[target], ' '.join(args))
-    elif target in player.playerlist_by_name and len(args) <= 0:
-        return (None, player.playerlist_by_name[target], False)
+        return (player.playerlist_by_name[target], ' '.join(args))
+    elif len(args) <= 0:
+        return (False, False)
     else:
-        return (None, False, None)
+        return (False, None)
 
-def nospell_target_single_player_room_post(caller, args):
+def target_single_player_room_nopost(caller, args):
+    '''
+        Expect: target
+        Target must be a player, must be in same room as caller, no post target args.
+    '''
+    args = args.lower()
+    if args in player.playerlist_by_name:
+        if player.playerlist_by_name[args].location == caller.location:
+            return (player.playerlist_by_name[args], None)
+    else:
+        return (False, None)
+
+def target_single_player_room_post(caller, args):
+    '''
+        Expect: target <one or more character/words args>
+        Target must be a player, must be in same room as caller, must have argumnets.
+    '''
     target, *args = args.split()
     target = target.lower()
 
     if len(args) <= 0:
-        return (None, False, False)
+        return (False, False)
 
     for eachthing in caller.location.contents:
         if eachthing.is_player and eachthing.name == target and len(args) > 0:
-            return (None, player.playerlist_by_name[target], ' '.join(args))
+            return (player.playerlist_by_name[target], ' '.join(args))
         
-    return (None, False, None)
+    return (False, None)
 
-def nospell_target_all_player_room_post(caller, args):
+def target_all_player_room_nopost(caller, args):
+    '''
+        Expect: 
+        Target will be all players in same room as caller, no post target args.
+    '''
+    target = [target for target in caller.location.contents if target.is_player]
+    if len(target) > 0:
+        return (target, None)
+    else:
+        return (False, None)
+
+def target_all_player_room_post(caller, args):
+    '''
+        Expect: <one or more character/words args>
+        Target will be all players in same room as caller, must have arguments.
+    '''
     if len(args) <= 0:
-        return (None, False, False)
+        return (False, False)
 
     target = [target for target in caller.location.contents if target.is_player]
     if len(target) > 0 and len(args) > 0:
-        return (None, target, args)
+        return (target, args)
     else:
-        return (None, False, None)
+        return (False, None)
+
+def target_all_things_room_nopost(caller, args):
+    '''
+        Expect: 
+        Target will be all things in same room as caller, no arguments required.
+    '''
+    return (caller.location.contents, None)
+
+def target_all_things_room_post(caller, args):
+    '''
+        Expect: <one or more character/words args>
+        Target will be all things in same room as caller, arguments are required.
+    '''
+    if len(args) <= 0:
+        return (False, False)
+   
+    return (caller.location.contents, None)
+    
 
 
 class Command(object):
@@ -107,10 +164,14 @@ class Command(object):
               "is_sitting": is_sitting,
               "is_sleeping": is_sleeping}
 
-    targets = {"nospell_single_player_game_nopost": nospell_target_single_player_game_nopost,
-               "nospell_single_player_game_post": nospell_target_single_player_game_post,
-               "nospell_single_player_room_post": nospell_target_single_player_room_post,
-               "nospell_all_player_room_post": nospell_target_all_player_room_post}
+    targets = {"target_single_player_game_nopost": target_single_player_game_nopost,
+               "target_single_player_game_post": target_single_player_game_post,
+               "target_single_player_room_nopost": target_single_player_room_nopost,
+               "target_single_player_room_post": target_single_player_room_post,
+               "target_all_player_room_nopost": target_all_player_room_nopost,
+               "target_all_player_room_post": target_all_player_room_post,
+               "target_all_things_room_nopost": target_all_things_room_nopost,
+               "target_all_things_room_post": target_all_things_room_post}
 
     def __init__(self, *args, **kwargs):
         self.dec_args = args
@@ -132,7 +193,7 @@ class Command(object):
 
             # If the command has target reqs perform those here, else write generic fail msg.
             if 'target' in self.dec_kwargs:
-                spell, target, post = Command.targets[self.dec_kwargs['target']](caller, args_)
+                target, post = Command.targets[self.dec_kwargs['target']](caller, args_)
 
                 if target == False and post is None:
                     caller.write("\n\rNot a valid target.")
@@ -143,7 +204,6 @@ class Command(object):
                     caller.write(self.dec_kwargs['generic_fail'])
                     return
                 else:
-                    kwargs_['spell'] = spell
                     kwargs_['target'] = target
                     kwargs_['post'] = post
 

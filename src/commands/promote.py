@@ -12,7 +12,12 @@ from commands import *
 name = "promote"
 version = 1
 
-@Command(capability="admin")
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp promote{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def promote(caller, args):
     args = args.split()
     target = None

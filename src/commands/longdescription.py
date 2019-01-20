@@ -12,7 +12,12 @@ from commands import *
 name = "longdescription"
 version = 1
 
-@Command(capability="player")
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp longdescription{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def longdescription(caller, args):
     args = args.split()
     if len(args) <= 0:

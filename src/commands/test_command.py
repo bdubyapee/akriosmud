@@ -13,8 +13,12 @@ from commands import *
 name = 'test_command'
 version = 1
 
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp test_command{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
 
-@Command(capability='admin')
+@Command(**requirements)
 def test_command(caller, args, **kwargs):
     print(f"This is the command test_command executing with args {args} : kwargs {kwargs}")
 

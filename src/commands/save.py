@@ -13,7 +13,12 @@ from commands import *
 name = "save"
 version = 1
 
-@Command(capability='player')
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp save{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def save(caller, args):
     caller.save()
     caller.write("Saved.  Your character is also autosaved every 5 minutes.")

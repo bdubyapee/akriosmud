@@ -12,7 +12,12 @@ from commands import *
 name = "title"
 version = 1
 
-@Command(capability="player")
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp title{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def title(caller, args):
     args = args.split()
     if len(args) == 0:

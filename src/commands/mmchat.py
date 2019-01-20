@@ -14,7 +14,12 @@ from commands import *
 name = "mmchat"
 version = 1
 
-@Command(capability="player")
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp mmchat{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
 def mmchat(caller, args):
     if caller.oocflags_stored['mmchat'] == 'false':
         caller.write("You have that command self disabled with the 'toggle' command.")

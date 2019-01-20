@@ -13,8 +13,12 @@ from commands import *
 name = "help"
 version = 1
 
+requirements = {'capability': 'player',
+                'generic_fail': "See {WHelp{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
 
-@Command(capability='player')
+@Command(**requirements)
 def help(caller, args, **kwargs):
     key = args.lower()
     if key != '':
