@@ -22,8 +22,8 @@
 #       Game Status (all connected games, and single game)
 #
 #
-# Example usage would be to import this module into your main game server.  When this module
-# is imported, gsocket is assigned to an instance of GrapevineSocket.  During instance init
+# Example usage would be to import this module into your main game server.  During server startup
+# assign grapevine.gsocket to grapevine.GrapevineSocket().  During instance init
 # is when the connection to grapevine.haus happens.  PLEASE PUT YOUR CLIENT ID AND CLIENT SECRET
 # into the appropriate instance attributes of GrapevineSocket below.  Please note the instance
 # attribute in GrapevineSocket of debug, set to True if you would like to print to stdout various
@@ -48,6 +48,9 @@
 #
 # Please see additional code examples of commands, events, etc in the repo.
 # https://github.com/oestrich/gossip-clients
+#
+# Or visit the latest version of the live client at:
+# https://github.com/bdubyapee/akriosmud
 #
 # By: Jubelo, Creator of AkriosMUD
 # At: akriosmud.funcity.org:4000
@@ -294,9 +297,11 @@ class GrapevineReceivedMessage():
                 return
 
     def received_tells_status(self, sent_refs):
-        # One of the local players has sent a tell.  This is specific response of an error
-        # Provide the error and other pertinent info to the local game for handling
-        # as required.
+        '''
+        One of the local players has sent a tell.  This is specific response of an error
+        Provide the error and other pertinent info to the local game for handling
+        as required.
+        '''
         if hasattr(self, "ref"):
             if self.ref in sent_refs and hasattr(self, "error"):
                 orig_req = sent_refs.pop(self.ref)
@@ -307,8 +312,10 @@ class GrapevineReceivedMessage():
                     return (caller, target, game, self.error)
 
     def received_tells_message(self):
-        # We have received a tell message destined for a player in our game.
-        # Grab the details and return to the local game to handle as required.
+        '''
+        We have received a tell message destined for a player in our game.
+        Grab the details and return to the local game to handle as required.
+        '''
         if hasattr(self, "ref") and hasattr(self, "payload"):
             sender = self.payload['from_name']
             target = self.payload['to_name']
@@ -319,8 +326,10 @@ class GrapevineReceivedMessage():
             return (sender, target, game, sent, message)
 
     def received_games_status(self, sent_refs):
-        # Received a game status response.  Return the received info to the local
-        # game to handle as required.  Not using this in Akrios at the moment.
+        '''
+        Received a game status response.  Return the received info to the local
+        game to handle as required.  Not using this in Akrios at the moment.
+        '''
         if hasattr(self, "ref") and hasattr(self, "payload") and self.is_event_status("success"):
             orig_req = sent_refs.pop(self.ref)
             if self.ref in sent_refs:
@@ -347,14 +356,18 @@ class GrapevineReceivedMessage():
 
 
     def received_message_confirm(self, sent_refs):
-        # We received a confirmation that Grapevine received an outbound broadcase message
-        # from us.  Nothing to see here other than removing from our sent references list.
+        '''
+        We received a confirmation that Grapevine received an outbound broadcase message
+        from us.  Nothing to see here other than removing from our sent references list.
+        '''
         if hasattr(self, "ref"):
             if self.ref in sent_refs and self.is_event_status("success"):
                 orig_req = sent_refs.pop(self.ref) 
 
     def is_other_game_player_update(self):
-        # A helper method to determine if this is a player update from another game.
+        '''
+        A helper method to determine if this is a player update from another game.
+        '''
         if hasattr(self, "event"):
             if self.event == "players/sign-in" or self.event == "players/sign-out":
                 if hasattr(self, "payload") and 'game' in self.payload:
@@ -363,8 +376,10 @@ class GrapevineReceivedMessage():
                 return False
 
     def received_games_connected(self):
-        # A foreign game has connected to the network, add the game to our local
-        # cache of games/players and send a request for player list.
+        '''
+        A foreign game has connected to the network, add the game to our local
+        cache of games/players and send a request for player list.
+        '''
         if hasattr(self, "payload"):
             # Clear what we knew about this game and request an update.
             # Requesting updates from all games at this point, might as well refresh
@@ -375,16 +390,20 @@ class GrapevineReceivedMessage():
             return self.payload["game"]
 
     def received_games_disconnected(self):
-        # A foreign game has disconnected, remove it from our local cache and return
-        # details to local game to handle as required.
+        '''
+        A foreign game has disconnected, remove it from our local cache and return
+        details to local game to handle as required.
+        '''
         if hasattr(self, "payload"):
             if self.payload["game"] in self.gsock.other_games_players:
                 self.gsock.other_games_players.pop(self.payload["game"])
             return self.payload["game"]
 
     def received_broadcast_message(self):
-        # We received a broadcast message from another game.  Return the pertinent
-        # info so the local game can handle as required.  See examples above.
+        '''
+        We received a broadcast message from another game.  Return the pertinent
+        info so the local game can handle as required.  See examples above.
+        '''
         if hasattr(self, "payload"):
             return (self.payload['name'], self.payload['game'], self.payload['message'])
 
@@ -460,18 +479,23 @@ class GrapevineSocket(WebSocket):
         self.close()
 
     def send_out(self, frame):
-        # A generic to make writing out cleaner, nothing more.
+        '''
+        A generic to make writing out cleaner, nothing more.
+        '''
         self.outbound_frame_buffer.append(frame)
 
     def read_in(self):
-        # A generic to make reading in cleaner, nothing more.
+        '''
+        A generic to make reading in cleaner, nothing more.
+        '''
         return self.inbound_frame_buffer.pop(0)
 
     def msg_gen_authenticate(self):
-        # Need to authenticate to the Grapevine.haus network to participate.
-        # This creates and sends that authentication as well as defaults us to
-        # an authenticated state unless we get an error back indicating otherwise.
-
+        '''
+        Need to authenticate to the Grapevine.haus network to participate.
+        This creates and sends that authentication as well as defaults us to
+        an authenticated state unless we get an error back indicating otherwise.
+        '''
         payload = {"client_id": self.client_id,
                    "client_secret": self.client_secret,
                    "supports": self.supports,
@@ -494,10 +518,11 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_heartbeat(self):
-        # Once registered to Grapevine we will receive regular heartbeats.  The
-        # docs indicate to respond with the below heartbeat response which 
-        # also provides an update player logged in list to the network.
-
+        '''
+        Once registered to Grapevine we will receive regular heartbeats.  The
+        docs indicate to respond with the below heartbeat response which 
+        also provides an update player logged in list to the network.
+        '''
         # The below line builds a list of player names logged into Akrios for sending
         # in response to a grapevine heartbeat.  Uncomment/replace with your functionality.
         # XXX
@@ -509,15 +534,15 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_chan_subscribe(self, chan=None):
-        # Subscribe to a specific channel, or Gossip by default.
-
+        '''
+        Subscribe to a specific channel, or Gossip by default.
+        '''
         ref = str(uuid.uuid4())
         if not chan:
             payload = {"channel": "gossip"}
         else:
             payload = {"channel": chan}
 
-        # Don't subscribe again if we already are.  Just bail out.
         if payload["channel"] in self.subscribed:
             return
 
@@ -530,8 +555,10 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_chan_unsubscribe(self, chan=None):
-        # Unsubscribe from a specific channel, defaul to Gossip channel if
-        # none given.
+        '''
+        Unsubscribe from a specific channel, defaul to Gossip channel if
+        none given.
+        '''
         ref = str(uuid.uuid4())
         if not chan:
             payload = {"channel": "gossip"}
@@ -547,7 +574,9 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_player_login(self, player_name):
-        # Notify the Grapevine network of a player login.
+        '''
+        Notify the Grapevine network of a player login.
+        '''
         ref = str(uuid.uuid4())
         payload = {"name": player_name.capitalize()}
         msg = {"event": "players/sign-in",
@@ -559,7 +588,9 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_player_logout(self, player_name):
-        # Notify the Grapevine network of a player logout.
+        '''
+        Notify the Grapevine network of a player logout.
+        '''
         ref = str(uuid.uuid4())
         payload = {"name": player_name.capitalize()}
         msg = {"event": "players/sign-out",
@@ -571,8 +602,10 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_message_channel_send(self, caller, channel, message):
-        # Sends a channel message to the Grapevine network.  If we're not showing
-        # as subscribed on our end, we bail out.
+        '''
+        Sends a channel message to the Grapevine network.  If we're not showing
+        as subscribed on our end, we bail out.
+        '''
         if channel not in self.subscribed:
             return
 
@@ -589,9 +622,11 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_game_all_status_query(self):
-        # Request for each game to send full status update.  You will receive in
-        # return from each game quite a bit of detailed information.  See the
-        # grapevine.haus Documentation or review the receiver code above.
+        '''
+        Request for each game to send full status update.  You will receive in
+        return from each game quite a bit of detailed information.  See the
+        grapevine.haus Documentation or review the receiver code above.
+        '''
         ref = str(uuid.uuid4())
 
         msg = {"events": "games/status",
@@ -602,9 +637,11 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_game_single_status_query(self, game):
-        # Request for a single game to send full status update.  You will receive in
-        # return from each game quite a bit of detailed information.  See the
-        # grapevine.haus Documentation or review the receiver code above.
+        '''
+        Request for a single game to send full status update.  You will receive in
+        return from each game quite a bit of detailed information.  See the
+        grapevine.haus Documentation or review the receiver code above.
+        '''
         ref = str(uuid.uuid4())
 
         msg = {"events": "games/status",
@@ -616,7 +653,9 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_player_status_query(self):
-        # This requests a player list status update from all connected games.
+        '''
+        This requests a player list status update from all connected games.
+        '''
         ref = str(uuid.uuid4())
 
         msg = {"event": "players/status",
@@ -627,7 +666,9 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_player_single_status_query(self, game):
-        # Request a player list status update from a single connected game.
+        '''
+        Request a player list status update from a single connected game.
+        '''
         ref = str(uuid.uuid4())
 
         msg = {"events": "players/status",
@@ -639,6 +680,9 @@ class GrapevineSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_player_tells(self, caller_name, game, target, msg):
+        '''
+        Send a tell message to a player on the Grapevine network.
+        '''
         game = game.capitalize()
         target = target.capitalize()
 
@@ -658,11 +702,11 @@ class GrapevineSocket(WebSocket):
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-
-    # Read and Write methods below with some error printing.  Change to logging or
-    # wiznet, or whatever depending on your style.
-
     def handle_read(self):
+        '''
+        Perform the actual socket read attempt. Append anything received to the inbound
+        buffer.
+        '''
         try:
             self.inbound_frame_buffer.append(self.recv())
             if self.debug:
@@ -672,6 +716,9 @@ class GrapevineSocket(WebSocket):
             pass
 
     def handle_write(self):
+        '''
+        Perform a write out to Grapevine from the outbound buffer.
+        '''
         try:
             outdata = self.outbound_frame_buffer.pop(0)
             if outdata != None:
