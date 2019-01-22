@@ -437,11 +437,7 @@ class GrapevineSocket(WebSocket):
 
         self.subscribed = {}
         for each_channel in self.channels:
-            self.subscribed[each_channel] = False
-
-        successful_connect = self.gsocket_connect()
-        if not successful_connect:
-            self.gsocket_diconnect()        
+            self.subscribed[each_channel] = False        
 
         # This event initialization is specific to AkriosMUD. This would be a good
         # spot to initialize in your event system if required.  Otherwise comment/delete this line.

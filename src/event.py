@@ -357,7 +357,7 @@ def event_grapevine_state_check(event_):
         nextevent.ownertype = "grapevine"
         nextevent.eventtype = "grapevine restart"
         nextevent.func = event_grapevine_restart
-        nextevent.passes = restart_time + restart_fuzz
+        nextevent.passes = 3 * 60
         nextevent.totalpasses = nextevent.passes
         grapevine_.events.add(nextevent)
 
