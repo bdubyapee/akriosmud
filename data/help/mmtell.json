@@ -1,6 +1,6 @@
 {
     "creator": "jubelo",
-    "description": "{RHelp Topic{W: mmtell {x\n\n{Wmmtell{x <player>@<game> <argument>\n     This will send the tell <argument> directly to <player> @ <game>.\n\nmmtell is used to communicate over the Gossip.haus MultiMUD chat network.\n\nYou can toggle this feature off and on by using the {Wtoggle{x command.\n",
+    "description": "{RHelp Topic{W: mmtell {x\n\n{Wmmtell{x <player>@<game> <argument>\n     This will send the tell <argument> directly to <player> @ <game>.\n\nmmtell is used to communicate over the grapevine.haus MultiMUD chat network.\n\nYou can toggle this feature off and on by using the {Wtoggle{x command.\n",
     "json_class_name": "__oneHelp__",
     "json_version": 1,
     "keywords": [

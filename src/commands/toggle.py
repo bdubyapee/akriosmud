@@ -49,12 +49,12 @@ def toggle(caller, args):
 
     if caller.is_admin:
         if args == 'gdebug':
-            if gossip.gsocket.debug:
-                gossip.gsocket.debug = False
-                caller.write("\n\r{Wgdebug Gossip Network Debug has been disabled.{x")
+            if grapevine.gsocket.debug:
+                grapevine.gsocket.debug = False
+                caller.write("\n\r{Wgdebug Grapevine Network Debug has been disabled.{x")
             else:
-                gossip.gsocket.debug = True
-                caller.write("\n\r{Wgdebug Gossip Network Debug has been enabled.{x")
+                grapevine.gsocket.debug = True
+                caller.write("\n\r{Wgdebug Grapevine Network Debug has been enabled.{x")
 
 
     if caller.oocflags_stored['newbie'] == 'true':
@@ -72,5 +72,5 @@ def toggle(caller, args):
     caller.write(f"    {{Wmmchat{{x : {{R{mmchat}{{x")
     caller.write(f"")
     if caller.is_admin:
-        caller.write(f"    {{Wgdebug{{x : {{R{gossip.gsocket.debug}{{x")
+        caller.write(f"    {{Wgdebug{{x : {{R{grapevine.gsocket.debug}{{x")
 

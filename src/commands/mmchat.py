@@ -5,7 +5,7 @@
 # Capability: player
 #
 # Command Description: This is the Out of Character (OOC) chat command. It goes
-# to the Gossip MUD Chat Network.
+# to the Grapevine MUD Chat Network.
 #
 # By: Jubelo
 
@@ -30,10 +30,10 @@ def mmchat(caller, args):
         return
 
     try:
-        gossip.gsocket.msg_gen_message_channel_send(caller, "gossip",  args) 
+        grapevine.gsocket.msg_gen_message_channel_send(caller, "grapevine",  args) 
     except:
-        caller.write(f"{{WError chatting to Gossip.haus Network, try again later{{x")
-        comm.wiznet(f"Error writing to Gossip.haus network. {caller.name} : {args}")
+        caller.write(f"{{WError chatting to grapevine.haus Network, try again later{{x")
+        comm.wiznet(f"Error writing to grapevine.haus network. {caller.name} : {args}")
         return
 
     

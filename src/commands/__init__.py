@@ -20,7 +20,7 @@ import color
 import area
 import event
 import exits
-import gossip
+import grapevine
 import helpsys
 import comm
 import login

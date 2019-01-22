@@ -28,8 +28,8 @@ def quit(caller, args, **kwargs):
         return
 
     caller.save()
-    # Notify Gossip of return player logout.
-    gossip.gsocket.msg_gen_player_logout(caller.name)
+    # Notify Grapevine of return player logout.
+    grapevine.gsocket.msg_gen_player_logout(caller.name)
     caller.location.contents.remove(caller)
     caller.sock.promptable = False
     caller.events.clear()

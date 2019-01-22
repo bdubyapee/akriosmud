@@ -4,7 +4,7 @@
 #
 # Capability: player
 #
-# Command Description: This is the tell command for the Gossip network. It goes
+# Command Description: This is the tell command for the Grapevine network. It goes
 # to a player in another game.
 #
 # By: Jubelo
@@ -44,7 +44,7 @@ def mmtell(caller, args):
         caller.write("Just use in game channels to talk to players on Akrios.")
         return
 
-    gossip.gsocket.msg_gen_player_tells(caller.name.capitalize(), game, target, message)
+    grapevine.gsocket.msg_gen_player_tells(caller.name.capitalize(), game, target, message)
 
     
     caller.write(f"{{GYou MultiMUD tell {{y{target}@{game}{{x: '{{G{message}{{x'")

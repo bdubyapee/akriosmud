@@ -16,7 +16,7 @@ import uuid
 import area
 import comm
 import event
-import gossip
+import grapevine
 import helpsys
 import races
 from math_utils import dice
@@ -211,8 +211,8 @@ class Login:
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             comm.log(newobject.logpath, f"Logging in from: {newobject.sock.host}")
             newobject.interp("look")
-            #Notify Gossip of return player Login.
-            gossip.gsocket.msg_gen_player_login(newobject.name)
+            #Notify Grapevine of return player Login.
+            grapevine.gsocket.msg_gen_player_login(newobject.name)
             newobject.lasttime = time.ctime()
             newobject.lasthost = newobject.sock.host
         else:

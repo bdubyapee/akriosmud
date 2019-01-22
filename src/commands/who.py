@@ -54,14 +54,14 @@ def who(caller, args):
         caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(), person.name.capitalize(), person.title, extra2, extra1))
 
     caller.write("\n\r")
-    caller.write("{BPlayers in other Realms on the Gossip network{x:")
+    caller.write("{BPlayers in other Realms on the Grapevine network{x:")
     caller.write("")
-    for eachgame in gossip.gsocket.other_games_players:
-        if len(gossip.gsocket.other_games_players[eachgame]) == 1:
-            the_player = gossip.gsocket.other_games_players[eachgame][0].capitalize()
+    for eachgame in grapevine.gsocket.other_games_players:
+        if len(grapevine.gsocket.other_games_players[eachgame]) == 1:
+            the_player = grapevine.gsocket.other_games_players[eachgame][0].capitalize()
             caller.write(f"     {the_player} {{R@{{x {eachgame.capitalize()}")
-        elif len(gossip.gsocket.other_games_players[eachgame]) > 1:
-            for eachplayer in gossip.gsocket.other_games_players[eachgame]:
+        elif len(grapevine.gsocket.other_games_players[eachgame]) > 1:
+            for eachplayer in grapevine.gsocket.other_games_players[eachgame]:
                 caller.write(f"     {eachplayer} {{R@{{x {eachgame.capitalize()}")
 
 

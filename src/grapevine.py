@@ -1,17 +1,17 @@
 #! usr/bin/env python3
 # Project: Akrios
-# Filename: gossip.py
+# Filename: grapevine.py
 # 
-# File Description: A module to allow connection to Gossip chat network.
-#                   Visit https://www.gossip.haus/
+# File Description: A module to allow connection to Grapevine chat network.
+#                   Visit https://www.grapevine.haus/
 #
 # Dependencies: You will need to 'pip3 install websocket-client' to use this module.
 #
 #
 # Implemented features:
-#       Auhentication to the Gossip network.
+#       Auhentication to the grapevine network.
 #       Registration to the Gossip Channel(default) or other channels.
-#       Restart messages from the Gossip network.
+#       Restart messages from the grapevine network.
 #       Sending and receiving messages to the Gossip(default) or other channel.
 #       Sending and receiving Player sign-in/sign-out messages.
 #       Player sending and receiving Tells.
@@ -23,25 +23,25 @@
 #
 #
 # Example usage would be to import this module into your main game server.  When this module
-# is imported, gsocket is assigned to an instance of GossipSocket.  During instance initialization
-# is when the connection to Gossip.haus happens.  PLEASE PUT YOUR CLIENT ID AND CLIENT SECRET
-# into the appropriate instance attributes of GossipSocket below.  Please note the instance
-# attribute in GossipSocket of debug, set to True if you would like to print to stdout various
+# is imported, gsocket is assigned to an instance of GrapevineSocket.  During instance init
+# is when the connection to grapevine.haus happens.  PLEASE PUT YOUR CLIENT ID AND CLIENT SECRET
+# into the appropriate instance attributes of GrapevineSocket below.  Please note the instance
+# attribute in GrapevineSocket of debug, set to True if you would like to print to stdout various
 # things that happen to help with debugging.
 #
 # You will need to periodically call the gsocket.handle_read() and gsocket.handle_write() as
 # required by your configuration.   Please see the examples in the repo of how this might look
 # for you.
 #
-# The below two functions are being passed in the gossip.gsocket as a variable named event_.
+# The below two functions are being passed in the grapevine.gsocket as a variable named event_.
 #
 #@reoccuring_event
-#def event_gossip_send_message(event_):
+#def event_grapevine_send_message(event_):
 #    if len(event_.owner.outbound_frame_buffer) > 0:
 #        event_.owner.handle_write()
 #
 #@reoccuring_event
-#def event_gossip_player_query_status(event_):
+#def event_grapevine_player_query_status(event_):
 #    event_.owner.msg_gen_player_status_query()
 #
 # 
@@ -55,23 +55,22 @@
 # 
 
 '''
-    Module used to communicate with the Gossip.haus chat+ network.
-    https://gossip.haus
+    Module used to communicate with the Grapevine.haus chat+ network.
     https://grapevine.haus
     https://vineyard.haus
 
     Classes:
-        GossipReeivedMessage is used to parse incoming JSON messages from the network.
+        GrapevineReceivedMessage is used to parse incoming JSON messages from the network.
         __init__(self, message, gsock)
-            message is the JSON from the gossip network
-            gsock is the instance of GossipSocket for tracking foreign players locally
+            message is the JSON from the grapevine network
+            gsock is the instance of GrapevineSocket for tracking foreign players locally
  
-        GOssipSocket is used to authentcate to and send messages to the gossip network.
+        GrapevineSocket is used to authentcate to and send messages to the grapevine network.
         __init__(self)
 
     Module Variables of Note:
-        gsocket is an instance of GossipSocket, when this module is imported the authentication
-        portion is completed and working with gossip is done through the gsocket.
+        gsocket is an instance of GrapevineSocket, when this module is imported the authentication
+        portion is completed and working with grapevine is done through the gsocket.
 '''
 
 
@@ -86,11 +85,11 @@ from websocket import WebSocket
 # being commented, but others you will need to implement (like heartbeat player list).
 import comm
 import event
-from gossipkeys import CLIENT_ID, SECRET_KEY
+from keys import CLIENT_ID, SECRET_KEY
 import player
 import world
 
-class GossipReceivedMessage():
+class GrapevineReceivedMessage():
     def __init__(self, message, gsock):
         # Short hand to convert JSON data to instance attributes.
         # Not secure at all.  If you're worreid about it feel free to modify
@@ -98,7 +97,7 @@ class GossipReceivedMessage():
         for eachkey, eachvalue in json.loads(message).items():
             setattr(self, eachkey, eachvalue)
 
-        # Point an instance attribute to the module level gossip socket.
+        # Point an instance attribute to the module level grapevine socket.
         # Used for adding to and removing refs as well as keeping the foreign player
         # cache in the gsocket up to date.
         self.gsock = gsock
@@ -125,7 +124,7 @@ class GossipReceivedMessage():
 
     def parse_frame(self):
         '''
-            Parse any received JSON from the Gossip network.
+            Parse any received JSON from the Grapevine network.
 
             Verify we have an attribute from the JSON that is 'event'. If we have a key
             in the rcvr_func that matches we will execute.
@@ -158,7 +157,7 @@ class GossipReceivedMessage():
         '''
             We received an event Auth event type.
             Determine if we are already authenticated, if so subscribe to the channels
-            as determined in msg_gen_chan_subscribed in the Gossip Socket Object.
+            as determined in msg_gen_chan_subscribed in the GrapevineSocket Object.
             Otherwise, if we are not authenticated yet we send another authentication attempt
             via msg_gen_authenticate().  This is in place for path hiccups or restart events.
 
@@ -183,7 +182,7 @@ class GossipReceivedMessage():
 
     def received_chan_sub(self, sent_refs):
         '''
-        We have attempted to subscribe to a channel.  This is a response message from Gossip.
+        We have attempted to subscribe to a channel.  This is a response message from Grapevine.
         If failure, we make sure we show unsubbed in our local list.
         if success, we make sure we show subscribed in our local list.
 
@@ -202,7 +201,7 @@ class GossipReceivedMessage():
 
     def received_chan_unsub(self, sent_refs):
         '''
-        We at some point sent a channel unsubscribe. This is verifying Gossip
+        We at some point sent a channel unsubscribe. This is verifying Grapevine
         received that.  We unsub in our local list.
 
         return None
@@ -214,16 +213,16 @@ class GossipReceivedMessage():
 
     def received_player_logout(self, sent_refs):
         '''
-        We have received a "player/sign-out" message from Gossip.
+        We have received a "player/sign-out" message from Grapevine.
 
-        Determine if it is a success message, which is an indication to us that Gossip
+        Determine if it is a success message, which is an indication to us that Grapevine
         received a player logout from us and is acknowledging, or if it is a message from
-        another game on the Gossip network.
+        another game on the Grapevine network.
 
-        return None if it's an ack from gossip, return player info if it's foreign.
+        return None if it's an ack from grapevine, return player info if it's foreign.
         '''
         if hasattr(self, "ref"):
-            # We are a success message from Gossip returned from our notification.
+            # We are a success message from Grapevine returned from our notification.
             if self.ref in sent_refs and self.is_event_status("success"):
                 orig_req = sent_refs.pop(self.ref)
                 return
@@ -241,16 +240,16 @@ class GossipReceivedMessage():
 
     def received_player_login(self, sent_refs):
         '''
-        We have received a "player/sign-in" message from Gossip.
+        We have received a "player/sign-in" message from Grapevine.
 
-        Determine if it is a success message, which is an indication to us that Gossip
+        Determine if it is a success message, which is an indication to us that Grapevine
         received a player login from us and is acknowledging, or if it is a message from
-        another game on the Gossip Network.
+        another game on the Grapevine Network.
 
-        return None if it's an ack from gossip, return player info if it's foreign
+        return None if it's an ack from grapevine, return player info if it's foreign
         '''
         if hasattr(self, "ref"):
-            # We are a success message from Gossip returned from our notification.
+            # We are a success message from Grapevine returned from our notification.
             if self.ref in sent_refs and self.is_event_status("success"):
                 orig_req = sent_refs.pop(self.ref)
                 return
@@ -348,7 +347,7 @@ class GossipReceivedMessage():
 
 
     def received_message_confirm(self, sent_refs):
-        # We received a confirmation that Gossip received an outbound broadcase message
+        # We received a confirmation that Grapevine received an outbound broadcase message
         # from us.  Nothing to see here other than removing from our sent references list.
         if hasattr(self, "ref"):
             if self.ref in sent_refs and self.is_event_status("success"):
@@ -390,7 +389,7 @@ class GossipReceivedMessage():
             return (self.payload['name'], self.payload['game'], self.payload['message'])
 
 
-class GossipSocket(WebSocket):
+class GrapevineSocket(WebSocket):
     def __init__(self):
         super().__init__(sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY,1),))
         
@@ -400,7 +399,7 @@ class GossipSocket(WebSocket):
         self.outbound_frame_buffer = []
         # This event attribute is specific to AkriosMUD.  Replace with your event
         # requirements, or comment/delete the below line.
-        self.events = event.Queue(self, "gossip")
+        self.events = event.Queue(self, "grapevine")
         
         # Replace the below with your specific information
         # XXX
@@ -421,26 +420,25 @@ class GossipSocket(WebSocket):
         for each_channel in self.channels:
             self.subscribed[each_channel] = False
 
-        if self.state["connected"] == False:
-            successful_connect = self.gsocket_connect()
-            if not successful_connect:
-                self.gsocket_diconnect()        
+        successful_connect = self.gsocket_connect()
+        if not successful_connect:
+            self.gsocket_diconnect()        
 
         # This event initialization is specific to AkriosMUD. This would be a good
         # spot to initialize in your event system if required.  Otherwise comment/delete this line.
-        event.init_events_gossip(self)
+        event.init_events_grapevine(self)
 
         self.sent_refs = {}
 
         # The below is a cache of players we know about from other games.
         # Right now I just use this to populate additional fields in our in-game 'who' command
-        # to also show players logged into other Gossip connected games.
+        # to also show players logged into other Grapevine connected games.
         self.other_games_players = {}
 
 
     def gsocket_connect(self):
         try:
-            result = self.connect("wss://gossip.haus/socket")
+            result = self.connect("wss://grapevine.haus/socket")
         except:
             return False
         # We need to set the below on the socket as websockets.WebSocket is 
@@ -451,7 +449,7 @@ class GossipSocket(WebSocket):
 
         # The below is a log specific to Akrios.  Leave commented or replace.
         # XXX
-        comm.log(world.serverlog, "Sending Auth to Gossip Network.")
+        comm.log(world.serverlog, "Sending Auth to Grapevine Network.")
         return True
 
     def gsocket_disconnect(self):
@@ -470,7 +468,7 @@ class GossipSocket(WebSocket):
         return self.inbound_frame_buffer.pop(0)
 
     def msg_gen_authenticate(self):
-        # Need to authenticate to the Gossip.haus network to participate.
+        # Need to authenticate to the Grapevine.haus network to participate.
         # This creates and sends that authentication as well as defaults us to
         # an authenticated state unless we get an error back indicating otherwise.
 
@@ -483,7 +481,7 @@ class GossipSocket(WebSocket):
 
         # If we haven't assigned any channels, lets pull that out of our auth
         # so we aren't trying to auth to an empty string.  This also causes us
-        # to receive an error back from Gossip.
+        # to receive an error back from Grapevine.
         if len(self.channels) == 0 :
             payload.pop("channels")
  
@@ -496,12 +494,12 @@ class GossipSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_heartbeat(self):
-        # Once registered to Gossip we will receive regular heartbeats.  The
+        # Once registered to Grapevine we will receive regular heartbeats.  The
         # docs indicate to respond with the below heartbeat response which 
         # also provides an update player logged in list to the network.
 
         # The below line builds a list of player names logged into Akrios for sending
-        # in response to a gossip heartbeat.  Uncomment/replace with your functionality.
+        # in response to a grapevine heartbeat.  Uncomment/replace with your functionality.
         # XXX
         player_list = [player.name.capitalize() for player in player.playerlist]
         payload = {"players": player_list}
@@ -549,7 +547,7 @@ class GossipSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_player_login(self, player_name):
-        # Notify the Gossip network of a player login.
+        # Notify the Grapevine network of a player login.
         ref = str(uuid.uuid4())
         payload = {"name": player_name.capitalize()}
         msg = {"event": "players/sign-in",
@@ -561,7 +559,7 @@ class GossipSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_player_logout(self, player_name):
-        # Notify the Gossip network of a player logout.
+        # Notify the Grapevine network of a player logout.
         ref = str(uuid.uuid4())
         payload = {"name": player_name.capitalize()}
         msg = {"event": "players/sign-out",
@@ -573,7 +571,7 @@ class GossipSocket(WebSocket):
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
     def msg_gen_message_channel_send(self, caller, channel, message):
-        # Sends a channel message to the Gossip network.  If we're not showing
+        # Sends a channel message to the Grapevine network.  If we're not showing
         # as subscribed on our end, we bail out.
         if channel not in self.subscribed:
             return
@@ -593,7 +591,7 @@ class GossipSocket(WebSocket):
     def msg_gen_game_all_status_query(self):
         # Request for each game to send full status update.  You will receive in
         # return from each game quite a bit of detailed information.  See the
-        # Gossip.haus Documentation or review the receiver code above.
+        # grapevine.haus Documentation or review the receiver code above.
         ref = str(uuid.uuid4())
 
         msg = {"events": "games/status",
@@ -606,7 +604,7 @@ class GossipSocket(WebSocket):
     def msg_gen_game_single_status_query(self, game):
         # Request for a single game to send full status update.  You will receive in
         # return from each game quite a bit of detailed information.  See the
-        # Gossip.haus Documentation or review the receiver code above.
+        # grapevine.haus Documentation or review the receiver code above.
         ref = str(uuid.uuid4())
 
         msg = {"events": "games/status",
@@ -668,7 +666,7 @@ class GossipSocket(WebSocket):
         try:
             self.inbound_frame_buffer.append(self.recv())
             if self.debug:
-                print(f"Gossip In: {self.inbound_frame_buffer[-1]}")
+                print(f"Grapevine In: {self.inbound_frame_buffer[-1]}")
                 print("")
         except:
             pass
@@ -679,11 +677,13 @@ class GossipSocket(WebSocket):
             if outdata != None:
                 self.send(outdata)
                 if self.debug:
-                    print(f"Gossip Out: {outdata}")
+                    print(f"Grapevine Out: {outdata}")
                     print("")
         except:
             if self.debug:
                 print(f"Error sending data frame: {outdata}")
 
+    def receive_message(self):
+        return GrapevineReceivedMessage(self.read_in(), self)
 
-gsocket = GossipSocket()
+

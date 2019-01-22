@@ -14,7 +14,7 @@ from telnetlib import IAC, DONT, DO, WONT, WILL, theNULL, ECHO, SGA
 import time
 import sys
 
-import gossip
+import grapevine
 import helpsys
 import color
 import area
@@ -195,6 +195,7 @@ class Server(asyncore.dispatcher):
 
         event.init_events_server(self)
 
+        grapevine.gsocket = grapevine.GrapevineSocket()
 
         print(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
 

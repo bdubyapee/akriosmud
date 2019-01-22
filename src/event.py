@@ -11,7 +11,6 @@ import time
 import uuid
 
 import comm
-import gossip
 import player
 import server
 import world
@@ -103,7 +102,7 @@ things_with_events = {"player": [],
                       "object": [],
                       "server": [],
                       "socket": [],
-                      "gossip": []}
+                      "grapevine": []}
 
 
 def heartbeat():
@@ -122,42 +121,42 @@ def init_events_socket(socket):
 def init_events_server(server):
     pass
 
-def init_events_gossip(gossip_):
+def init_events_grapevine(grapevine_):
     event = Event()
-    event.owner = gossip_
-    event.ownertype = "gossip"
-    event.eventtype = "gossip receive"
-    event.func = event_gossip_receive_message
+    event.owner = grapevine_
+    event.ownertype = "grapevine"
+    event.eventtype = "grapevine receive"
+    event.func = event_grapevine_receive_message
     event.passes = 1 * PULSE_PER_SECOND
     event.totalpasses =event.passes
-    gossip_.events.add(event)
+    grapevine_.events.add(event)
 
     event = Event()
-    event.owner = gossip_
-    event.ownertype = "gossip"
-    event.eventtype = "gossip send"
-    event.func = event_gossip_send_message
+    event.owner = grapevine_
+    event.ownertype = "grapevine"
+    event.eventtype = "grapevine send"
+    event.func = event_grapevine_send_message
     event.passes = 1 * PULSE_PER_SECOND
     event.totalpasses = event.passes
-    gossip_.events.add(event)
+    grapevine_.events.add(event)
 
     event = Event()
-    event.owner = gossip_
-    event.ownertype = "gossip"
-    event.eventtype = "gossip player query status"
-    event.func = event_gossip_player_query_status
+    event.owner = grapevine_
+    event.ownertype = "grapevine"
+    event.eventtype = "grapevine player query status"
+    event.func = event_grapevine_player_query_status
     event.passes = 5 * PULSE_PER_MINUTE
     event.totalpasses = event.passes
-    gossip_.events.add(event)
+    grapevine_.events.add(event)
 
     event = Event()
-    event.owner = gossip_
-    event.ownertype = "gossip"
-    event.eventtype = "gossip state check"
-    event.func = event_gossip_state_check
+    event.owner = grapevine_
+    event.ownertype = "grapevine"
+    event.eventtype = "graevine state check"
+    event.func = event_grapevine_state_check
     event.passes = 5 * PULSE_PER_MINUTE
     event.totalpasses = event.passes
-    gossip_.events.add(event)
+    grapevine_.events.add(event)
 
 def init_events_area(area):
     pass
@@ -250,29 +249,29 @@ def reoccuring_event(func_to_decorate):
     return new_func
 
 
-def event_gossip_restart(event_):
-    del(gossip.gsocket)
-    gossip.gsocket = gossip.GossipSocket()
+def event_grapevine_restart(event_):
+    event_.owner.gsocket = grapevine.GrapevineSocket()
 
 @reoccuring_event
-def event_gossip_send_message(event_):
+def event_grapevine_send_message(event_):
     if len(event_.owner.outbound_frame_buffer) > 0:
         event_.owner.handle_write()
 
 @reoccuring_event
-def event_gossip_player_query_status(event_):
+def event_grapevine_player_query_status(event_):
     event_.owner.msg_gen_player_status_query()
 
 @reoccuring_event
-def event_gossip_receive_message(event_):
-    gossip_ = event_.owner
-    gossip_.handle_read()
-    if len(gossip_.inbound_frame_buffer) > 0:
-        # Assign rcvd_msg to a GossipREceivedMessage instance.
+def event_grapevine_receive_message(event_):
+    grapevine_ = event_.owner
+    grapevine_.handle_read()
+    if len(grapevine_.inbound_frame_buffer) > 0:
+        # Assign rcvd_msg to a GrapevineReceivedMessage instance.
         # The initialization of the object takes care of parsing the data
         # we received and setting appropritae values.
-        rcvd_msg = gossip.GossipReceivedMessage(gossip_.read_in(), gossip_)
+        #rcvd_msg = grapevine.GrapevineReceivedMessage(grapevine_.read_in(), grapevine_)
 
+        rcvd_msg = grapevine_.receive_message()
         ret_value = rcvd_msg.parse_frame()
 
         if ret_value:
@@ -301,12 +300,12 @@ def event_gossip_receive_message(event_):
             if rcvd_msg.event == "games/status":
                 if ret_value:
                     # We've received a game status request response from
-                    # gossip.  Do what you will here with the information,
+                    # grapevine.  Do what you will here with the information,
                     # Not going to do anything with it in Akrios at the moment.
                     return
 
 
-            # Received Gossip Info that goes to all players goes here.
+            # Received Grapevine Info that goes to all players goes here.
             message = ""
             if rcvd_msg.event == "games/connect":
                 game = ret_value.capitalize()
@@ -330,28 +329,38 @@ def event_gossip_receive_message(event_):
                 return
 
         if hasattr(rcvd_msg, "event") and rcvd_msg.event == "restart":
-            comm.log(world.serverlog, "Received restart event from Gossip.")
-            restart_time = rcvd_msg.restart_downtime * PULSE_PER_SECOND
-            restart_fuzz = 20 * PULSE_PER_SECOND
+            comm.log(world.serverlog, "Received restart event from Grapevine.")
+            restart_time = rcvd_msg.restart_downtime
+            restart_fuzz = 20
  
-            gossip.gsocket.gsocket_disconnect()
+            grapevine_.gsocket_disconnect()
 
             nextevent = Event()
-            nextevent.owner = gossip.gsocket
-            nextevent.ownertype = "gossip"
-            nextevent.eventtype = "gossip restart"
-            nextevent.func = event_gossip_restart
+            nextevent.owner = grapevine_
+            nextevent.ownertype = "grapevine"
+            nextevent.eventtype = "grapevine restart"
+            nextevent.func = event_grapevine_restart
             nextevent.passes = restart_time + restart_fuzz
             nextevent.totalpasses = nextevent.passes
-            gossip.gsocket.events.add(nextevent)
+            grapevine_.events.add(nextevent)
 
 @reoccuring_event
-def event_gossip_state_check(event_):
-    gossip_ = event_.owner
-    if gossip_.state["connected"] == True:
+def event_grapevine_state_check(event_):
+    grapevine_ = event_.owner
+    if grapevine_.state["connected"] == True:
         return
     else:
-        gossip.gsocket.gsocket_disconnect()
+        grapevine_.gsocket_disconnect()
+
+        nextevent = Event()
+        nextevent.owner = grapevine_
+        nextevent.ownertype = "grapevine"
+        nextevent.eventtype = "grapevine restart"
+        nextevent.func = event_grapevine_restart
+        nextevent.passes = restart_time + restart_fuzz
+        nextevent.totalpasses = nextevent.passes
+        grapevine_.events.add(nextevent)
+
 
 
 @reoccuring_event
@@ -365,7 +374,7 @@ def event_admin_system_status(event_):
                    'exit': 0,
                    'server': 0,
                    'socket': 0,
-                   'gossip': 0}
+                   'grapevine': 0}
 
     for each_type in things_with_events:
         for each_thing in things_with_events[each_type]:
@@ -374,15 +383,15 @@ def event_admin_system_status(event_):
     msg = (f"\n\r{{RAkrios System Status (5 minute update){{x\n\r"
            f"{{GPlayer Connections{{x: {{R{len(server.connlist)}{{x\n\r"
            f"{{G  Game Events List{{x\n\r"
-           f"{{G     Player Events{{x: {{R{event_count['player']}{{x\n\r"
-           f"{{G     Mobile Events{{x: {{R{event_count['mobile']}{{x\n\r"
-           f"{{G     Object Events{{x: {{R{event_count['object']}{{x\n\r"
-           f"{{G       Area Events{{x: {{R{event_count['area']}{{x\n\r"
-           f"{{G       Room Events{{x: {{R{event_count['room']}{{x\n\r"
-           f"{{G       Exit Events{{x: {{R{event_count['exit']}{{x\n\r"
-           f"{{G     Server Events{{x: {{R{event_count['server']}{{x\n\r"
-           f"{{G     Socket Events{{x: {{R{event_count['socket']}{{x\n\r"
-           f"{{G     Gossip Events{{x: {{R{event_count['gossip']}{{x\n\r")
+           f"{{G        Player Events{{x: {{R{event_count['player']}{{x\n\r"
+           f"{{G        Mobile Events{{x: {{R{event_count['mobile']}{{x\n\r"
+           f"{{G        Object Events{{x: {{R{event_count['object']}{{x\n\r"
+           f"{{G          Area Events{{x: {{R{event_count['area']}{{x\n\r"
+           f"{{G          Room Events{{x: {{R{event_count['room']}{{x\n\r"
+           f"{{G          Exit Events{{x: {{R{event_count['exit']}{{x\n\r"
+           f"{{G        Server Events{{x: {{R{event_count['server']}{{x\n\r"
+           f"{{G        Socket Events{{x: {{R{event_count['socket']}{{x\n\r"
+           f"{{G     Grapevine Events{{x: {{R{event_count['grapevine']}{{x\n\r")
 
     event_.owner.write(msg)
 
@@ -431,7 +440,7 @@ def event_player_newbie_notify(event_):
             "Type 'beep Jubelo' to send a beep to Jubelo if you need help!",
             "Type 'say <message>' to say something to other players in the same room.",
             "Type 'look' to look at the room you are in",
-            "Akrios is connected to gossip.haus for MultiMUD Chat!\n\rType"
+            "Akrios is connected to grapevine.haus for MultiMUD Chat!\n\rType"
             " 'toggle mmchat' to disable or 'mmchat <message>' to speak to other players!"]
         
     event_.owner.write(f"\n\r{{P[NEWBIE TIP]{{x: {random.choice(tips)}")
