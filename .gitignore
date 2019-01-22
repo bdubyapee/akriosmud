@@ -24,6 +24,7 @@ venv.bak
 src/__pycache__/
 src/nohup.out
 src/keys.py
+src/gossipkeys.py
 data/log/*.log
 
 # Temp #
