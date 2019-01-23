@@ -25,11 +25,11 @@ def areaedit(caller, args):
     isEditing = hasattr(caller, 'editing')
 
     if len(args) == 0:
-        if isBuilding:
+        if caller.is_building:
             caller.write(caller.building.display())
             return
 
-    if isBuilding:
+    if caller.is_building:
         if args[0] == 'done':
             caller.building.save()
             caller.building.builder = None
@@ -38,13 +38,11 @@ def areaedit(caller, args):
             del(caller.oldprompt)
         elif args[0] == 'new':
             caller.write("You are already editing an area.")
-            return
         elif args[0] == 'populate':
             myarea = caller.building
             myvnum = caller.building.vnumlow
             if myvnum in area.roomlist.keys():
                 caller.write("That room already exists.  Please edit it directly.")
-                return
             else:
                 newroom = room.oneRoom(caller.building, vnum=myvnum)
                 area.roomlist[myvnum] = newroom

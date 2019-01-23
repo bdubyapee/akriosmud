@@ -21,8 +21,7 @@ requirements = {'capability': 'player',
 @Command(**requirements)
 def beep(caller, args, **kwargs):
     target = kwargs['target']
-    target.sock.send(b'\x07')
-    target.write(f"\n\rYou have been paged by {caller.name_cap}")
+    target.write(f"{{*\n\rYou have been paged by {caller.name_cap}")
     caller.write("They have been paged")
 
 

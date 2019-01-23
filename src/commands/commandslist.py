@@ -19,20 +19,17 @@ requirements = {'capability': 'player',
 
 @Command(**requirements)
 def commandslist(caller, args):
-
-    commandhash = Command.commandhash
-    commandcapability = Command.commandcapability
-
     header = f"{{rCommands Available{{x"
     caller.write(f"{header:^80}")
     caller.write("")
     sub_header = f"{{BPlease see {{Whelp <command>{{B for additional information{{x"
     caller.write(f"{sub_header:^80}")
     caller.write("")
+
     retval = []
     
-    for comm in commandhash.keys():
-        if commandcapability[comm] in caller.capability:
+    for comm in Command.commandhash:
+        if Command.commandcapability[comm] in caller.capability:
             retval.append(comm)
     
     retval.sort()
@@ -42,7 +39,7 @@ def commandslist(caller, args):
     for i in range(0, len(retval), numcols):
         output = ''
         for l in range(0, numcols):
-            output += f"{retval[i+l]:20}"
+            output = f"{output}{retval[i+l]:20}"
         caller.write(output)
 
     caller.write("")

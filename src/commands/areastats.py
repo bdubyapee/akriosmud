@@ -21,10 +21,9 @@ requirements = {'capability': 'builder',
 def areastats(caller, args):
     caller.write(caller.location.area.display())
     caller.write("")
-    arearoomlist = caller.location.area.roomlist
     caller.write("{RRooms in this area{x:")
-    for oneroom in arearoomlist.keys():
-        currentroom = arearoomlist[oneroom]
-        caller.write(f"{{W[{{B{currentroom.vnum}{{W]{{x {currentroom.name.capitalize()}")
+    for one_room in caller.location.area.roomlist:
+        current_room = caller.location.area.roomlist[one_room]
+        caller.write(f"{{W[{{B{current_room.vnum}{{W]{{x {current_room.name.capitalize()}")
 
 

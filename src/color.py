@@ -47,7 +47,10 @@ color_table = {"{x": "0;0m", # Clear back to white on black
 def colorize(text):
     if "{" in text:
         for item, code in color_table.items():
-            text = text.replace(item, f"\x1b[{code}")
+            if item == '{*':
+                text = text.replace(item, "\x07")
+            else:
+                text = text.replace(item, f"\x1b[{code}")
         return text
     else:
         return text
