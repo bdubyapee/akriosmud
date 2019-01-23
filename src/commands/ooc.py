@@ -15,23 +15,22 @@ version = 1
 
 requirements = {'capability': 'player',
                 'generic_fail': "See {WHelp ooc{x for help with this command.",
-                'truth_checks':  [],
-                'false_checks': []}
+                'truth_checks':  ['arg_required'],
+                'false_checks': [],
+                'target': 'target_all_player_game_post'}
 
 @Command(**requirements)
-def ooc(caller, args):
-    if len(args.split()) == 0:
-        caller.write("Did you have something to say or not?")
-        return
- 
-    for person in player.playerlist:
+def ooc(caller, args, **kwargs):
+    target_list = kwargs['target']
+    args_ = kwargs['post']
+    for person in target_list:
         if person == caller:
             name = "You"
             plural = ''
         else:
-            name = caller.name.capitalize()
+            name = caller.name_cap
             plural = 's'
             name = '\n\r' + name
-        person.write(f"{{B{name} OOC{plural}: '{args[:300]}'{{x")
+        person.write(f"{{B{name} OOC{plural}: '{args_[:300]}'{{x")
 
 

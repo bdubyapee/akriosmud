@@ -16,14 +16,14 @@ version = 1
 
 requirements = {'capability': 'player',
                 'generic_fail': "See {WHelp move{x for help with this command.",
-                'truth_checks':  ['is_standing'],
-                'false_checks': []}
+                'truth_checks':  [],
+                'false_checks': ['is_sitting', 'is_sleeping']}
 
 @Command(**requirements)
 def move(caller, args):
-    if args in caller.location.exits.keys():
+    if args in caller.location.exits:
         exit = caller.location.exits[args]
-        if exit.destination in area.roomlist.keys():
+        if exit.destination in area.roomlist:
             # Does the exit have a door and is it closed?
             if exit.hasdoor == 'true' and exit.dooropen == 'false':
                 caller.write("The door in that direction is closed.")
@@ -34,9 +34,8 @@ def move(caller, args):
                 caller.write("You will not fit!")
                 return
 
-            isBuilding = hasattr(caller, 'building')
             # We have passed all validity checks to move.  Housekeeping and move the thing.
-            if isBuilding:
+            if caller.is_building:
                 Command.commandhash['roomedit'](caller, 'done')
                 wasBuilding = True
             else:

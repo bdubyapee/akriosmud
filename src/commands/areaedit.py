@@ -14,15 +14,13 @@ version = 1
 
 requirements = {'capability': 'admin',
                 'generic_fail': "See {WHelp areaedit{x for help with this command.",
-                'truth_checks':  [],
+                'truth_checks':  ['is_standing'],
                 'false_checks': []}
 
 @Command(**requirements)
-def areaedit(caller, args):
+def areaedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp areaedit{x for instructions."
     args = args.split()
-    isBuilding = hasattr(caller, 'building')
-    isEditing = hasattr(caller, 'editing')
 
     if len(args) == 0:
         if caller.is_building:

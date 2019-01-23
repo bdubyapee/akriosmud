@@ -33,13 +33,12 @@ def help(caller, args, **kwargs):
             thefile.write(f'{time.asctime()}> {key}\n')
         caller.write('We do not appear to have a help file for that topic.  We have however logged'\
                      ' the attempt and will look into creating a help file for that topic.')
-        return
     else:
         header = f"{{rHelp Files by Topic{{x"
         caller.write(f"{header:^80}")
 
         retval = []
-        for onehelp in helpsys.helpfiles.keys():
+        for onehelp in helpsys.helpfiles:
             if helpsys.helpfiles[onehelp].viewable.lower() == 'true':
                 if helpsys.helpfiles[onehelp].section in caller.capability:
                     retval.append(onehelp)
@@ -53,7 +52,7 @@ def help(caller, args, **kwargs):
             else:
                 topics[helpsys.helpfiles[eachhelp].topics] = [eachhelp]
 
-        topics_sorted = list(topics.keys())
+        topics_sorted = list(topics)
         topics_sorted.sort()
 
         # Then build the Cols list per topic and display.
@@ -69,7 +68,7 @@ def help(caller, args, **kwargs):
             for i in range(0, len(the_keywords), numcols):
                 output = ''
                 for l in range(0, numcols):
-                    output += f"{the_keywords[i+l]:20}"
+                    output = f"{output}{the_keywords[i+l]:20}"
                 caller.write(output)
         caller.write("\n\r\n\r{WUsage{x: help <argument>\n\r")
 

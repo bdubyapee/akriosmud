@@ -19,7 +19,7 @@ requirements = {'capability': 'admin',
                 'false_checks': []}
 
 @Command(**requirements)
-def coding(caller, args):
+def coding(caller, args, **kwargs):
     if caller.oocflags['coding'] == False:
         caller.oocflags['coding'] = True
         caller.write("You have been placed in coding mode.")

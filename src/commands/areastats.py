@@ -18,7 +18,7 @@ requirements = {'capability': 'builder',
                 'false_checks': []}
 
 @Command(**requirements)
-def areastats(caller, args):
+def areastats(caller, args, **kwargs):
     caller.write(caller.location.area.display())
     caller.write("")
     caller.write("{RRooms in this area{x:")

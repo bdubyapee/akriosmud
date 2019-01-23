@@ -16,31 +16,26 @@ version = 1
 
 requirements = {'capability': 'player',
                 'generic_fail': "See {WHelp mmchat{x for help with this command.",
-                'truth_checks':  [],
+                'truth_checks':  ['args_required'],
                 'false_checks': []}
 
 @Command(**requirements)
-def mmchat(caller, args):
+def mmchat(caller, args, **kwargs):
     if caller.oocflags_stored['mmchat'] == 'false':
         caller.write("You have that command self disabled with the 'toggle' command.")
-        return
-
-    if len(args.split()) == 0:
-        caller.write("Did you have something to say or not?")
         return
 
     try:
         grapevine.gsocket.msg_gen_message_channel_send(caller, "grapevine",  args) 
     except:
         caller.write(f"{{WError chatting to grapevine.haus Network, try again later{{x")
-        comm.wiznet(f"Error writing to grapevine.haus network. {caller.name} : {args}")
+        comm.wiznet(f"Error writing to grapevine.haus network. {caller.name_cap} : {args}")
         return
-
     
     caller.write(f"{{GYou MultiMUD Chat{{x: '{{G{args}{{x'")
 
     for eachplayer in player.playerlist:
         if eachplayer.oocflags_stored['mmchat'] == 'true' and eachplayer.aid != caller.aid:
-            eachplayer.write(f"\n\r{{G{caller.name.capitalize()} MultiMUD Chats{{x: '{{G{args}{{x'")
+            eachplayer.write(f"\n\r{{G{caller.name_cap} MultiMUD Chats{{x: '{{G{args}{{x'")
 
 

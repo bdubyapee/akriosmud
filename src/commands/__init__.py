@@ -8,10 +8,11 @@
 # By: Jubelo
 
 
-import time
 from functools import wraps
 import os
 import sys
+import textwrap
+import time
 
 sys.path.append('../')
 
@@ -35,21 +36,28 @@ import world
 
 # Basic truthfullness tests for command preparsing.
 
-def is_standing(thing):
+def args_required(thing, args, **kwargs):
+    fail_msg = kwargs['generic_fail']
+    if len(args.split()) > 0:
+        return (True, fail_msg)
+    else:
+        return (False, fail_msg)
+
+def is_standing(thing, args, **kwargs):
     fail_msg = "You cannot do that while standing."
     if hasattr(thing, "position") and thing.position == "standing":
         return (True, fail_msg)
     else:
         return (False, fail_msg)
 
-def is_sitting(thing):
+def is_sitting(thing, args, **kwargs):
     fail_msg = "You cannot do that while sitting."
     if hasattr(thing, "position") and thing.position == "sitting":
         return (True, fail_msg)
     else:
         return (False, fail_msg)
 
-def is_sleeping(thing):
+def is_sleeping(thing, args, **kwargs):
     fail_msg = "You cannot do that while sleeping."
     if hasattr(thing, "position") and thing.position == "sleeping":
         return (True, fail_msg)
@@ -152,15 +160,26 @@ def target_all_things_room_post(caller, args):
     if len(args) <= 0:
         return (False, False)
    
-    return (caller.location.contents, None)
+    return (caller.location.contents, args)
     
+
+def target_all_player_game_post(caller, args):
+    '''
+        Expect: <one or more character/words args>
+        Target will be all players in the game, arguments are required.
+    '''
+    if len(args) <= 0:
+        return (False, False)
+
+    return (player.playerlist, args)
 
 
 class Command(object):
     commandhash = {}
     commandcapability = {}
 
-    checks = {"is_standing": is_standing,
+    checks = {"args_required": args_required,
+              "is_standing": is_standing,
               "is_sitting": is_sitting,
               "is_sleeping": is_sleeping}
 
@@ -171,7 +190,8 @@ class Command(object):
                "target_all_player_room_nopost": target_all_player_room_nopost,
                "target_all_player_room_post": target_all_player_room_post,
                "target_all_things_room_nopost": target_all_things_room_nopost,
-               "target_all_things_room_post": target_all_things_room_post}
+               "target_all_things_room_post": target_all_things_room_post,
+               "target_all_player_game_post": target_all_player_game_post}
 
     def __init__(self, *args, **kwargs):
         self.dec_args = args
@@ -211,7 +231,7 @@ class Command(object):
             if 'truth_checks' in self.dec_kwargs and len(self.dec_kwargs['truth_checks']) > 0:
                 for eachcheck in self.dec_kwargs['truth_checks']:
                     if eachcheck in Command.checks:
-                        true_false, msg = Command.checks[eachcheck](caller)
+                        true_false, msg = Command.checks[eachcheck](caller, args_, **self.dec_kwargs)
                         if true_false == False:
                             caller.write(msg)
                             return
@@ -220,7 +240,8 @@ class Command(object):
             if 'false_checks' in self.dec_kwargs and len(self.dec_kwargs['false_checks']) > 0:
                 for eachcheck in self.dec_kwargs['false_checks']:
                     if eachcheck in Command.checks:
-                        true_false, msg = Command.checks[eachcheck](caller)
+                        gen_fail = self.dec_kwargs['generic_fail']
+                        true_false, msg = Command.checks[eachcheck](caller, args_, **self.dec_kwargs)
                         if true_false == True:
                             caller.write(msg)
                             return

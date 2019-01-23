@@ -18,21 +18,19 @@ requirements = {'capability': 'builder',
                 'false_checks': []}
 
 @Command(**requirements)
-def exitedit(caller, args):
+def exitedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp exitedit{x for instructions."
     args = args.split()
-    isBuilding = hasattr(caller, 'building')
-    isEditing = hasattr(caller, 'editing')
 
     if len(args) == 0:
-        if isBuilding and not isEditing:
+        if caller.is_building and not caller.is_ediing:
             caller.write(caller.building.display())
             return
-        elif not isBuilding:
+        elif not caller.is_building:
             caller.write(helpstring)
             return
 
-    if isBuilding:
+    if caller.is_building:
         if args[0] == 'done':
             caller.building.room.area.save()
             caller.building.builder = None
@@ -57,7 +55,11 @@ def exitedit(caller, args):
                     caller.write("Thats not a valid direction.")
                     return
                 myarea = caller.location.area
-                myvnum = int(args[2])
+                try:
+                    myvnum = int(args[2])
+                except:
+                    caller.wrte(helpstring)
+                    return
                 if myvnum < myarea.vnumlow or myvnum > myarea.vnumhigh:
                     caller.write("That vnum is not in this areas range!")
                     return

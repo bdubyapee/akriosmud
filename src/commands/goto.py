@@ -14,26 +14,24 @@ version = 1
 
 requirements = {'capability': 'admin',
                 'generic_fail': "See {WHelp goto{x for help with this command.",
-                'truth_checks':  [],
+                'truth_checks':  ['args_required'],
                 'false_checks': []}
 
 @Command(**requirements)
-def goto(caller, args):
+def goto(caller, args, **kwargs):
     args = args.split()
     try:
         vnum = int(args[0])
     except:
         vnum = None
+
     newroom = None
 
-    if vnum in area.roomlist.keys():
+    if vnum != None and vnum in area.roomlist:
         newroom = area.roomByVnum(vnum)
 
-
-    for oneplayer in player.playerlist:
-        if oneplayer.name == args[0].lower():
-            newroom = oneplayer.location
-
+    if args[0].lower() in player.playerlist_by_name:
+        newroom = player.playerlist_by_name[args[0].lower()].location
 
     if newroom == None:
         caller.write("That location doesn't appear to exist!")

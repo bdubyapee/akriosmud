@@ -32,7 +32,7 @@ def look(caller, args, **kwargs):
             theexits = ', '.join(theexits)
         else:
             name = f"{{B{caller.location.name.capitalize()}{{x"
-            theexits = ', '.join(caller.location.exits.keys())
+            theexits = ', '.join(caller.location.exits)
 
         desc = f"   {caller.location.description}"
         people = (person for person in caller.location.contents if person.is_player)
@@ -49,7 +49,7 @@ def look(caller, args, **kwargs):
                     pretext = "{W[{RAFK{W]{x"
                 else:
                     pretext = ""
-                caller.write(f"   {pretext} {dude.name.capitalize()} is {dude.position} here.")
+                caller.write(f"   {pretext} {dude.name_cap} is {dude.position} here.")
     elif len(args) > 0:
         # Is it a room extra description?
         if args in caller.location.extradescriptions:

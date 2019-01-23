@@ -14,26 +14,23 @@ version = 1
 
 requirements = {'capability': 'builder',
                 'generic_fail': "See {WHelp dig{x for help with this command.",
-                'truth_checks':  ['is_standing'],
+                'truth_checks':  ['is_standing', 'args_required'],
                 'false_checks': []}
 
 @Command(**requirements)
-def dig(caller, args):
+def dig(caller, args, **kwargs):
     helpstring = "Please see {Whelp dig{x for instructions."
     args = args.split()
-    if len(args) == 0:
-        caller.write(helpstring)
-        return
 
     if args[0] in exits.directions:
         if len(args) != 2:
             caller.write(helpstring)
         else:
             targetvnum = int(args[1])
-            if targetvnum in area.roomlist.keys():
+            if targetvnum in area.roomlist:
                 caller.write(f"Room {{W{targetvnum}{{x already exists!")
                 return
-            if args[0] in caller.location.exits.keys():
+            if args[0] in caller.location.exits:
                 caller.write("There is already an exit in that direction!")
                 return
             defaultexitdata = "false 0 0 false 0 0 0 none huge false true none"

@@ -21,7 +21,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def alias(caller, args):
+def alias(caller, args, **kwarg):
     args = args.split()
     if len(args) == 0:
         caller.write("Current alias' saved:")

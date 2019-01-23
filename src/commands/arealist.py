@@ -18,7 +18,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def arealist(caller, args):
+def arealist(caller, args, **kwargs):
     
     see_vnums = False
 

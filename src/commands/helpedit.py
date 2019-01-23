@@ -18,24 +18,22 @@ requirements = {'capability': 'admin',
                 'false_checks': []}
 
 @Command(**requirements)
-def helpedit(caller, args):
+def helpedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp helpedit{x for instructions."
     args = args.split()
-    isBuilding = hasattr(caller, 'building')
-    isEditing = hasattr(caller, 'editing')
 
     if len(args) == 0:
-        if isBuilding and not isEditing:
+        if caller.is_building and not caller.is_editing:
             caller.write(caller.building.display())
             return
-        elif not isBuilding:
+        elif not caller.is_building:
             caller.write(helpstring)
             return
 
-    if isBuilding and isEditing:
+    if caller.is_building and caller.is_editing:
         done = False
         if len(args) != 0:
-            if args[0].lower() in caller.editing.commands.keys():
+            if args[0].lower() in caller.editing.commands:
                 done = caller.editing.commands[args[0].lower()](' '.join(args[1:]))
                 if done == True:
                     caller.building.description = caller.editing.lines
@@ -54,7 +52,7 @@ def helpedit(caller, args):
             caller.editing.add('\n\r')
         return
 
-    if isBuilding:
+    if caller.is_building:
         if args[0] == 'done':
             caller.building.save()
             caller.building.load()
@@ -78,7 +76,7 @@ def helpedit(caller, args):
             caller.write(helpstring)
     else:
         if args[0] == 'new':
-            if len(args) != 2 or args[1] in helpsys.helpfiles.keys():
+            if len(args) != 2 or args[1] in helpsys.helpfiles:
                 caller.write(helpstring)
                 return
             else:
@@ -92,7 +90,7 @@ def helpedit(caller, args):
         elif args[0] == 'reload':
             helpsys.reload()
             caller.write("All helpfiles have been reloaded.")
-        elif args[0] in helpsys.helpfiles.keys():
+        elif args[0] in helpsys.helpfiles:
             caller.building = helpsys.helpfiles[args[0]]
             caller.building.builder = caller
             caller.write(f"Editing {{W{args[0]}{{x help entry.")

@@ -18,7 +18,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def commandslist(caller, args):
+def commandslist(caller, args, **kwargs):
     header = f"{{rCommands Available{{x"
     caller.write(f"{header:^80}")
     caller.write("")
@@ -26,20 +26,18 @@ def commandslist(caller, args):
     caller.write(f"{sub_header:^80}")
     caller.write("")
 
-    retval = []
+    cmd_list = [cmd for cmd in Command.commandhash
+                if Command.commandcapability[cmd] in caller.capability]
+
     
-    for comm in Command.commandhash:
-        if Command.commandcapability[comm] in caller.capability:
-            retval.append(comm)
-    
-    retval.sort()
+    cmd_list.sort()
     numcols = 4
-    while (len(retval) % numcols) > 0:
-        retval.append(' ')
-    for i in range(0, len(retval), numcols):
+    while (len(cmd_list) % numcols) > 0:
+        cmd_list.append(' ')
+    for i in range(0, len(cmd_list), numcols):
         output = ''
         for l in range(0, numcols):
-            output = f"{output}{retval[i+l]:20}"
+            output = f"{output}{cmd_list[i+l]:20}"
         caller.write(output)
 
     caller.write("")

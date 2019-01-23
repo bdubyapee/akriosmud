@@ -21,7 +21,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def afk(caller, args):
+def afk(caller, args, **kwargs):
     if caller.oocflags['afk'] == True:
         caller.oocflags['afk'] = False
         caller.write("AFK mode removed.")

@@ -19,10 +19,10 @@ requirements = {'capability': 'player',
                 'false_checks': ['is_sleeping']}
 
 @Command(**requirements)
-def close(caller, args):
-    if args in caller.location.exits.keys():
+def close(caller, args, **kwargs):
+    if args in caller.location.exits:
         exit = caller.location.exits[args]
-        if exit.destination in area.roomlist.keys():
+        if exit.destination in area.roomlist:
             # Does the exit have a door and is it closed?
             if exit.hasdoor == 'true':
                 if exit.locked == 'true' or exit.magiclocked == 'true':
