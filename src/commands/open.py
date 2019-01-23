@@ -15,14 +15,14 @@ version = 1
 
 requirements = {'capability': 'player',
                 'generic_fail': "See {WHelp open{x for help with this command.",
-                'truth_checks':  [],
+                'truth_checks':  ['args_required'],
                 'false_checks': ['is_sleeping']}
 
 @Command(**requirements)
-def open(caller, args):
-    if args in caller.location.exits.keys():
+def open(caller, args, **kwargs):
+    if args in caller.location.exits:
         exit = caller.location.exits[args]
-        if exit.destination in area.roomlist.keys():
+        if exit.destination in area.roomlist:
             # Does the exit have a door and is it closed?
             if exit.hasdoor == 'true':
                 if exit.dooropen == 'true':

@@ -62,7 +62,9 @@ class Player(livingthing.LivingThing):
                          'viewOLCdetails' : False,
                          'coding': False}
         self.oocflags_stored = {'newbie': 'true',
-                                'mmchat': 'true'}
+                                'mmchat': 'true',
+                                'ooc': 'true',
+                                'quote': 'true'}
         self.exp = {'combat': 0,
                     'explore': 0,
                     'profession': 0}

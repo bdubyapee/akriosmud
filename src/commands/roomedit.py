@@ -18,24 +18,22 @@ requirements = {'capability': 'builder',
                 'false_checks': []}
 
 @Command(**requirements)
-def roomedit(caller, args):
+def roomedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp roomedit{x for instructions."
     args = args.split()
-    isBuilding = hasattr(caller, 'building')
-    isEditing = hasattr(caller, 'editing')
 
     if len(args) == 0:
-        if isBuilding and not isEditing:
+        if caller.is_building and not caller.is_editing:
             caller.write(caller.building.display())
             return
-        elif not isBuilding:
+        elif not caller.is_building:
             caller.write(helpstring)
             return
 
-    if isBuilding and isEditing:
+    if caller.is_building and caller.is_editing:
         done = False
         if len(args) != 0:
-            if args[0].lower() in caller.editing.commands.keys():
+            if args[0].lower() in caller.editing.commands:
                 done = caller.editing.commands[args[0].lower()](' '.join(args[1:]))
                 if done == True:
                     caller.building.description = caller.editing.lines
@@ -54,7 +52,7 @@ def roomedit(caller, args):
             caller.editing.add('\n\r')
         return
 
-    if isBuilding:
+    if caller.is_building:
         if args[0] == 'done':
             caller.building.area.save()
             caller.building.builder = None
@@ -87,7 +85,7 @@ def roomedit(caller, args):
                 if myvnum < myarea.vnumrange[0] or myvnum > myarea.vnumrange[1]:
                     caller.write("That vnum is not in this areas range!")
                     return
-                if myvnum in area.roomlist.keys():
+                if myvnum in area.roomlist:
                     caller.write("That room already exists.  Please edit it directly.")
                     return
                 else:
@@ -109,7 +107,7 @@ def roomedit(caller, args):
             except:
                 caller.write("Vnum argument must be an integer")
                 return
-            if myvnum in area.roomlist.keys() and myvnum in caller.location.area.roomlist.keys():
+            if myvnum in area.roomlist and myvnum in caller.location.area.roomlist:
                 newroom = area.roomByVnum(1)
                 for person in area.roomlist[myvnum].playerlist:
                     util.moveFrom(person, person.location.playerlist)
@@ -117,7 +115,7 @@ def roomedit(caller, args):
                 area.roomlist.pop(myvnum)
                 caller.location.area.roomlist.pop(myvnum)
                 caller.write(f"Room {myvnum} deleted.")
-        elif myvnum in area.roomlist.keys():
+        elif myvnum in area.roomlist:
             caller.building = area.roomlist[int(args[0])]
             caller.building.builder = caller
             caller.write(f"Editing room: {{W{args[0]}{{x.")

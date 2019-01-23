@@ -20,7 +20,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def sleep(caller, args):
+def sleep(caller, args, **kwargs):
     if hasattr(caller, "position"):
         if caller.position == "sleeping":
             caller.write("You are already sleeping.")
@@ -28,7 +28,7 @@ def sleep(caller, args):
         elif caller.position == "standing" or caller.position == "sitting":
             caller.position = "sleeping"
             caller.write("You lay down and go to sleep.")
-            message = f"{caller.name.capitalize()} lays down to sleep."
+            message = f"{caller.name_cap} lays down to sleep."
             comm.message_to_room(caller.location, caller, message)
             return
 

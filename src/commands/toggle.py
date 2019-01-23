@@ -47,6 +47,22 @@ def toggle(caller, args):
             caller.oocflags_stored['mmchat'] = 'true'
             caller.write("\n\r{WMultiMUD Chat enabled.{x")
 
+    if args == 'ooc':
+        if caller.oocflags_stored['ooc'] == 'true':
+            caller.oocflags_stored['ooc'] = 'false'
+            caller.write("\n\r{WOOC Channel disabled.{x")
+        else:
+            caller.oocflags_stored['ooc'] = 'true'
+            caller.write("\n\r{WOOC Channel enabled.{x")
+
+    if args == 'quote':
+        if caller.oocflags_stored['quote'] == 'true':
+            caller.oocflags_stored['quote'] = 'false'
+            caller.write("\n\r{WQuote Channel disabled.{x")
+        else:
+            caller.oocflags_stored['quote'] = 'true'
+            caller.write("\n\r{WQuote Channel enabled.{x")
+
     if caller.is_admin:
         if args == 'gdebug':
             if grapevine.gsocket.debug:
@@ -67,9 +83,21 @@ def toggle(caller, args):
     else:
         mmchat = "Disabled"
 
+    if caller.oocflags_stored['ooc'] == 'true':
+        ooc = "Enabled"
+    else:
+        ooc = "Disabled"
+
+    if caller.oocflags_stored['quote'] == 'true':
+        quote = "Enabled"
+    else:
+        quote = "Disabled"
+
     caller.write("\n\rCurrently available settings to toggle:")
     caller.write(f"    {{Wnewbie{{x : {{R{newbie}{{x")
     caller.write(f"    {{Wmmchat{{x : {{R{mmchat}{{x")
+    caller.write(f"    {{Wooc{{x    : {{R{ooc}{{x")
+    caller.write(f"    {{Wquote{{x  : {{R{quote}{{x")
     caller.write(f"")
     if caller.is_admin:
         caller.write(f"    {{Wgdebug{{x : {{R{grapevine.gsocket.debug}{{x")

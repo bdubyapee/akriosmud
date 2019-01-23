@@ -20,21 +20,18 @@ requirements = {'capability': 'player',
 
 @Command(**requirements)
 def quit(caller, args, **kwargs):
-    isBuilding = hasattr(caller, 'building')
-    isEditing = hasattr(caller, 'editing')
-
-    if isBuilding or isEditing:
+    if caller.is_building or caller.is_editing: 
         caller.write("You must finish building first!")
         return
 
     caller.save()
-    # Notify Grapevine of return player logout.
     grapevine.gsocket.msg_gen_player_logout(caller.name)
     caller.location.contents.remove(caller)
     caller.sock.promptable = False
     caller.events.clear()
     conn = login.Login(caller.name)
     testsock = caller.sock
+
     if caller in player.playerlist:
         player.playerlist.remove(caller)
     if caller.name in player.playerlist_by_name:
@@ -45,8 +42,10 @@ def quit(caller, args, **kwargs):
         reason = "[IDLE TIMEOUT] "
     else:
         reason = ""
+
     comm.wiznet(f"{reason}{caller.name} logging out of Akrios.")
     del(caller)
+
     conn.sock = testsock
     conn.sock.owner = conn
     conn.main_menu()

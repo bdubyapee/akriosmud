@@ -18,11 +18,11 @@ requirements = {'capability': 'builder',
                 'false_checks': []}
 
 @Command(**requirements)
-def raceslist(caller, args):
+def raceslist(caller, args, **kwargs):
     caller.write("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=Races=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
     caller.write("")
     retval = []
-    for arace in races.racesdict.keys():
+    for arace in races.racesdict:
         retval.append(races.racesdict[arace].name.capitalize())
     retval.sort()
     numcols = 6
@@ -31,6 +31,6 @@ def raceslist(caller, args):
     for i in range(0, len(retval), numcols):
         output = ''
         for l in range(0, numcols):
-            output += f"{retval[i+l]:12}"
+            output = f"{output}{retval[i+l]:12}"
         caller.write(output)
 

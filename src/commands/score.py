@@ -19,7 +19,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def score(caller, args):
+def score(caller, args, **kwargs):
     caller.write("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=Player Information=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
     caller.write("Name: {0} {1}".format(caller.name.capitalize(), caller.title))
     caller.write("Gender: {0}  Race: {1} Discipline: {2}".format(caller.gender.capitalize(), caller.race.name.capitalize(), caller.discipline.capitalize()))

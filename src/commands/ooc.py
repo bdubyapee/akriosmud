@@ -21,9 +21,15 @@ requirements = {'capability': 'player',
 
 @Command(**requirements)
 def ooc(caller, args, **kwargs):
+    if caller.oocflags_stored['ooc'] == 'false':
+        caller.write("You have the OOC channel disabled.  Use the {Wtoggle{x command to enable it.")
+        return
+
     target_list = kwargs['target']
     args_ = kwargs['post']
     for person in target_list:
+        if person.oocflags_stored['ooc'] == 'false':
+            continue
         if person == caller:
             name = "You"
             plural = ''

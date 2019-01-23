@@ -20,7 +20,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def who(caller, args):
+def who(caller, args, **kwargs):
     
     caller.write("       {W,         {W/|\\")
     caller.write("       {W|\        {W|{PO{W|{D________________________________________________")
@@ -39,9 +39,9 @@ def who(caller, args):
             extra0 = 'BLD'
         else:
             extra0 = person.race.name.capitalize()
-        if hasattr(person, 'building'):
+        if person.is_building:
             extra1 = '{W[{RBuilding{W]{x'
-        elif hasattr(person, 'editing'):
+        elif person.is_editing:
             extra1 = '{W[{REditing{W]{x'
         else:
             extra1 = ''
@@ -51,7 +51,7 @@ def who(caller, args):
             extra2 = '{W[{RCoding{W]{x'
         else:
             extra2 = ''
-        caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(), person.name.capitalize(), person.title, extra2, extra1))
+        caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(), person.name_cap, person.title, extra2, extra1))
 
     caller.write("\n\r")
     caller.write("{BPlayers in other Realms on the Grapevine network{x:")

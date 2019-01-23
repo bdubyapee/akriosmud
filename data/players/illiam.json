@@ -69,9 +69,9 @@
     "json_version": 1,
     "knownpeople": {},
     "lasthost": "::1",
-    "lasttime": "Wed Jan 23 20:08:58 2019",
+    "lasttime": "Wed Jan 23 21:11:51 2019",
     "level": 1,
-    "location": 101,
+    "location": 102,
     "long_description": "",
     "maxhp": 1,
     "maximum_stat": {
@@ -96,7 +96,9 @@
     "name": "illiam",
     "oocflags_stored": {
         "mmchat": "true",
-        "newbie": "true"
+        "newbie": "true",
+        "ooc": "true",
+        "quote": "true"
     },
     "password": "$2b$12$G9WaR6whBHpB42/4eJP/LOuFljuFtkDWh/I9B39KER1vXrP1z7GGe",
     "position": "standing",

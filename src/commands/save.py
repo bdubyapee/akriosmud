@@ -19,7 +19,7 @@ requirements = {'capability': 'player',
                 'false_checks': []}
 
 @Command(**requirements)
-def save(caller, args):
+def save(caller, args, **kwargs):
     caller.save()
     caller.write("Saved.  Your character is also autosaved every 5 minutes.")
 

@@ -14,15 +14,12 @@ version = 1
 
 requirements = {'capability': 'player',
                 'generic_fail': "See {WHelp shortdescription{x for help with this command.",
-                'truth_checks':  [],
+                'truth_checks':  ['args_required'],
                 'false_checks': []}
 
 @Command(**requirements)
-def shortdescription(caller, args):
-    args = args.split()
-    if len(args) <= 0:
-        caller.write("Please see {Whelp shortdescription{x for help.")
-        return
-    caller.short_description = ' '.join(args)[:80]
+def shortdescription(caller, args, **kwargs):
+    caller.short_description = args[:78]
+    
     caller.write('{xYour short description has been set.')
 
