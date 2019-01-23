@@ -11,6 +11,7 @@ import time
 import uuid
 
 import comm
+import grapevine
 import player
 import server
 import world
@@ -250,6 +251,7 @@ def reoccuring_event(func_to_decorate):
 
 
 def event_grapevine_restart(event_):
+    comm.wiznet("Grapevine restart initiated")
     event_.owner.gsocket = grapevine.GrapevineSocket()
 
 @reoccuring_event
@@ -329,7 +331,7 @@ def event_grapevine_receive_message(event_):
                 return
 
         if hasattr(rcvd_msg, "event") and rcvd_msg.event == "restart":
-            comm.log(world.serverlog, "Received restart event from Grapevine.")
+            comm.wiznet("Received restart event from Grapevine.")
             restart_time = rcvd_msg.restart_downtime
             restart_fuzz = 20
  
@@ -351,6 +353,7 @@ def event_grapevine_state_check(event_):
         return
     else:
         grapevine_.gsocket_disconnect()
+        comm.wiznet("Grapevine disconnect in event state check.")
 
         nextevent = Event()
         nextevent.owner = grapevine_

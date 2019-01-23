@@ -211,7 +211,7 @@ class Command(object):
                 caller.write("Huh?")
                 return
 
-            # If the command has target reqs perform those here, else write generic fail msg.
+            # If the command has target requirements perform those here.
             if 'target' in self.dec_kwargs:
                 target, post = Command.targets[self.dec_kwargs['target']](caller, args_)
 

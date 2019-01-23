@@ -69,7 +69,7 @@
     "json_version": 1,
     "knownpeople": {},
     "lasthost": "::1",
-    "lasttime": "Wed Jan 23 21:11:51 2019",
+    "lasttime": "Wed Jan 23 23:49:16 2019",
     "level": 1,
     "location": 102,
     "long_description": "",
@@ -96,7 +96,7 @@
     "name": "illiam",
     "oocflags_stored": {
         "mmchat": "true",
-        "newbie": "true",
+        "newbie": "false",
         "ooc": "true",
         "quote": "true"
     },
