@@ -24,7 +24,10 @@
         "slashing": 0
     },
     "capability": [
-        "player"
+        "player",
+        "admin",
+        "builder",
+        "deity"
     ],
     "clan": null,
     "council": null,
@@ -69,9 +72,9 @@
     "json_version": 1,
     "knownpeople": {},
     "lasthost": "::1",
-    "lasttime": "Wed Jan 23 23:49:16 2019",
+    "lasttime": "Thu Jan 24 01:25:36 2019",
     "level": 1,
-    "location": 102,
+    "location": 101,
     "long_description": "",
     "maxhp": 1,
     "maximum_stat": {

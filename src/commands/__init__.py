@@ -274,10 +274,8 @@ from . import playerinfo
 from . import promote
 from . import raceedit
 from . import raceslist
-from . import reload
 from . import roomedit
 from . import shutdown
-from . import test_command
 from . import viewolcdetails
 
 # Player Commands

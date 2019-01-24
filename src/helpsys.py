@@ -25,7 +25,7 @@ WRITE_NEW_FILE_VERSION = False
 Section = namedtuple("Section", "name")
 
 sections = {"player": Section("player"),
-            "immortal": Section("immortal"),
+            "administrative": Section("administrative"),
             "builder": Section("builder"),
             "deity": Section("deity")}
 
