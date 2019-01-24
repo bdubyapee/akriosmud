@@ -169,7 +169,9 @@ class GrapevineReceivedMessage():
         if self.is_event_status("success"):
             self.gsock.state["authenticated"] = True
             self.gsock.msg_gen_chan_subscribe()
+            comm.wiznet("Received authentication success from Grapevine.")
             self.gsock.msg_gen_player_status_query()
+            comm.wiznet("Sending player status query to all Grapevine games.")
         elif self.gsock.state["authenticated"] == False:
             self.gsock.msg_gen_authenticate()
         
@@ -464,7 +466,7 @@ class GrapevineSocket(WebSocket):
 
         # The below is a log specific to Akrios.  Leave commented or replace.
         # XXX
-        comm.log(world.serverlog, "Sending Auth to Grapevine Network.")
+        comm.wiznet("Sending Auth to Grapevine Network.")
         return True
 
     def gsocket_disconnect(self):
