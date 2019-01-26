@@ -1,11 +1,10 @@
 {
     "creator": "belial",
-    "description": "{RHelp Topic{W: quit / rent{x\n\nQuit and rent allow you to exit the game. Most players will have to rent\nat an inn to begin with. Those that eventually purchase their own home will\nbe able to quit there.",
+    "description": "{RHelp Topic{W: quit{x\n\nThe {Wquit{x command allows you to exit the game at your current\nlocation.",
     "json_class_name": "__oneHelp__",
     "json_version": 1,
     "keywords": [
-        "quit",
-        "rent"
+        "quit"
     ],
     "section": "player",
     "topics": "commands",
