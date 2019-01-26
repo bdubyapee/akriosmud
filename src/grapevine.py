@@ -168,6 +168,7 @@ class GrapevineReceivedMessage():
         '''
         if self.is_event_status("success"):
             self.gsock.state["authenticated"] = True
+            self.gsock.state["connected"] = True
             self.gsock.msg_gen_chan_subscribe()
             comm.wiznet("Received authentication success from Grapevine.")
             self.gsock.msg_gen_player_status_query()
@@ -461,7 +462,7 @@ class GrapevineSocket(WebSocket):
         # We need to set the below on the socket as websockets.WebSocket is 
         # blocking by default.  :(
         self.sock.setblocking(0)
-        self.state["connected"] = True
+        #self.state["connected"] = True
         self.outbound_frame_buffer.append(self.msg_gen_authenticate())
 
         # The below is a log specific to Akrios.  Leave commented or replace.
