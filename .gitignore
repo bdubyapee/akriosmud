@@ -28,3 +28,4 @@ data/log/*.log
 
 # Temp #
 data/players/jubelo.json
+data/players/
