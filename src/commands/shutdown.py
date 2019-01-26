@@ -25,7 +25,7 @@ def shutdown(caller, args, **kwargs):
     for each_player in player.playerlist:
         each_player.save()    
         if each_player.is_building or each_player.is_editing:
-            caller.write("{eachplayer.name_cap} is Building right now! No Shutdown for you!")
+            caller.write(f"{each_player.name_cap} is Building right now! No Shutdown for you!")
             return
 
     server.Server.done = True

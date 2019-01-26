@@ -1,6 +1,6 @@
 {
-    "agemaximum": 0,
-    "ageminimum": 0,
+    "agemaximum": 15,
+    "ageminimum": 1,
     "agility": 75,
     "alignment": [
         "neutral"
@@ -42,7 +42,7 @@
     "br_physical": 0,
     "br_poison": 0,
     "charisma": 70,
-    "constitution": 45,
+    "constitution": 25,
     "description": "Independant animals that sleep more often than not. They have sharp claws\nand teeth, but usually only use them on animals smaller than themselves.",
     "descriptive": "a cat",
     "eyes": [
@@ -57,9 +57,9 @@
         "gray",
         "calico"
     ],
-    "heightfeet": 0,
+    "heightfeet": 1,
     "heightinches": 0,
-    "intelligence": 50,
+    "intelligence": 30,
     "json_class_name": "__oneRace__",
     "json_version": 1,
     "luck": 70,
@@ -71,9 +71,9 @@
         "black"
     ],
     "special_skills": {},
-    "speed": 70,
+    "speed": 60,
     "start_location": {},
-    "strength": 30,
+    "strength": 15,
     "undead": "false",
     "wearlocations": [
         "neck",

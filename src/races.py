@@ -196,71 +196,34 @@ class oneRace(olc.Editable):
 
     def save(self):
         if self.json_version == 1:
-            with open(f"{self.path}.json", "w") as thefile:
+            with open(f"{self.path}", "w") as thefile:
                 thefile.write(self.toJSON())
                 
 
     def display(self):
-        retvalue = "Name: {0}\n\r"\
-                   "Alignment: {1}\n\r"\
-                   "Playable: {2}\n\r"\
-                   "Descriptive: {3}\n\r"\
-                   "Size: {4}\n\r"\
-                   "HeightFeet: {5}\n\r"\
-                   "HeightInches: {6}\n\r"\
-                   "Undead: {7}\n\r"\
-                   "Weight: {8}\n\r"\
-                   "AgeMinimum: {9}\n\r"\
-                   "AgeMaximum: {10}\n\r"\
-                   "BaSlashing: {11}\n\r"\
-                   "BaBashing: {12}\n\r"\
-                   "BaPiercing: {13}\n\r"\
-                   "BaLashing: {14}\n\r"\
-                   "BrFire: {15}\n\r"\
-                   "BrIce: {16}\n\r"\
-                   "BrLightning: {17}\n\r"\
-                   "BrEarth: {18}\n\r"\
-                   "BrDisease: {19}\n\r"\
-                   "BrPoison: {20}\n\r"\
-                   "BrMagic: {21}\n\r"\
-                   "BrHoly: {22}\n\r"\
-                   "BrMental: {23}\n\r"\
-                   "BrPhysical: {24}\n\r"\
-                   "Skin: {25}\n\r"\
-                   "Eyes: {26}\n\r"\
-                   "Hair: {27}\n\r"\
-                   "Speed: {28}\n\r"\
-                   "Agility: {29}\n\r"\
-                   "Strength: {30}\n\r"\
-                   "Intelligence: {31}\n\r"\
-                   "Wisdom: {32}\n\r"\
-                   "Charisma: {33}\n\r"\
-                   "Luck: {34}\n\r"\
-                   "Constitution: {35}\n\r"\
-                   "WearLocations: {36}\n\r"\
-                   "BodyParts: {37}\n\r"\
-                   "Start Locations: {38}\n\r"\
-                   "Special Skills: {39}\n\r"\
-                   "Description:\n\r"\
-                   "{40}...\n\r".format(
-                      self.name.capitalize(), self.alignment,
-                      self.playable, self.descriptive,
-                      self.size, self.heightfeet, self.heightinches,
-                      self.undead,
-                      self.weight, self.ageminimum, self.agemaximum,
-                      self.ba_slashing, self.ba_bashing, self.ba_piercing, self.ba_lashing,
-                      self.br_fire, self.br_ice, self.br_lightning,
-                      self.br_earth, self.br_disease, self.br_poison,
-                      self.br_magic, self.br_holy, self.br_mental,
-                      self.br_physical,
-                      self.skin, self.eyes, self.hair, self.speed,
-                      self.agility, self.strength,
-                      self.intelligence, self.wisdom, self.charisma,
-                      self.luck, self.constitution,
-                      self.wearlocations, self.bodyparts,
-                      self.start_location,
-                      self.special_skills,
-                      self.description[:180])
+        retvalue = (f"Name: {self.name.capitalize():15}  Alignment: {' '.join(self.alignment):15}  Playable: {self.playable:15}\n\r"
+                    f"Descriptive: {self.descriptive:70}\n\r"
+                    f"Size: {self.size:10}  HeightFeet: {self.heightfeet:<2}   HeightInches: {self.heightinches:<2}\n\r"
+                    f"Undead: {self.undead:11}   Weight: {self.weight:<5}  AgeMinimum: {self.ageminimum:<4}  AgeMaximum: {self.agemaximum:<4}\n\r"
+                    f"\n\r"
+                    f"Speed: {self.speed:4}  Agility: {self.agility:3} Strength: {self.strength:3} Intelligence: {self.intelligence:3}\n\r"
+                    f"Wisdom: {self.wisdom:3} Charisma: {self.charisma:3} Luck: {self.luck:7} Constitution: {self.constitution:3}\n\r"
+                    f"\n\r"
+                    f"\n\r"
+                    f"Br_Fire: {self.br_fire:8}     Br_Ice: {self.br_ice:8}     Ba_Slashing: {self.ba_slashing:3}\n\r"
+                    f"Br_Lightning: {self.br_lightning:3}     Br_Earth: {self.br_earth:6}     Ba_Bashing: {self.ba_bashing:4}\n\r"
+                    f"Br_Disease: {self.br_disease:5}     Br_Poison: {self.br_poison:5}     Ba_Piercing: {self.ba_piercing:3}\n\r"
+                    f"Br_Magic: {self.br_magic:7}     Br_Holy: {self.br_holy:7}     Ba_Lashing: {self.ba_lashing:4}\n\r"
+                    f"Br_Mental: {self.br_mental:6}     Br_Physical: {self.br_physical:3}\n\r"
+                    f"\n\r"
+                    f"Skin: {', '.join(self.skin):35} Eyes: {', '.join(self.eyes):35}\n\r"
+                    f"Hair: {', '.join(self.hair):60}\n\r"
+                    f"WearLocations: {', '.join(self.wearlocations)}\n\r"
+                    f"BodyParts:\n\r {', '.join(self.bodyparts)}\n\r"
+                    f"Start_Location: {self.start_location}\n\r"
+                    f"Special_Skills: {self.special_skills}\n\r"
+                    f"Description:\n\r"
+                    f"{self.description[:180]}...\n\r")
         return retvalue
    
 goodraces = []
