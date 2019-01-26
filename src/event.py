@@ -377,7 +377,8 @@ def event_grapevine_state_check(event_):
 
 @reoccuring_event
 def event_admin_system_status(event_):
-
+    if event_.owner.is_building or event_.owner.is_editing:
+        return
     event_count = {'player': 0,
                    'mobile': 0,
                    'object': 0,
