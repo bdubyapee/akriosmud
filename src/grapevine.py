@@ -454,9 +454,10 @@ class GrapevineSocket(WebSocket):
         self.other_games_players = {}
 
 
-    def gsocket_connect(self):
+    def gsocket_connect(self, restart=False):
         try:
             result = self.connect("wss://grapevine.haus/socket")
+            comm.wiznet("Attempting connection to Grapevine.")
         except:
             return False
         # We need to set the below on the socket as websockets.WebSocket is 
@@ -464,6 +465,9 @@ class GrapevineSocket(WebSocket):
         self.sock.setblocking(0)
         #self.state["connected"] = True
         self.outbound_frame_buffer.append(self.msg_gen_authenticate())
+
+        if restart:
+            event.init_events_grapevine(self)
 
         # The below is a log specific to Akrios.  Leave commented or replace.
         # XXX

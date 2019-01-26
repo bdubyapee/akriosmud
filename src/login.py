@@ -284,12 +284,12 @@ class Login:
         bonus = 5
         if dice(1,20) == 20:
             bonus += 10
-            self.sock.dispatch("")
-            self.sock.dispatch("{W*** You rolled a 1d20 bonus! ***{x")
+            #self.sock.dispatch("")
+            #self.sock.dispatch("{W*** You rolled a 1d20 bonus! ***{x")
         if dice(1,100) == 100:
             bonus += 20
-            self.sock.dispatch("")
-            self.sock.dispatch("{R!!! You rolled a 1d100 bonus! !!!{x")
+            #self.sock.dispatch("")
+            #self.sock.dispatch("{R!!! You rolled a 1d100 bonus! !!!{x")
         self.newstats['strength'] = dice(6, 18, bonus)
         self.newstats['intelligence'] = dice(6, 18, bonus)
         self.newstats['wisdom'] = dice(6, 18, bonus)

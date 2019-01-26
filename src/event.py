@@ -251,8 +251,8 @@ def reoccuring_event(func_to_decorate):
 
 
 def event_grapevine_restart(event_):
-    comm.wiznet("Grapevine resitart event initiated")
-    grapevine.gsocket.gsocket_connect()
+    comm.wiznet("Grapevine restart event initiated")
+    grapevine.gsocket.gsocket_connect(restart=True)
 
 @reoccuring_event
 def event_grapevine_send_message(event_):

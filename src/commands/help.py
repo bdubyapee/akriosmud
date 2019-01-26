@@ -57,7 +57,11 @@ def help(caller, args, **kwargs):
 
         # Then build the Cols list per topic and display.
         for eachtopic in topics_sorted:
-            caller.write(f"\n\r{{B{eachtopic.capitalize():^77}{{x")
+            if eachtopic == "game, rp, mythos":
+                temp_topic = "Game, RP, Mythos"
+                caller.write(f"\n\r{{B{temp_topic:^77}{{x")
+            else:
+                caller.write(f"\n\r{{B{eachtopic.capitalize():^77}{{x")
 
             the_keywords = topics[eachtopic]
             the_keywords.sort()
