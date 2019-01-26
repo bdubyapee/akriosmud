@@ -81,13 +81,13 @@ class oneHelp(olc.Editable):
             thefile.write(self.toJSON())
 
     def display(self):
-        return (f"{{WCreator{{x: {self.creator}\n"
-                f"{{WViewable{{x: {self.viewable}\n"
-                f"{{WKeywords{{x: {self.keywords}\n"
-                f"{{WTopics{{x: {self.topics}\n"
-                f"{{WSection{{x: {self.section}\n"
-                f"{{WDescription{{x:\n\r"
-                f"{self.description[:190]}|...\n\r")
+        return (f"{{BCreator{{x: {self.creator}\n"
+                f"{{BViewable{{x: {self.viewable}\n"
+                f"{{BKeywords{{x: {', '.join(self.keywords)}\n"
+                f"{{BTopics{{x: {self.topics}\n"
+                f"{{BSection{{x: {self.section}\n"
+                f"{{BDescription{{x:\n\r"
+                f"{self.description[:190]}|...{{x\n\r")
 
 
 helpfiles = {}

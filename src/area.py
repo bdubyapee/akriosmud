@@ -175,14 +175,14 @@ class oneArea(olc.Editable):
         arealist.append(self)
    
     def display(self):
-        return(f"{{WName{{x: {self.name}\n"
-               f"{{WAuthor{{x: {self.author}\n"
-               f"{{WPlane{{x: {self.plane}\n"
-               f"{{WHometown{{x: {self.hometown}\n"
-               f"{{WDifficulty{{x: {self.difficulty}\n"
-               f"{{WAlignment{{x: {self.alignment}\n"
-               f"{{WLocation X{{x: {self.locationx}\n"
-               f"{{WLocation Y{{x: {self.locationy}\n"
-               f"{{WVnum Low{{x: {self.vnumlow}\n"
-               f"{{WVnum High{{x: {self.vnumhigh}\n")
+        return(f"{{BName{{x: {self.name}\n"
+               f"{{BAuthor{{x: {self.author}\n"
+               f"{{BPlane{{x: {self.plane}\n"
+               f"{{BHometown{{x: {self.hometown}\n"
+               f"{{BDifficulty{{x: {self.difficulty}\n"
+               f"{{BAlignment{{x: {self.alignment}\n"
+               f"{{BLocation X{{x: {self.locationx}\n"
+               f"{{BLocation Y{{x: {self.locationy}\n"
+               f"{{BVnum Low{{x: {self.vnumlow}\n"
+               f"{{BVnum High{{x: {self.vnumhigh}\n")
 

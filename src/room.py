@@ -120,14 +120,15 @@ class oneRoom(olc.Editable):
         area.roomlist[self.vnum] = self
 
     def display(self):
-        return(f"{{WArea{{x: {self.area.name}\n"
-               f"{{WBuilder{{x: {self.builder.name}\n"
-               f"{{WVnum{{x: {self.vnum}\n"
-               f"{{WName{{x: {self.name}\n"
-               f"{{WDescription{{x: {self.description}\n"
-               f"{{WProperty Value{{x: {self.propertyvalue}\n"
-               f"{{WFlags{{x: {self.flags}\n"
-               f"{{WSector Type{{x: {self.sectortype}\n"
-               f"{{WExtra Desc{{x: {self.extradescriptions}\n"
-               f"{{WExits{{x: {', '.join(self.exits)}\n")
+        return(f"{{BArea{{x: {self.area.name}\n"
+               f"{{BBuilder{{x: {self.builder.name}\n"
+               f"{{BVnum{{x: {self.vnum}\n"
+               f"{{BName{{x: {self.name}\n"
+               f"{{BProperty Value{{x: {self.propertyvalue}\n"
+               f"{{BFlags{{x: {self.flags}\n"
+               f"{{BSector Type{{x: {self.sectortype}\n"
+               f"{{BExtra Desc{{x: {self.extradescriptions}\n"
+               f"{{BExits{{x: {', '.join(self.exits)}\n"
+               f"{{BDescription{{x: {self.description[:180]}{{x\n")
+
 

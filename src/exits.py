@@ -132,19 +132,19 @@ class Exit(olc.Editable):
         self.room.exits[self.direction] = self
 
     def display(self):
-        return (f"{{WRoom{{x: {self.room.name}\n"
-                f"{{WDirection{{x: {self.direction}\n"
-                f"{{WDestination{{x: {self.destination}\n"
-                f"{{WLocked{{x: {self.locked}\n"
-                f"{{WLock Difficulty{{x: {self.lockdifficulty}\n"
-                f"{{WKey Vnum{{x: {self.keyvnum}\n"
-                f"{{WMagic Locked{{x: {self.magiclocked}\n"
-                f"{{WPhysical Difficulty{{x: {self.physicaldifficulty}\n"
-                f"{{WMagic Lock Difficulty{{x: {self.magiclockdifficulty}\n"
-                f"{{WCaster ID{{x: {self.casterid}\n"
-                f"{{WMagic Lock Type{{x: {self.magiclocktype}\n"
-                f"{{WSize{{x: {self.size}\n"
-                f"{{WHas Door{{x: {self.hasdoor}\n"
-                f"{{WDoor Open{{x: {self.dooropen}\n"
-                f"{{WKeywords{{x: {self.keywords}\n")
+        return (f"{{BRoom{{x: {self.room.name}\n"
+                f"{{BDirection{{x: {self.direction}\n"
+                f"{{BDestination{{x: {self.destination}\n"
+                f"{{BLocked{{x: {self.locked}\n"
+                f"{{BLock Difficulty{{x: {self.lockdifficulty}\n"
+                f"{{BKey Vnum{{x: {self.keyvnum}\n"
+                f"{{BMagic Locked{{x: {self.magiclocked}\n"
+                f"{{BPhysical Difficulty{{x: {self.physicaldifficulty}\n"
+                f"{{BMagic Lock Difficulty{{x: {self.magiclockdifficulty}\n"
+                f"{{BCaster ID{{x: {self.casterid}\n"
+                f"{{BMagic Lock Type{{x: {self.magiclocktype}\n"
+                f"{{BSize{{x: {self.size}\n"
+                f"{{BHas Door{{x: {self.hasdoor}\n"
+                f"{{BDoor Open{{x: {self.dooropen}\n"
+                f"{{BKeywords{{x: {', '.join(self.keywords)}\n")
 

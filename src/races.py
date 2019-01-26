@@ -201,30 +201,29 @@ class oneRace(olc.Editable):
                 
 
     def display(self):
-        retvalue = (f"Name: {self.name.capitalize():15}  Alignment: {' '.join(self.alignment):15}  Playable: {self.playable:15}\n\r"
-                    f"Descriptive: {self.descriptive:70}\n\r"
-                    f"Size: {self.size:10}  HeightFeet: {self.heightfeet:<2}   HeightInches: {self.heightinches:<2}\n\r"
-                    f"Undead: {self.undead:11}   Weight: {self.weight:<5}  AgeMinimum: {self.ageminimum:<4}  AgeMaximum: {self.agemaximum:<4}\n\r"
-                    f"\n\r"
-                    f"Speed: {self.speed:4}  Agility: {self.agility:3} Strength: {self.strength:3} Intelligence: {self.intelligence:3}\n\r"
-                    f"Wisdom: {self.wisdom:3} Charisma: {self.charisma:3} Luck: {self.luck:7} Constitution: {self.constitution:3}\n\r"
-                    f"\n\r"
-                    f"\n\r"
-                    f"Br_Fire: {self.br_fire:8}     Br_Ice: {self.br_ice:8}     Ba_Slashing: {self.ba_slashing:3}\n\r"
-                    f"Br_Lightning: {self.br_lightning:3}     Br_Earth: {self.br_earth:6}     Ba_Bashing: {self.ba_bashing:4}\n\r"
-                    f"Br_Disease: {self.br_disease:5}     Br_Poison: {self.br_poison:5}     Ba_Piercing: {self.ba_piercing:3}\n\r"
-                    f"Br_Magic: {self.br_magic:7}     Br_Holy: {self.br_holy:7}     Ba_Lashing: {self.ba_lashing:4}\n\r"
-                    f"Br_Mental: {self.br_mental:6}     Br_Physical: {self.br_physical:3}\n\r"
-                    f"\n\r"
-                    f"Skin: {', '.join(self.skin):35} Eyes: {', '.join(self.eyes):35}\n\r"
-                    f"Hair: {', '.join(self.hair):60}\n\r"
-                    f"WearLocations: {', '.join(self.wearlocations)}\n\r"
-                    f"BodyParts:\n\r {', '.join(self.bodyparts)}\n\r"
-                    f"Start_Location: {self.start_location}\n\r"
-                    f"Special_Skills: {self.special_skills}\n\r"
-                    f"Description:\n\r"
-                    f"{self.description[:180]}...\n\r")
-        return retvalue
+        return (f"{{BName{{x: {self.name.capitalize():15}  {{BAlignment{{x: {' '.join(self.alignment):15}  {{BPlayable{{x: {self.playable:15}\n\r"
+                f"{{BDescriptive{{x: {self.descriptive:70}\n\r"
+                f"{{BSize{{x: {self.size:10}  {{BHeightFeet{{x: {self.heightfeet:<2}   {{BHeightInches{{x: {self.heightinches:<2}\n\r"
+                f"{{BUndead{{x: {self.undead:11}   {{BWeight{{x: {self.weight:<5}  {{BAgeMinimum{{x: {self.ageminimum:<4}  {{BAgeMaximum{{x: {self.agemaximum:<4}\n\r"
+                f"\n\r"
+                f"{{BSpeed{{x: {self.speed:4}  {{BAgility{{x: {self.agility:3} {{BStrength{{x: {self.strength:3} {{BIntelligence{{x: {self.intelligence:3}\n\r"
+                f"{{BWisdom{{x: {self.wisdom:3} {{BCharisma{{x: {self.charisma:3} {{BLuck{{x: {self.luck:7} {{BConstitution{{x: {self.constitution:3}\n\r"
+                f"\n\r"
+                f"\n\r"
+                f"{{BBr_Fire{{x: {self.br_fire:8}     {{BBr_Ice{{x: {self.br_ice:8}     {{BBa_Slashing{{x: {self.ba_slashing:3}\n\r"
+                f"{{BBr_Lightning{{x: {self.br_lightning:3}     {{BBr_Earth{{x: {self.br_earth:6}     {{BBa_Bashing{{x: {self.ba_bashing:4}\n\r"
+                f"{{BBr_Disease{{x: {self.br_disease:5}     {{BBr_Poison{{x: {self.br_poison:5}     {{BBa_Piercing{{x: {self.ba_piercing:3}\n\r"
+                f"{{BBr_Magic{{x: {self.br_magic:7}     {{BBr_Holy{{x: {self.br_holy:7}     {{BBa_Lashing{{x: {self.ba_lashing:4}\n\r"
+                f"{{BBr_Mental{{x: {self.br_mental:6}     {{BBr_Physical{{x: {self.br_physical:3}\n\r"
+                f"\n\r"
+                f"{{BSkin{{x: {', '.join(self.skin):35} {{BEyes{{x: {', '.join(self.eyes):35}\n\r"
+                f"{{BHair{{x: {', '.join(self.hair):60}\n\r"
+                f"{{BWearLocations{{x: {', '.join(self.wearlocations)}\n\r"
+                f"{{BBodyParts{{x:\n\r {', '.join(self.bodyparts)}\n\r"
+                f"{{BStart_Location{{x: {self.start_location}\n\r"
+                f"{{BSpecial_Skills{{x: {self.special_skills}\n\r"
+                f"{{BDescription{{x:\n\r"
+                f"{self.description[:180]}...\n\r{{x")
    
 goodraces = []
 neutralraces = []
