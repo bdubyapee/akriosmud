@@ -7,7 +7,8 @@
 # By: Jubelo
 
 import os
-import time
+import pytz
+import datetime
 
 import player
 import world
@@ -45,4 +46,6 @@ def log(tofile=None, msg=""):
         wiznet(f"Trying to log to no file in comm.py: {msg}")
     else:
         with open(tofile, "a") as tofile:
-            tofile.write(f"{time.ctime()} : {msg}\n\r")
+            utc_now = pytz.utc.localize(datetime.datetime.utcnow())
+            mst_now = utc_now.astimezone(pytz.timezone("America/Denver"))
+            tofile.write(f"\n\r{mst_now.isoformat()} : {msg.strip()}")
