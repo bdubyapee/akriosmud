@@ -1,0 +1,15 @@
+{
+    "description": "\nYou are on a hard packed gravel path. To the west is the Eastern entrance to\nWhitestone Keep. Massive iron bound timbers are fastened together to form the\nforbidding doors to the inner city. The city walls themselves are easily\ntwenty feet tall. White granite blocks with veins of shimmering\nminerals, the massive wall runs both north and south from here.",
+    "extradescriptions": {},
+    "flags": [
+        "none"
+    ],
+    "json_class_name": "__oneRoom__",
+    "json_version": 1,
+    "name": "before the gate",
+    "propertyvalue": "moderate",
+    "sectortype": [
+        "city"
+    ],
+    "vnum": 1001
+}

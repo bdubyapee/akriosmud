@@ -125,8 +125,11 @@ class oneRoom(olc.Editable):
                f"{{BVnum{{x: {self.vnum}\n"
                f"{{BName{{x: {self.name}\n"
                f"{{BProperty Value{{x: {self.propertyvalue}\n"
+               f"   {{y{', '.join(property_values)}{{x\n"
                f"{{BFlags{{x: {self.flags}\n"
+               f"   {{y{', '.join(room_flags)}\n"
                f"{{BSector Type{{x: {self.sectortype}\n"
+               f"   {{y{', '.join(sector_types)}\n"
                f"{{BExtra Desc{{x: {self.extradescriptions}\n"
                f"{{BExits{{x: {', '.join(self.exits)}\n"
                f"{{BDescription{{x: {self.description[:180]}{{x\n")

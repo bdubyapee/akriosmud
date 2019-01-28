@@ -118,15 +118,11 @@ class oneArea(olc.Editable):
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def save(self):
-        exits_path = os.path.join(eacharea.folder_path, "exits")
-        rooms_path = os.path.join(eacharea.folder_path, "rooms")
-        if not os.path.exists(exits_path):
-            os.makedirs(exits_path)
-        if not os.path.exists(rooms_path):
-            os.makedirs(rooms_path)
-
         # Write new JSON formated Exits for the area.
         for eacharea in arealist:
+            exits_path = os.path.join(eacharea.folder_path, "exits")
+            if not os.path.exists(exits_path):
+                os.makedirs(exits_path)
             for eachroom in eacharea.roomlist:
                 theroom = roomByVnum(eachroom)
                 for eachexit in theroom.exits:
@@ -137,6 +133,9 @@ class oneArea(olc.Editable):
 
         # Write new JSON formatted Rooms for the area.
         for eacharea in arealist:
+            rooms_path = os.path.join(eacharea.folder_path, "rooms")
+            if not os.path.exists(rooms_path):
+                os.makedirs(rooms_path)
             for eachroom in eacharea.roomlist:
                 theroom = roomByVnum(eachroom)
                 filename = os.path.join(eacharea.folder_path, f"rooms/{eachroom}.json")
