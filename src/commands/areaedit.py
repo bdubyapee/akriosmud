@@ -52,9 +52,14 @@ def areaedit(caller, args, **kwargs):
             caller.write(helpstring)
     else:
         if args[0] == 'new':
-            mynewname = args[1:]
             path = os.path.join(world.areaDir, ' '.join(args[1:]))
-            newarea = area.oneArea(path)
+            if not os.path.exists(path):
+                os.makedirs(path)
+            else:
+                caller.write("That area exists!")
+                return
+            header_path = os.path.join(path, f"{' '.join(args[1:])}.json")
+            newarea = area.oneArea(path, header_path)
             caller.building = newarea
             area.arealist.append(newarea)
             caller.building.builder = caller
