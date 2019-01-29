@@ -25,6 +25,7 @@ def dig(caller, args, **kwargs):
     if args[0] in exits.directions:
         if len(args) != 2:
             caller.write(helpstring)
+            return
         else:
             targetvnum = int(args[1])
             if targetvnum in area.roomlist:
@@ -33,9 +34,15 @@ def dig(caller, args, **kwargs):
             if args[0] in caller.location.exits:
                 caller.write("There is already an exit in that direction!")
                 return
-            defaultexitdata = "false 0 0 false 0 0 0 none huge false true none"
-            newexitdata = f"{args[0]} {targetvnum} {defaultexitdata}"
-            revexitdata = f"{exits.oppositedirection[args[0]]} {caller.location.vnum} {defaultexitdata}"
+
+            newexitdata = {"direction": args[0],
+                           "destination": targetvnum}
+            revexitdata = {"direction": exits.oppositedirection[args[0]],
+                           "destination": caller.location.vnum}
+
+            newexitdataJSON = json.dumps(newexitdata, sort_keys=True, indent=4)
+            revexitdataJSON = json.dumps(revexitdata, sort_keys=True, indent=4)
+
             myarea = caller.location.area
             if targetvnum < myarea.vnumlow or targetvnum > myarea.vnumhigh:
                 caller.write("That vnum is not in this areas range!")
@@ -44,8 +51,9 @@ def dig(caller, args, **kwargs):
                 newroom = room.oneRoom(caller.location.area, vnum=targetvnum)
                 area.roomlist[targetvnum] = newroom
                 newroom.area.roomlist[targetvnum] = newroom
-                newroom.exits[exits.oppositedirection[args[0]]] = exits.Exit(newroom, revexitdata)
-                caller.location.exits[args[0]] = exits.Exit(caller.location, newexitdata)
+                exits.Exit(targetvnum, None, revexitdataJSON)
+                exits.Exit(caller.location.vnum, None, newexitdataJSON)
+                caller.write("")
     else:
         caller.write(helpstring)
 

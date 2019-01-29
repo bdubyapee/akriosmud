@@ -73,7 +73,7 @@ class Exit(olc.Editable):
         self.lockdifficulty = 0
         self.keyvnum = 0
         self.magiclocked = 'false'
-        self.physicaldiffuculty = 0
+        self.physicaldifficulty = 0
         self.magiclockdifficulty = 0
         self.casterid = 0
         self.magiclocktype = 'none'

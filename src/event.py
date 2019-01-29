@@ -153,7 +153,7 @@ def init_events_grapevine(grapevine_):
     event = Event()
     event.owner = grapevine_
     event.ownertype = "grapevine"
-    event.eventtype = "graevine state check"
+    event.eventtype = "grapevine state check"
     event.func = event_grapevine_state_check
     event.passes = 5 * PULSE_PER_MINUTE
     event.totalpasses = event.passes
@@ -261,7 +261,8 @@ def event_grapevine_send_message(event_):
 
 @reoccuring_event
 def event_grapevine_player_query_status(event_):
-    event_.owner.msg_gen_player_status_query()
+    if event_.owner.state["connected"] == True:
+        event_.owner.msg_gen_player_status_query()
 
 @reoccuring_event
 def event_grapevine_receive_message(event_):
@@ -352,24 +353,17 @@ def event_grapevine_state_check(event_):
     if grapevine_.state["connected"] == True:
         return
     else:
-        already_restarting = False
         for each_thing in things_with_events['grapevine']:
             for each_event in each_thing.eventlist:
                 if each_event.eventtype == "grapevine restart":
-                    already_restarting = True
-
-        if already_restarting:
-            return
-
-        grapevine_.gsocket_disconnect()
-        comm.wiznet("Grapevine disconnect in event state check.")
+                    return
 
         nextevent = Event()
         nextevent.owner = grapevine_
         nextevent.ownertype = "grapevine"
         nextevent.eventtype = "grapevine restart"
         nextevent.func = event_grapevine_restart
-        nextevent.passes = 5 * 60
+        nextevent.passes = 1 * 60
         nextevent.totalpasses = nextevent.passes
         grapevine_.events.add(nextevent)
 
@@ -404,7 +398,8 @@ def event_admin_system_status(event_):
            f"{{G          Exit Events{{x: {{R{event_count['exit']}{{x\n\r"
            f"{{G        Server Events{{x: {{R{event_count['server']}{{x\n\r"
            f"{{G        Socket Events{{x: {{R{event_count['socket']}{{x\n\r"
-           f"{{G     Grapevine Events{{x: {{R{event_count['grapevine']}{{x\n\r")
+           f"{{G     Grapevine Events{{x: {{R{event_count['grapevine']}{{x\n\r"
+           f"{{G  Grapevine Connected{{x: {{R{grapevine.gsocket.state['connected']}{{x\n\r")
 
     event_.owner.write(msg)
 

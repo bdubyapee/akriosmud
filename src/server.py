@@ -198,7 +198,7 @@ class Server(asyncore.dispatcher):
         grapevine.gsocket = grapevine.GrapevineSocket()
 
         grapevine_connected = grapevine.gsocket.gsocket_connect()
-        if not grapevine_connected:
+        if grapevine_connected == False:
             print("Could not connect to grapevine on startup.")
 
         print(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
