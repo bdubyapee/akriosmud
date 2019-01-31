@@ -23,8 +23,8 @@
 #
 #
 # Example usage would be to import this module into your main game server.  During server startup
-# assign grapevine.gsocket to grapevine.GrapevineSocket().  During instance init
-# is when the connection to grapevine.haus happens.  PLEASE PUT YOUR CLIENT ID AND CLIENT SECRET
+# assign grapevine.gsocket to grapevine.GrapevineSocket().  After instance init is when you need
+# to connect via grapevine.gsocket.gsocket_connect().  PLEASE PUT YOUR CLIENT ID AND CLIENT SECRET
 # into the appropriate instance attributes of GrapevineSocket below.  Please note the instance
 # attribute in GrapevineSocket of debug, set to True if you would like to print to stdout various
 # things that happen to help with debugging.
@@ -105,7 +105,7 @@ class GrapevineReceivedMessage():
         # cache in the gsocket up to date.
         self.gsock = gsock
         
-        # When we receive a websocket it will always have an event type.
+        # When we receive a JSON message from grapevine it will always have an event type.
         self.rcvr_func = {"heartbeat": (self.gsock.msg_gen_heartbeat, None),
                           "authenticate": (self.is_received_auth, None),
                           "restart": (self.is_received_restart, None),

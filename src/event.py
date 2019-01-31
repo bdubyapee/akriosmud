@@ -252,7 +252,6 @@ def reoccuring_event(func_to_decorate):
 
 def event_grapevine_restart(event_):
     comm.wiznet("Grapevine restart event initiated")
-    #grapevine.gsocket.gsocket_connect()
     del(grapevine.gsocket)
 
     grapevine.gsocket = grapevine.GrapevineSocket()
@@ -340,7 +339,7 @@ def event_grapevine_receive_message(event_):
         if hasattr(rcvd_msg, "event") and rcvd_msg.event == "restart":
             comm.wiznet("Received restart event from Grapevine.")
             restart_time = rcvd_msg.restart_downtime
-            restart_fuzz = 20
+            restart_fuzz = 5
  
             grapevine_.gsocket_disconnect()
 
@@ -349,7 +348,7 @@ def event_grapevine_receive_message(event_):
             nextevent.ownertype = "grapevine"
             nextevent.eventtype = "grapevine restart"
             nextevent.func = event_grapevine_restart
-            nextevent.passes = restart_time + restart_fuzz
+            nextevent.passes = (restart_time + restart_fuzz) * PULSE_PER_SECOND
             nextevent.totalpasses = nextevent.passes
             grapevine_.events.add(nextevent)
 
@@ -360,7 +359,7 @@ def event_grapevine_state_check(event_):
         return
     else:
         for each_thing in things_with_events['grapevine']:
-            for each_event in each_thing.eventlist:
+            for each_event in each_thing.events.eventlist:
                 if each_event.eventtype == "grapevine restart":
                     return
 
@@ -371,7 +370,7 @@ def event_grapevine_state_check(event_):
         nextevent.ownertype = "grapevine"
         nextevent.eventtype = "grapevine restart"
         nextevent.func = event_grapevine_restart
-        nextevent.passes = 1 * 60
+        nextevent.passes = 1 * PULSE_PER_MINUTE
         nextevent.totalpasses = nextevent.passes
         grapevine_.events.add(nextevent)
 
