@@ -433,7 +433,7 @@ class GrapevineSocket(WebSocket):
         # Populate the channels attribute if you want to subscribe to a specific
         # channel or channels during authentication.
         self.channels = []
-        self.version = "0.1.6"
+        self.version = "0.1.7"
         self.user_agent = "AkriosMUD v0.4.4"
 
         self.state = {"connected": False,
@@ -455,7 +455,7 @@ class GrapevineSocket(WebSocket):
         self.other_games_players = {}
 
 
-    def gsocket_connect(self, restart=False):
+    def gsocket_connect(self):
         try:
             result = self.connect("wss://grapevine.haus/socket")
             comm.wiznet("gsocket_connect: Attempting connection to Grapevine.")
@@ -467,9 +467,6 @@ class GrapevineSocket(WebSocket):
         #self.state["connected"] = True
         self.outbound_frame_buffer.append(self.msg_gen_authenticate())
 
-        if restart:
-            event.init_events_grapevine(self)
-
         # The below is a log specific to Akrios.  Leave commented or replace.
         # XXX
         comm.wiznet("gsocket_connect: Sending Auth to Grapevine Network.")
@@ -478,6 +475,8 @@ class GrapevineSocket(WebSocket):
     def gsocket_disconnect(self):
         comm.wiznet("gsocket_disconnect: Disconnecting from Grapevine Network.")
         self.state["connected"] = False
+        self.inbound_frame_buffer.clear()
+        self.outbound_frame_buffer.clear()
         self.events.clear()
         self.subscribed.clear()
         self.other_games_players.clear()

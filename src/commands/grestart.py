@@ -1,0 +1,37 @@
+#! usr/bin/env python3
+# Project: Akrios
+# filename: commands/grestart.py
+#
+# Capability : admin
+#
+# Command Description: This command simulates a restart received from grapevine.
+#
+#
+#
+# By: Jubelo
+
+from commands import *
+
+name = "grestart"
+version = 1
+
+requirements = {'capability': 'admin',
+                'generic_fail': "See {WHelp grestart{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+@Command(**requirements)
+def grestart(caller, args, **kwargs):
+    comm.wiznet("Initiating restart simulation from Grapevine.")
+
+    payload = {"downtime": 15}
+
+    package = {"event": "restart",
+               "ref": str(uuid.uuid4()),
+               "payload": payload}
+
+    jsonified = json.dumps(package, sort_keys=True, indent=4)
+
+    grapevine.gsocket.inbound_frame_buffer.append(jsonified)
+    
+    comm.wiznet("Created fake restart JSON payload and appended to socket inbuffer") 

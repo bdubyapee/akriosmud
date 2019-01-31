@@ -14,6 +14,7 @@ import os
 import sys
 import textwrap
 import time
+import uuid
 
 sys.path.append('../')
 
@@ -270,6 +271,7 @@ from . import areastats
 from . import coding
 from . import dig
 from . import exitedit
+from . import grestart
 from . import helpedit
 from . import playerinfo
 from . import promote
