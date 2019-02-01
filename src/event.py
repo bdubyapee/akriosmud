@@ -323,10 +323,16 @@ def event_grapevine_receive_message(event_):
                 message = f"\n\r{{GMultiMUD Status Update: {game} disconnected from network{{x"
             if rcvd_msg.event == "channels/broadcast":
                 name, game, message = ret_value
+                if name == None or game == None:
+                    comm.wiznet("Received channels/broadcast with None type")
+                    return
                 message = (f"\n\r{{GMultiMUD Chat{{x:{{y{name.capitalize()}"
                            f"@{game.capitalize()}{{x:{{G{message}{{x")
             if rcvd_msg.is_other_game_player_update():
                 name, inout, game = ret_value
+                if name == None or game == None:
+                    comm.wiznet("Received other game player update")
+                    return
                 message = (f"\n\r{{GMultiMUD Chat{{x: {{y{name.capitalize()}{{G "
                            f"has {inout} {{Y{game.capitalize()}{{x.")
 
