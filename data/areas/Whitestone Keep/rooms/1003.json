@@ -1,0 +1,15 @@
+{
+    "description": " To your east is the east entrance to Whitestone Keep, large iron bound\ntimbers comprise the gate. Polished smooth cobblestone laid wth intricate\ndetail leads north, west and south. To the west appears to be a large, well\ntraveled, boulevard leading to the innards of the city. To the north and\nsouth, East Wall Road continues on appearing to be lined with numerous\nbuildings.",
+    "extradescriptions": {},
+    "flags": [
+        "none"
+    ],
+    "json_class_name": "__oneRoom__",
+    "json_version": 1,
+    "name": "Inside the East gate on East Wall Road",
+    "propertyvalue": "moderate",
+    "sectortype": [
+        "city"
+    ],
+    "vnum": 1003
+}

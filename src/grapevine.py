@@ -286,7 +286,7 @@ class GrapevineReceivedMessage():
                 orig_req = sent_refs.pop(self.ref)
             game = self.payload["game"].capitalize()
 
-            if len(self.payload["players"]) == 1 and self.payload["players"] == "":
+            if len(self.payload["players"]) == 1 and self.payload["players"] in ["", None]:
                 self.gsock.other_games_players[game] = []
                 return
             if len(self.payload["players"]) == 1:

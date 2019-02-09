@@ -26,9 +26,9 @@ def roomedit(caller, args, **kwargs):
         if caller.is_building and not caller.is_editing:
             caller.write(caller.building.display())
             return
-        elif not caller.is_building:
-            caller.write(helpstring)
-            return
+        #elif not caller.is_building:
+        #    caller.write(helpstring)
+        #    return
 
     if caller.is_building and caller.is_editing:
         done = False
@@ -72,7 +72,18 @@ def roomedit(caller, args, **kwargs):
             myvnum = int(args[0])
         except:
             pass
-        if args[0] == 'new':
+        if len(args) == 0:
+            if "room" in caller.location.is_type:
+                caller.building = caller.location
+                caller.building.builder = caller
+                caller.write(f"Editing {{W{caller.location.vnum}{{x")
+                caller.oldprompt = caller.prompt
+                caller.prompt = "roomEdit:> "
+                caller.write(caller.building.display())
+            else:
+                caller.write("Your location does not appear to be a regular room.")
+                return
+        elif args[0] == 'new':
             if len(args) != 2:
                 caller.write(helpstring)
             else:

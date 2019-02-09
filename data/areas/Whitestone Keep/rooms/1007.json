@@ -1,0 +1,16 @@
+{
+    "description": " To the east the smooth whte granite wall that surrounds the city reaches\nhigh into the sky. Criss crossed with sparkling mineral veins, the wall\nstands at least twenty feet tall. Polished smooth cobblestone lines the road\nleading north, south and west. East Wall Road continues on to the north and\nsouth. To the west begins Caerdik Way, a narrow road between the buildings.",
+    "extradescriptions": {},
+    "flags": [
+        "none"
+    ],
+    "json_class_name": "__oneRoom__",
+    "json_version": 1,
+    "name": "Intersection of Caerdik Way and East Wall Road",
+    "propertyvalue": "moderate",
+    "sectortype": [
+        "inside",
+        "city"
+    ],
+    "vnum": 1007
+}

@@ -39,7 +39,7 @@ def doString(theobject=None, thestring=None, value=None, inset=None):
     elif value == None:
         return getattr(theobject, f"{thestring}")
     else:
-        value = value.lower().strip()
+        value = value.strip()
         if len(value) > 0 and len(value) < 50:
             if inset != None and value not in inset:
                 raise SyntaxError(f"I'm sorry, valid options are: {inset}")
@@ -104,7 +104,7 @@ def doInteger(theobject=None, thestring=None, value=None, inset=None):
 
 def doDict(theobject=None, thestring=None, args=None, sets=None):
     key = args.split()[0]
-    value = args.split()[1:]
+    value = ' '.join(args.split()[1:])
     keyset, valueset = sets
     if theobject == None:
         raise SyntaxError("No object given to doDict.")

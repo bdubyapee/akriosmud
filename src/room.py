@@ -72,6 +72,7 @@ class oneRoom(olc.Editable):
 
         self.json_version = oneRoom.FILE_VERSION
         self.json_class_name = oneRoom.CLASS_NAME
+        self.is_type = {"room": True}
         self.area = area
         self.builder = None
         if vnum != None:
@@ -124,13 +125,13 @@ class oneRoom(olc.Editable):
                f"{{BBuilder{{x: {self.builder.name}\n"
                f"{{BVnum{{x: {self.vnum}\n"
                f"{{BName{{x: {self.name}\n"
-               f"{{BProperty Value{{x: {self.propertyvalue}\n"
+               f"{{BPropertyValue{{x: {self.propertyvalue}\n"
                f"   {{y{', '.join(property_values)}{{x\n"
                f"{{BFlags{{x: {self.flags}\n"
                f"   {{y{', '.join(room_flags)}\n"
-               f"{{BSector Type{{x: {self.sectortype}\n"
+               f"{{BSectorType{{x: {self.sectortype}\n"
                f"   {{y{', '.join(sector_types)}\n"
-               f"{{BExtra Desc{{x: {self.extradescriptions}\n"
+               f"{{BExtraDescriptions{{x: {self.extradescriptions}\n"
                f"{{BExits{{x: {', '.join(self.exits)}\n"
                f"{{BDescription{{x: {self.description[:180]}{{x\n")
 

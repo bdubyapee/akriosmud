@@ -23,7 +23,7 @@ def look(caller, args, **kwargs):
     if caller.location != 0 and len(args) <= 0:
         if caller.oocflags['viewOLCdetails'] == True:
             namepretext = f"{{W[{{xVNUM: {{B{caller.location.vnum}{{W]{{x "
-            name = f"{namepretext}{{B{caller.location.name.capitalize()}{{x"
+            name = f"{namepretext}{{B{caller.location.name}{{x"
             theexits = []
             for key in caller.location.exits:
                 destination = caller.location.exits[key].destination
@@ -31,7 +31,7 @@ def look(caller, args, **kwargs):
                 theexits.append(f"{{C{key} {{W[{{xVNUM: {{B{destination}{{W] [{{G{size}{{W]{{x ")
             theexits = ', '.join(theexits)
         else:
-            name = f"{{B{caller.location.name.capitalize()}{{x"
+            name = f"{{B{caller.location.name}{{x"
             theexits = ', '.join(caller.location.exits)
 
         desc = f"   {caller.location.description}"

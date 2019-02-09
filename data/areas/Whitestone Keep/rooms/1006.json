@@ -1,0 +1,16 @@
+{
+    "description": " Polished smooth cobblestone lines the road leading both north and south. To\nthe east the smooth white granite wall that surrounds the city reaches high\ninto the sky. Criss crossed with sparkling mineral veins, the wall stands at\nleast twenty feet tall. To the west is a small stone building. East Wall\nRoad continues on to the north and south.",
+    "extradescriptions": {},
+    "flags": [
+        "none"
+    ],
+    "json_class_name": "__oneRoom__",
+    "json_version": 1,
+    "name": "Southern East Wall Road",
+    "propertyvalue": "moderate",
+    "sectortype": [
+        "inside",
+        "city"
+    ],
+    "vnum": 1006
+}

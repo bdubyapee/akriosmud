@@ -419,7 +419,6 @@ def event_admin_system_status(event_):
 @reoccuring_event
 def event_player_autosave(event_):
     event_.owner.save()
-    event_.owner.write("\n\rA cool breeze blows across your neck.")
 
 @reoccuring_event
 def event_player_idle_check(event_):
