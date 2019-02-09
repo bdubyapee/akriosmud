@@ -111,7 +111,6 @@ class ConnSocket(asyncore.dispatcher):
 
         if len(output) > 0:
             output = f"{output}\r\n"
-            print(output)
         else:
             output = ""
 
