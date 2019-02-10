@@ -48,7 +48,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         self.json_version = Mobile.FILE_VERSION
         self.json_class_name = Mobile.CLASS_NAME
         self.logpath = ''
-        self.capability = ['npc']
+        self.capability = ['mobile']
         self.title = ''
         self.seen_as = ''
         self.prompt = ''
