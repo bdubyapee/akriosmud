@@ -8,8 +8,9 @@
 
 import textwrap
 
-class Editable:
+class Editable(object):
     def __init__(self):
+        super().__init__()
         # Fully Implement this.
         self.beingedited = False
         
@@ -142,8 +143,9 @@ def doDescription(theobject=None, thestring=None, value=None, set=None):
         theobject.builder.write(theobject.builder.editing.display())
 
 
-class Buffer:
+class Buffer(object):
     def __init__(self, oldbuffer=None):
+        super().__init__()
         if oldbuffer != None:
             self.lines = oldbuffer.split("\n")
         else:

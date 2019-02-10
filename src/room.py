@@ -69,7 +69,6 @@ class oneRoom(olc.Editable):
 
     def __init__(self, area, data=None, vnum=None):
         super().__init__()
-
         self.json_version = oneRoom.FILE_VERSION
         self.json_class_name = oneRoom.CLASS_NAME
         self.is_type = {"room": True}

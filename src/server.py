@@ -45,8 +45,7 @@ DONTECHOTELNET = IAC + WILL + ECHO + theNULL
 class ConnSocket(asyncore.dispatcher):
 
     def __init__(self, connection, address):
-        super().__init__(connection)
-        
+        super().__init__(connection) 
         self.owner = None
         self.host = address[0]
         self.inbuf = ""
@@ -183,7 +182,6 @@ class Server(asyncore.dispatcher):
 
     def __init__(self):
         super().__init__()
-        
         self.logpath = os.path.join(world.logDir, "server")
         self.events = event.Queue(self, "server")      
         self.create_socket(AF_INET6, SOCK_STREAM)

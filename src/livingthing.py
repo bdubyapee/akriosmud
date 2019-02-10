@@ -67,8 +67,9 @@ stat_types = {"strength": stat_type_strength,
               "constitution": stat_type_constitution}
 
 
-class LivingThing:
+class LivingThing(object):
     def __init__(self):
+        super().__init__()
         self.name = ''
         self.lastname = ''
         self.long_description = ''
@@ -76,13 +77,16 @@ class LivingThing:
         self.gender = 'male'
         self.location = None
         self.contents = []
-        self.capability = ['npc']
+        self.capability = []
         self.last_input = 0
         self.race = None
         self.aid = 0
         self.age = 1
         self.level = 1
         self.alignment = 'neutral'
+        self.exp = {'combat': 0,
+                    'explore': 0,
+                    'profession': 0}
         self.maximum_stat = {'strength': 1, 'agility': 1, 'speed': 1, 'intelligence': 1,
                              'wisdom': 1, 'charisma': 1, 'luck': 1, 'constitution': 1}
         self.current_stat = {'strength': 1, 'agility': 1, 'speed': 1, 'intelligence': 1,
@@ -251,10 +255,10 @@ class LivingThing:
         else:
             return self.knownpeople[idnum]
 
-#    def write(self, msg):
-#        if len(self.snooped_by) > 0:
-#            for each_person in self.snooped_by:
-#                each_person.write(msg)
+    def write(self, msg):
+        if len(self.snooped_by) > 0:
+            for each_person in self.snooped_by:
+                each_person.write(msg)
          
     @property
     def is_admin(self):
@@ -284,3 +288,6 @@ class LivingThing:
         else:
             return False
 
+    @property
+    def name_cap(self):
+        return self.name.capitalize()

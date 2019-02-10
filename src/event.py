@@ -20,8 +20,9 @@ PULSE_PER_SECOND = 8
 PULSE_PER_MINUTE = 60 * PULSE_PER_SECOND
 
 
-class Queue:
+class Queue(object):
     def __init__(self, owner, owner_type):
+        super().__init__()
         self.aid = str(uuid.uuid4())
         self.eventlist = []
         self.owner = owner
@@ -75,8 +76,9 @@ class Queue:
 
 
 
-class Event:
+class Event(object):
     def __init__(self):
+        super().__init__()
         self.aid = str(uuid.uuid4())
         self.eventtype = None
         self.ownertype = None
@@ -275,10 +277,6 @@ def event_grapevine_receive_message(event_):
     grapevine_.handle_read()
     if len(grapevine_.inbound_frame_buffer) > 0:
         # Assign rcvd_msg to a GrapevineReceivedMessage instance.
-        # The initialization of the object takes care of parsing the data
-        # we received and setting appropritae values.
-        #rcvd_msg = grapevine.GrapevineReceivedMessage(grapevine_.read_in(), grapevine_)
-
         rcvd_msg = grapevine_.receive_message()
         ret_value = rcvd_msg.parse_frame()
 

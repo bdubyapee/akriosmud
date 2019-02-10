@@ -31,8 +31,9 @@ with open(f"{world.dataDir}/badwords.txt") as thefile:
         badwords.append(eachword.strip())
 
 
-class Login:
+class Login(object):
     def __init__(self, name = ''):
+        super().__init__()
         self.interp = self.get_char_name
         self.name = name
         self.newchar = {}

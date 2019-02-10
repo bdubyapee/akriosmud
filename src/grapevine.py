@@ -92,8 +92,9 @@ from keys import CLIENT_ID, SECRET_KEY
 import player
 import world
 
-class GrapevineReceivedMessage():
+class GrapevineReceivedMessage(object):
     def __init__(self, message, gsock):
+        super().__init__()
         # Short hand to convert JSON data to instance attributes.
         # Not secure at all.  If you're worreid about it feel free to modify
         # to your needs.

@@ -49,8 +49,7 @@ class oneRace(olc.Editable):
 
 
     def __init__(self, path):
-        super().__init__()
-        
+        super().__init__()    
         self.path = path
         self.json_version = oneRace.FILE_VERSION
         self.json_class_name = oneRace.CLASS_NAME

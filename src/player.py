@@ -32,7 +32,6 @@ class Player(livingthing.LivingThing):
 
     def __init__(self, path=None):
         super().__init__()
-
         self.filename = path
         self.json_version = Player.FILE_VERSION
         self.json_class_name = Player.CLASS_NAME
@@ -52,9 +51,6 @@ class Player(livingthing.LivingThing):
                                 'mmchat': 'true',
                                 'ooc': 'true',
                                 'quote': 'true'}
-        self.exp = {'combat': 0,
-                    'explore': 0,
-                    'profession': 0}
         self.events = event.Queue(self, "player")
         self.sock = None
         if self.filename != None:
@@ -135,10 +131,6 @@ class Player(livingthing.LivingThing):
 
 
     @property
-    def name_cap(self):
-        return self.name.capitalize()
-
-    @property
     def is_building(self):
         if hasattr(self, "building"):
             return True
@@ -151,29 +143,5 @@ class Player(livingthing.LivingThing):
             return True
         else:
             return False
-
-
-            
-# This doesn't belong here, put somewhere else.
-def statWords(self, statvalue = 55):
-    if statvalue < 40:
-        return "abismal"
-    elif statvalue <= 44:
-        return "terrible"
-    elif statvalue <= 49:
-        return "bad"
-    elif statvalue <= 54:
-        return "poor"
-    elif statvalue <= 59:
-        return "average"
-    elif statvalue <= 64:
-        return "fair"
-    elif statvalue <= 69:
-        return "good"
-    elif statvalue <= 74:
-        return "excellent"
-    else:
-        return "amazing"
-
 
 
