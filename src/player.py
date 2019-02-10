@@ -12,25 +12,19 @@ import json
 import os
 import time
 
-
 import area
 import livingthing
 import room
-import exits
-import helpsys
 import event
 import races
-import commands
-
 
 
 WRITE_NEW_FILE_VERSION = False
 
-
-
 playerlist = []
 playerlist_by_name = {}
 playerlist_by_aid = {}
+
 
 class Player(livingthing.LivingThing):
     CLASS_NAME = "__Player__"
@@ -43,21 +37,14 @@ class Player(livingthing.LivingThing):
         self.json_version = Player.FILE_VERSION
         self.json_class_name = Player.CLASS_NAME
         self.logpath = ''
-        self.capability = []
+        self.capability = ['player']
         self.password = ''
         self.lasthost = ''
         self.lasttime = ''
-        self.wimpy = 0
         self.title = ''
         self.skillpoints = 0
         self.seen_as = ''
-        self.aid = 0
-        self.last_input = 0
-        self.hunger = 0
-        self.thirst = 0
-        self.snooped_by = []
         self.prompt = ''
-        self.alias = {}
         self.oocflags = {'afk': False,
                          'viewOLCdetails' : False,
                          'coding': False}
@@ -147,96 +134,9 @@ class Player(livingthing.LivingThing):
                 thefile.write(self.toJSON())
 
 
-    def interp(self, inp=None):
-        inp = inp.split()
-        isBuilding = hasattr(self, 'building')
-        isEditing = hasattr(self, 'editing')
-        self.oocflags['afk'] = False
-        self.last_input = time.time()
-
-        if len(inp) == 0:
-            if isBuilding and not isEditing:
-                self.write(self.building.display())
-                return
-            if isEditing:
-                self.editing.add('')
-                return
-            else:
-                self.write('')
-                return
-
-        # Look in players command alias dict, swap alias for full command if found        
-        if inp[0] in self.alias:
-            inp[0] = self.alias[inp[0]]
-
-        comfind = []
-
-        if len(inp) <= 0:
-            inp = ['']     # Added for OLC code to operate properly.
-
-        for item in sorted(commands.Command.commandhash.keys()):
-            if item.startswith(inp[0].lower()):
-                comfind.append(commands.Command.commandhash[item])
-        
-        if isBuilding:
-            types = {helpsys.oneHelp: 'helpedit',
-                     races.oneRace: 'raceedit',
-                     area.oneArea: 'areaedit',
-                     room.oneRoom: 'roomedit',
-                     exits.Exit: 'exitedit'}
-            if self.building.__class__ in types:
-                comfind.append(commands.Command.commandhash[types[self.building.__class__]])
-                # If the person is building we prepend the command they are using.
-                inp.insert(0, types[self.building.__class__])
-                self.write('')
-        
-        if len(comfind) > 0:
-            try:
-                if isEditing:
-                    comfind[-1](self, ' '.join(inp[1:]))
-                elif isBuilding:
-                    if comfind[0].__name__ not in types.values():
-                        comfind[0](self, ' '.join(inp[2:]))
-                    else:
-                        comfind[0](self, ' '.join(inp[1:]))
-                else:
-                    comfind[0](self, ' '.join(inp[1:]))
-            except (NameError, IndexError) as msg:
-                self.write(msg)
-        else:
-            self.write("Huh?")
-
     @property
     def name_cap(self):
         return self.name.capitalize()
-
-    @property
-    def is_admin(self):
-        if 'admin' in self.capability:
-            return True
-        else:
-            return False
-        
-    @property    
-    def is_deity(self):
-        if 'deity' in self.capability:
-            return True
-        else:
-            return False
-
-    @property
-    def is_builder(self):
-        if 'builder' in self.capability:
-            return True
-        else:
-            return False
-    
-    @property
-    def is_player(self):
-        if 'player' in self.capability:
-            return True
-        else:
-            return False
 
     @property
     def is_building(self):

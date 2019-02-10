@@ -171,6 +171,9 @@ class ConnSocket(asyncore.dispatcher):
         else:
             msg = color.decolorize(msg)
         self.outbuf = f"{self.outbuf}{msg}"
+        if hasattr(self.owner, "snooped_by") and len(self.owner.snooped_by) > 0:
+            for each_person in self.owner.snooped_by:
+                each_person.write(self.outbuf)
 
 
 class Server(asyncore.dispatcher):
