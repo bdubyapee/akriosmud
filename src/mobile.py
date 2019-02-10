@@ -54,6 +54,8 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         self.prompt = ''
         self.vnum = 0
         self.events = event.Queue(self, "mobile")
+        self.commands = {"vnum": ("integer", None),
+                         "name": ("string", None)}
         if self.filename != None:
             self.load()
 
