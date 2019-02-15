@@ -157,7 +157,7 @@ def init_events_grapevine(grapevine_):
     event.ownertype = "grapevine"
     event.eventtype = "grapevine state check"
     event.func = event_grapevine_state_check
-    event.passes = 5 * PULSE_PER_MINUTE
+    event.passes = 1 * PULSE_PER_MINUTE
     event.totalpasses = event.passes
     grapevine_.events.add(event)
 
@@ -359,9 +359,12 @@ def event_grapevine_receive_message(event_):
 @reoccuring_event
 def event_grapevine_state_check(event_):
     grapevine_ = event_.owner
-    if grapevine_.state["connected"] == True:
-        return
-    else:
+
+    if time.time() - grapevine_.last_heartbeat > 60:
+        grapevine_.state["connected"] = False
+        grapveine_.state["authenticated"] = False
+
+    if grapevine_.state["connected"] == False:
         for each_thing in things_with_events['grapevine']:
             for each_event in each_thing.events.eventlist:
                 if each_event.eventtype == "grapevine restart":
@@ -374,10 +377,9 @@ def event_grapevine_state_check(event_):
         nextevent.ownertype = "grapevine"
         nextevent.eventtype = "grapevine restart"
         nextevent.func = event_grapevine_restart
-        nextevent.passes = 1 * PULSE_PER_MINUTE
+        nextevent.passes = 28 * PULSE_PER_SECOND
         nextevent.totalpasses = nextevent.passes
         grapevine_.events.add(nextevent)
-
 
 
 @reoccuring_event

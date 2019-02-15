@@ -34,16 +34,6 @@
 # for you.
 #
 # The below two functions are being passed in the grapevine.gsocket as a variable named event_.
-#
-#@reoccuring_event
-#def event_grapevine_send_message(event_):
-#    if len(event_.owner.outbound_frame_buffer) > 0:
-#        event_.owner.handle_write()
-#
-#@reoccuring_event
-#def event_grapevine_player_query_status(event_):
-#    event_.owner.msg_gen_player_status_query()
-#
 # 
 #
 # Please see additional code examples of commands, events, etc in the repo.
@@ -77,9 +67,10 @@
 '''
 
 
+import datetime
 import json
 import socket
-import datetime
+import time
 import uuid
 from websocket import WebSocket
 
@@ -108,8 +99,8 @@ class GrapevineReceivedMessage(object):
         
         # When we receive a JSON message from grapevine it will always have an event type.
         self.rcvr_func = {"heartbeat": (self.gsock.msg_gen_heartbeat, None),
-                          "authenticate": (self.is_received_auth, None),
-                          "restart": (self.is_received_restart, None),
+                          "authenticate": (self.received_auth, None),
+                          "restart": (self.received_restart, None),
                           "channels/broadcast": (self.received_broadcast_message, None),
                           "channels/subscribe": (self.received_chan_sub, gsock.sent_refs),
                           "channels/unsubscribe": (self.received_chan_unsub, gsock.sent_refs),
@@ -157,7 +148,7 @@ class GrapevineReceivedMessage(object):
             else:
                 return False
 
-    def is_received_auth(self):
+    def received_auth(self):
         '''
             We received an event Auth event type.
             Determine if we are already authenticated, if so subscribe to the channels
@@ -171,14 +162,20 @@ class GrapevineReceivedMessage(object):
             self.gsock.state["authenticated"] = True
             self.gsock.state["connected"] = True
             self.gsock.msg_gen_chan_subscribe()
+            # The below line is Akrios Specific.
+            # XXX
             comm.wiznet("Received authentication success from Grapevine.")
             self.gsock.msg_gen_player_status_query()
+            # The below line is Akrios specific.
+            # XXX
             comm.wiznet("Sending player status query to all Grapevine games.")
         elif self.gsock.state["authenticated"] == False:
-            comm.wiznet("is_received_auth: Sending Authentication message to Grapevine.")
+            # The below line is Akrios specific.
+            # XXX
+            comm.wiznet("received_auth: Sending Authentication message to Grapevine.")
             self.gsock.msg_gen_authenticate()
         
-    def is_received_restart(self):
+    def received_restart(self):
         '''
         We received a restart event. We'll asign the value to the restart_downtime
         attribute for access by the calling code.
@@ -356,9 +353,7 @@ class GrapevineReceivedMessage(object):
             orig_req = sent_refs.pop(self.ref)
             if self.ref in sent_refs:
                 game = orig_req["payload"]["game"]
-                error_code = self.error
-                return (game, error_code)
-
+                return (game, self.error)
 
     def received_message_confirm(self, sent_refs):
         '''
@@ -423,6 +418,7 @@ class GrapevineSocket(WebSocket):
         self.outbound_frame_buffer = []
         # This event attribute is specific to AkriosMUD.  Replace with your event
         # requirements, or comment/delete the below line.
+        # XXX
         self.events = event.Queue(self, "grapevine")
         
         # Replace the below with your specific information
@@ -434,7 +430,7 @@ class GrapevineSocket(WebSocket):
         # Populate the channels attribute if you want to subscribe to a specific
         # channel or channels during authentication.
         self.channels = []
-        self.version = "0.1.7"
+        self.version = "0.1.9"
         self.user_agent = "AkriosMUD v0.4.4"
 
         self.state = {"connected": False,
@@ -445,7 +441,9 @@ class GrapevineSocket(WebSocket):
             self.subscribed[each_channel] = False        
 
         # This event initialization is specific to AkriosMUD. This would be a good
-        # spot to initialize in your event system if required.  Otherwise comment/delete this line.
+        # spot to initialize in your event system if required.  
+        # Otherwise comment/delete this line.
+        # XXX
         event.init_events_grapevine(self)
 
         self.sent_refs = {}
@@ -455,6 +453,8 @@ class GrapevineSocket(WebSocket):
         # to also show players logged into other Grapevine connected games.
         self.other_games_players = {}
 
+        # The below is to track the last time we received a heartbeat from Grapevine.
+        self.last_heartbeat = 0
 
     def gsocket_connect(self):
         try:
@@ -465,7 +465,6 @@ class GrapevineSocket(WebSocket):
         # We need to set the below on the socket as websockets.WebSocket is 
         # blocking by default.  :(
         self.sock.setblocking(0)
-        #self.state["connected"] = True
         self.outbound_frame_buffer.append(self.msg_gen_authenticate())
 
         # The below is a log specific to Akrios.  Leave commented or replace.
@@ -476,6 +475,7 @@ class GrapevineSocket(WebSocket):
     def gsocket_disconnect(self):
         comm.wiznet("gsocket_disconnect: Disconnecting from Grapevine Network.")
         self.state["connected"] = False
+        self.state["authenticated"] = False
         self.inbound_frame_buffer.clear()
         self.outbound_frame_buffer.clear()
         self.events.clear()
@@ -532,6 +532,9 @@ class GrapevineSocket(WebSocket):
         # in response to a grapevine heartbeat.  Uncomment/replace with your functionality.
         # XXX
         player_list = [player.name.capitalize() for player in player.playerlist]
+
+        self.last_heartbeat = time.time()
+
         payload = {"players": player_list}
         msg = {"event": "heartbeat",
                "payload": payload}
