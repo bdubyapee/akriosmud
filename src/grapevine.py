@@ -33,8 +33,6 @@
 # required by your configuration.   Please see the examples in the repo of how this might look
 # for you.
 #
-# The below two functions are being passed in the grapevine.gsocket as a variable named event_.
-# 
 #
 # Please see additional code examples of commands, events, etc in the repo.
 # https://github.com/oestrich/gossip-clients
@@ -61,9 +59,6 @@
         GrapevineSocket is used to authentcate to and send messages to the grapevine network.
         __init__(self)
 
-    Module Variables of Note:
-        gsocket is an instance of GrapevineSocket, when this module is imported the authentication
-        portion is completed and working with grapevine is done through the gsocket.
 '''
 
 
@@ -465,7 +460,7 @@ class GrapevineSocket(WebSocket):
         # We need to set the below on the socket as websockets.WebSocket is 
         # blocking by default.  :(
         self.sock.setblocking(0)
-        self.outbound_frame_buffer.append(self.msg_gen_authenticate())
+        self.msg_gen_authenticate()
 
         # The below is a log specific to Akrios.  Leave commented or replace.
         # XXX
@@ -631,7 +626,7 @@ class GrapevineSocket(WebSocket):
 
     def msg_gen_game_all_status_query(self):
         '''
-        Request for each game to send full status update.  You will receive in
+        Request for all games to send full status update.  You will receive in
         return from each game quite a bit of detailed information.  See the
         grapevine.haus Documentation or review the receiver code above.
         '''
