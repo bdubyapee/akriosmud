@@ -454,6 +454,7 @@ class GrapevineSocket(WebSocket):
     def gsocket_connect(self):
         try:
             result = self.connect("wss://grapevine.haus/socket")
+            # The below log is specific to Akrios. Leave commented or replace.
             comm.wiznet("gsocket_connect: Attempting connection to Grapevine.")
         except:
             return False
