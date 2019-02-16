@@ -119,6 +119,7 @@ class ConnSocket(asyncore.dispatcher):
         try:
             indata = self.recv(4096)
         except Exception as err:
+            self.handle_close()
             comm.log(world.serverlog, f"Error in handle_read:server.py : {err}")
      
 
@@ -153,6 +154,7 @@ class ConnSocket(asyncore.dispatcher):
                 output = color.colorize(f"\n\r{pretext}{self.owner.prompt}")
                 self.send(output.encode("utf8"))
         except Exception as err:
+            self.handle_close()
             comm.log(world.serverlog, f"Error in handle_write:server.py - {err}")
 
     def handle_close(self):
@@ -161,6 +163,7 @@ class ConnSocket(asyncore.dispatcher):
             connlist.remove(self)
         self.clear()
         self.close()
+        del(self)
 
     def dispatch(self, msg, trail=True):
         if trail:
