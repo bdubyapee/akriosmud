@@ -46,6 +46,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         self.logpath = ''
         self.capability = ['mobile']
         self.vnum = 0
+        self.area = None
         self.events = event.Queue(self, "mobile")
         self.commands = {"vnum": ("integer", None),
                          "name": ("string", None)}

@@ -22,9 +22,6 @@ import world
 
 arealist = []
 roomlist = {}
-mobilelist = {}
-objectlist = {}
-
 
 # Define some named tuples of various Area values.
 Plane = namedtuple("Planes", "name")
@@ -79,10 +76,14 @@ class oneArea(olc.Editable):
         self.vnumlow = -1
         self.vnumhigh = -1
         self.roomlist = {}
-        self.moblist = {}
-        self.objectlist = {}
-        self.mobindexlist = {}
-        self.objectindexlist = {}
+        self.mobilelist = []
+        self.mobilelist_index = []
+        self.mobilelist_by_vnum = {}
+        self.mobilelist_by_vnum_index = {}
+        self.objectlist = []
+        self.objectlist_index = []
+        self.objectlist_by_vnum = {}
+        self.objectlist_by_vnum_index = {}
         self.resetlist = []
         self.shoplist = []
         self.playerlist = []
