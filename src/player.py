@@ -40,10 +40,6 @@ class Player(livingthing.LivingThing):
         self.password = ''
         self.lasthost = ''
         self.lasttime = ''
-        self.title = ''
-        self.skillpoints = 0
-        self.seen_as = ''
-        self.prompt = ''
         self.oocflags = {'afk': False,
                          'viewOLCdetails' : False,
                          'coding': False}
@@ -68,59 +64,13 @@ class Player(livingthing.LivingThing):
 
     def toJSON(self):
         if self.json_version == 1:
-            jsonable = {"json_version" : self.json_version,
-                        "json_class_name" : self.json_class_name,
-                        "name" : self.name,
-                        "password" : self.password,
-                        "capability" : self.capability,
-                        "lasthost" : self.lasthost,
-                        "lasttime" : self.lasttime,
-                        "location" : self.location.vnum,
-                        "long_description" : self.long_description,
-                        "short_description" : self.short_description,
-                        "race" : self.race.name,
-                        "age" : self.age,
-                        "gender" : self.gender,
-                        "level" : self.level,
-                        "alignment" : self.alignment,
-                        "money" : self.money,
-                        "height" : self.height,
-                        "weight" : self.weight,
-                        "maxhp" : self.maxhp,
-                        "currenthp" :self.currenthp,
-                        "maxmovement" : self.maxmovement,
-                        "currentmovement" : self.currentmovement,
-                        "maxwillpower" : self.maxwillpower,
-                        "currentwillpower" : self.currentwillpower,
-                        "totalmemoryslots" : self.totalmemoryslots,
-                        "memorizedspells" : self.memorizedspells,
-                        "hitroll" : self.hitroll,
-                        "damroll" : self.damroll,
-                        "wimpy" : self.wimpy,
-                        "title" : self.title,
-                        "guild" : self.guild,
-                        "council" : self.council,
-                        "family" : self.family,
-                        "clan" : self.clan,
-                        "deity" : self.deity,
-                        "skillpoints" : self.skillpoints,
-                        "seen_as" : self.seen_as,
-                        "maximum_stat" : self.maximum_stat,
-                        "current_stat" : self.current_stat,
-                        "discipline" : self.discipline,
-                        "exp" : self.exp,
-                        "inventory" : self.inventory,
-                        "worn" : self.worn,
-                        "baceac" : self.baceac,
-                        "currentac" : self.currentac,
-                        "hunger" : self.hunger,
-                        "thirst" : self.thirst,
-                        "position" : self.position,
-                        "aid" : self.aid,
-                        "knownpeople" : self.knownpeople,
-                        "prompt" : self.prompt,
-                        "alias" : self.alias,
-                        "oocflags_stored": self.oocflags_stored}
+            jsonable = self.toJSON_base()
+            jsonable["json_version"] = self.json_version
+            jsonable["json_class_name"] = self.json_class_name
+            jsonable["password"] = self.password
+            jsonable["lasthost"] = self.lasthost
+            jsonable["lasttime"] = self.lasttime
+            jsonable["oocflags_stored"] = self.oocflags_stored
 
             return json.dumps(jsonable, sort_keys=True, indent=4)
 

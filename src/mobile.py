@@ -32,10 +32,6 @@ mobilelist_index = []
 mobilelist = []
 mobilelist_by_vnum_index = {}
 mobilelist_by_vnum = {}
-mobilelist_by_name_index = {}
-mobilelist_by_name = {}
-mobilelist_by_aid_index = {}
-mobilelist_by_aid = {}
 
 
 class Mobile(livingthing.LivingThing, olc.Editable):
@@ -49,9 +45,6 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         self.json_class_name = Mobile.CLASS_NAME
         self.logpath = ''
         self.capability = ['mobile']
-        self.title = ''
-        self.seen_as = ''
-        self.prompt = ''
         self.vnum = 0
         self.events = event.Queue(self, "mobile")
         self.commands = {"vnum": ("integer", None),
@@ -69,60 +62,14 @@ class Mobile(livingthing.LivingThing, olc.Editable):
 
             mobilelist_index.append(self)
             mobilelist_by_vnum[self.vnum] = self
-            mobilelist_by_name[self.name] = self
-            mobilelist_by_aid[self.aid] = self
 
     def toJSON(self):
         if self.json_version == 1:
-            jsonable = {"json_version" : self.json_version,
-                        "json_class_name" : self.json_class_name,
-                        "name" : self.name,
-                        "capability" : self.capability,
-                        "vnum" : self.vnum,
-                        "long_description" : self.long_description,
-                        "short_description" : self.short_description,
-                        "race" : self.race.name,
-                        "age" : self.age,
-                        "gender" : self.gender,
-                        "level" : self.level,
-                        "alignment" : self.alignment,
-                        "money" : self.money,
-                        "height" : self.height,
-                        "weight" : self.weight,
-                        "maxhp" : self.maxhp,
-                        "currenthp" :self.currenthp,
-                        "maxmovement" : self.maxmovement,
-                        "currentmovement" : self.currentmovement,
-                        "maxwillpower" : self.maxwillpower,
-                        "currentwillpower" : self.currentwillpower,
-                        "totalmemoryslots" : self.totalmemoryslots,
-                        "memorizedspells" : self.memorizedspells,
-                        "hitroll" : self.hitroll,
-                        "damroll" : self.damroll,
-                        "wimpy" : self.wimpy,
-                        "title" : self.title,
-                        "guild" : self.guild,
-                        "council" : self.council,
-                        "family" : self.family,
-                        "clan" : self.clan,
-                        "deity" : self.deity,
-                        "skillpoints" : self.skillpoints,
-                        "seen_as" : self.seen_as,
-                        "maximum_stat" : self.maximum_stat,
-                        "current_stat" : self.current_stat,
-                        "discipline" : self.discipline,
-                        "exp" : self.exp,
-                        "inventory" : self.inventory,
-                        "worn" : self.worn,
-                        "baceac" : self.baceac,
-                        "currentac" : self.currentac,
-                        "hunger" : self.hunger,
-                        "thirst" : self.thirst,
-                        "position" : self.position,
-                        "aid" : self.aid,
-                        "knownpeople" : self.knownpeople,
-                        "prompt" : self.prompt,
-                        "alias" : self.alias}
+            jsonable = self.toJSON_base()
+            jsonable["json_version"] = self.json_version
+            jsonable["json_class_name"] self.json_class_name
+            jsonable["vnum"] = self.vnum
+
 
             return json.dumps(jsonable, sort_keys=True, indent=4)
 

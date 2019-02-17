@@ -317,7 +317,6 @@ class Login(object):
             testsock = self.sock
             newplayer.name = self.name
             newplayer.password = self.password
-            newplayer.capability.append('player')
             newplayer.lasttime = time.ctime()
             newplayer.lasthost = self.sock.host
             newplayer.race = self.newchar['race']

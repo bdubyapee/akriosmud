@@ -80,6 +80,7 @@ class LivingThing(object):
         self.capability = []
         self.last_input = 0
         self.race = None
+        self.skillpoints = 0
         self.aid = 0
         self.age = 1
         self.level = 1
@@ -136,10 +137,64 @@ class LivingThing(object):
                           'bashing' : 0,
                           'lashing' : 0}
         self.position = None
+        self.title = ''
+        self.seen_as = ''
+        self.prompt = ''
         self.knownpeople = {}
         self.alias = {}
         self.snooped_by = []
 
+
+    def toJSON_base(self):
+        jsonable = {"name" : self.name,
+                    "capability" : self.capability,
+                    "location" : self.location.vnum,
+                    "long_description" : self.long_description,
+                    "short_description" : self.short_description,
+                    "race" : self.race.name,
+                    "age" : self.age,
+                    "gender" : self.gender,
+                    "level" : self.level,
+                    "alignment" : self.alignment,
+                    "money" : self.money,
+                    "height" : self.height,
+                    "weight" : self.weight,
+                    "maxhp" : self.maxhp,
+                    "currenthp" :self.currenthp,
+                    "maxmovement" : self.maxmovement,
+                    "currentmovement" : self.currentmovement,
+                    "maxwillpower" : self.maxwillpower,
+                    "currentwillpower" : self.currentwillpower,
+                    "totalmemoryslots" : self.totalmemoryslots,
+                    "memorizedspells" : self.memorizedspells,
+                    "hitroll" : self.hitroll,
+                    "damroll" : self.damroll,
+                    "wimpy" : self.wimpy,
+                    "title" : self.title,
+                    "guild" : self.guild,
+                    "council" : self.council,
+                    "family" : self.family,
+                    "clan" : self.clan,
+                    "deity" : self.deity,
+                    "skillpoints" : self.skillpoints,
+                    "seen_as" : self.seen_as,
+                    "maximum_stat" : self.maximum_stat,
+                    "current_stat" : self.current_stat,
+                    "discipline" : self.discipline,
+                    "exp" : self.exp,
+                    "inventory" : self.inventory,
+                    "worn" : self.worn,
+                    "baceac" : self.baceac,
+                    "currentac" : self.currentac,
+                    "hunger" : self.hunger,
+                    "thirst" : self.thirst,
+                    "position" : self.position,
+                    "aid" : self.aid,
+                    "knownpeople" : self.knownpeople,
+                    "prompt" : self.prompt,
+                    "alias" : self.alias}
+        return jsonable
+        
 
     def addKnown(self, idnum=None, name=None):
         if idnum == None or name == None:
