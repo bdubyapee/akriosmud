@@ -13,10 +13,11 @@ import re
 import glob
 
 import comm
-import olc
-import room
 import event
 import exits
+import mobile
+import olc
+import room
 import world
 
 
@@ -143,6 +144,29 @@ class oneArea(olc.Editable):
                 with open(filename, 'w') as thefile:
                     thefile.write(theroom.toJSON())
 
+        # Write new JSON formatted Mobiles for the area.
+        for eacharea in arealist:
+            mobiles_path = os.path.join(eacharea.folder_path, "mobiles")
+            if not os.path.exists(mobiles_path):
+                os.makedirs(mobiles_path)
+            for mobile_vnum, mobile in eacharea.mobilelist_by_vnum_index.items():
+                filename = os.path.join(eacharea.folder_path, f"mobiles/{mobile_vnum}.json")
+                with open(filename, 'w') as thefile:
+                    thefile.write(mobile.toJSON())
+
+        # Write new JSON formateed Objects for the area.
+
+        for eacharea in arealist:
+            objects_path = os.path.join(eacharea.folder_path, "objects")
+            if not os.path.exists(objects_path):
+                os.makedirs(objects_path)
+            for object_vnum, object_ in eacharea.objectlist_by_vnum_index.items():
+                filename = os.path.join(eacharea.folder_path, f"objects/{object_vnum}.json")
+                with open(filename, 'w') as thefile:
+                    thefile.write(object_.toJSON())
+
+        # Write new JSON formatted reset information for the area.
+
         # Write new JSON formatted Area header for the area.
         for eacharea in arealist:
             filename = os.path.join(eacharea.folder_path, f"{eacharea.name}.json")
@@ -164,7 +188,6 @@ class oneArea(olc.Editable):
             with open(eachfile, 'r') as thefile:
                room.oneRoom(self, thefile.read())
  
-
         # Load each Exit and attach it to a room
         exitfilepath = os.path.join(self.folder_path, f"exits/*.json")
         filenames = glob.glob(exitfilepath)
@@ -178,8 +201,27 @@ class oneArea(olc.Editable):
                 else:
                     exits.Exit(attached_room, direction_fn, thefile.read())
 
+        # Load each Mobile in to the Indexes.
+        mobilefilepath = os.path.join(self.folder_path, f"mobiles/*.json")
+        filenames = glob.glob(mobilefilepath)
+        for eachfile in filenames:
+            with open(eachfile, 'r') as thefile:
+               mobile.Mobile(self, thefile.read()) #XXX
+
+        # Load each Object in to the Indexes.
+        objectfilepath = os.path.join(self.folder_path, f"objects/*.json")
+        filenames = glob.glob(objectfilepath)
+        for eachfile in filenames:
+            with open(eachfile, 'r') as thefile:
+               # Update with object load.
+               # room.oneRoom(self, thefile.read()) #XXX
+               pass
+
+
         # Add this area to the area list.
         arealist.append(self)
+
+
    
     def display(self):
         return(f"{{BName{{x: {self.name}\n"

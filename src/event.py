@@ -13,6 +13,7 @@ import uuid
 import comm
 import grapevine
 import player
+import mobile
 import server
 import world
 
@@ -213,7 +214,7 @@ def init_events_player(player):
         event.ownertype = "admin"
         event.eventtype = "system status"
         event.func = event_admin_system_status
-        event.passes = 5 * PULSE_PER_MINUTE
+        event.passes = 1 * PULSE_PER_MINUTE
         event.totalpasses = event.passes
         player.events.add(event)
 
@@ -350,6 +351,7 @@ def event_grapevine_state_check(event_):
         grapveine_.state["authenticated"] = False
 
     if grapevine_.state["connected"] == True:
+        grapevine_.other_games_players = {}
         grapevine_.msg_gen_player_status_query()
         return
     else:
@@ -390,6 +392,8 @@ def event_admin_system_status(event_):
 
     msg = (f"\n\r{{RAkrios System Status (5 minute update){{x\n\r"
            f"{{GPlayer Connections{{x: {{R{len(server.connlist)}{{x\n\r"
+           f"{{G      Mobile Index{{x: {{R{len(mobile.mobilelist_index)}{{x\n\r"
+           f"{{G           Mobiles{{x: {{R{len(mobile.mobilelist)}{{x\n\r"
            f"{{G  Game Events List{{x\n\r"
            f"{{G        Player Events{{x: {{R{event_count['player']}{{x\n\r"
            f"{{G        Mobile Events{{x: {{R{event_count['mobile']}{{x\n\r"

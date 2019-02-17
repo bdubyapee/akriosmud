@@ -148,7 +148,6 @@ class LivingThing(object):
     def toJSON_base(self):
         jsonable = {"name" : self.name,
                     "capability" : self.capability,
-                    "location" : self.location.vnum,
                     "long_description" : self.long_description,
                     "short_description" : self.short_description,
                     "race" : self.race.name,
@@ -339,6 +338,13 @@ class LivingThing(object):
     @property
     def is_player(self):
         if 'player' in self.capability:
+            return True
+        else:
+            return False
+
+    @property
+    def is_mobile(self):
+        if 'mobile' in self.capability:
             return True
         else:
             return False

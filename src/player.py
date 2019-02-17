@@ -67,6 +67,7 @@ class Player(livingthing.LivingThing):
             jsonable = self.toJSON_base()
             player_json = {"json_version": self.json_version,
                            "json_class_name": self.json_class_name,
+                           "location": self.location.vnum,
                            "password": self.password,
                            "lasthost": self.lasthost,
                            "lasttime": self.lasttime,

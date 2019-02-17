@@ -21,7 +21,7 @@ requirements = {'capability': 'player',
 @Command(**requirements)
 def look(caller, args, **kwargs):
     if caller.location != 0 and len(args) <= 0:
-        if caller.oocflags['viewOLCdetails'] == True:
+        if caller.is_player and caller.oocflags['viewOLCdetails'] == True:
             namepretext = f"{{W[{{xVNUM: {{B{caller.location.vnum}{{W]{{x "
             name = f"{namepretext}{{B{caller.location.name}{{x"
             theexits = []
@@ -35,7 +35,7 @@ def look(caller, args, **kwargs):
             theexits = ', '.join(caller.location.exits)
 
         desc = f"   {caller.location.description}"
-        people = (person for person in caller.location.contents if person.is_player)
+        people = (person for person in caller.location.contents)
         
         if theexits == '':
             theexits = 'none'
@@ -45,7 +45,7 @@ def look(caller, args, **kwargs):
         caller.write(f"{{Y[{{GExits: {{B{theexits}{{Y]{{x")
         for dude in people:
             if dude is not caller and dude.name != '':
-                if dude.oocflags['afk'] == True:
+                if dude.is_player and dude.oocflags['afk'] == True:
                     pretext = "{W[{RAFK{W]{x"
                 else:
                     pretext = ""

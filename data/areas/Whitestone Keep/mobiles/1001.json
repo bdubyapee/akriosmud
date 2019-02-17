@@ -1,0 +1,118 @@
+{
+    "age": 1,
+    "aid": "bd7d765b-1445-4c3a-9457-eaf12a422c56",
+    "alias": {
+        "d": "down",
+        "e": "east",
+        "gossip": "mmchat",
+        "l": "look",
+        "n": "north",
+        "ne": "northeast",
+        "nw": "northwest",
+        "page": "beep",
+        "s": "south",
+        "se": "southeast",
+        "sw": "southwest",
+        "u": "up",
+        "w": "west"
+    },
+    "alignment": "neutral",
+    "baceac": {
+        "bashing": 0,
+        "lashing": 0,
+        "piercing": 0,
+        "slashing": 0
+    },
+    "capability": [
+        "mobile"
+    ],
+    "clan": null,
+    "council": null,
+    "current_stat": {
+        "agility": 43,
+        "charisma": 90,
+        "constitution": 73,
+        "intelligence": 52,
+        "luck": 68,
+        "speed": 51,
+        "strength": 61,
+        "wisdom": 66
+    },
+    "currentac": {
+        "bashing": 0,
+        "lashing": 0,
+        "piercing": 0,
+        "slashing": 0
+    },
+    "currenthp": 1,
+    "currentmovement": 1,
+    "currentwillpower": 0,
+    "damroll": 0,
+    "deity": "",
+    "discipline": "mental",
+    "exp": {
+        "combat": 0,
+        "explore": 0,
+        "profession": 0
+    },
+    "family": null,
+    "gender": "male",
+    "guild": null,
+    "height": {
+        "feet": 5,
+        "inches": 1
+    },
+    "hitroll": 0,
+    "hunger": 0,
+    "inventory": [],
+    "json_class_name": "__Mobile__",
+    "json_version": 1,
+    "knownpeople": {},
+    "level": 1,
+    "location": 1092,
+    "long_description": "",
+    "maxhp": 1,
+    "maximum_stat": {
+        "agility": 43,
+        "charisma": 90,
+        "constitution": 73,
+        "intelligence": 52,
+        "luck": 68,
+        "speed": 51,
+        "strength": 61,
+        "wisdom": 66
+    },
+    "maxmovement": 1,
+    "maxwillpower": 0,
+    "memorizedspells": {},
+    "money": {
+        "copper": 0,
+        "gold": 0,
+        "platinum": 0,
+        "silver": 0
+    },
+    "name": "testmob",
+    "position": "standing",
+    "prompt": "{pAkriosMUD{g:{x ",
+    "race": "human",
+    "seen_as": "",
+    "short_description": "",
+    "skillpoints": 0,
+    "thirst": 0,
+    "title": "is the Creator of All Things.",
+    "totalmemoryslots": {
+        "eighth circle": 0,
+        "fifth circle": 0,
+        "first circle": 0,
+        "fourth circle": 0,
+        "ninth circle": 0,
+        "second circle": 0,
+        "seventh circle": 0,
+        "sixth circle": 0,
+        "third circle": 0
+    },
+    "vnum": 1001,
+    "weight": 1,
+    "wimpy": 0,
+    "worn": {}
+}

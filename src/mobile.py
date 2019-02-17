@@ -11,6 +11,7 @@ import importlib
 import json
 import os
 import time
+import uuid
 
 import area
 import livingthing
@@ -38,31 +39,44 @@ class Mobile(livingthing.LivingThing, olc.Editable):
     CLASS_NAME = "__Mobile__"
     FILE_VERSION = 1
 
-    def __init__(self, area, path=None):
+    def __init__(self, area, data=None, index=True):
         super().__init__()
-        self.filename = path
         self.json_version = Mobile.FILE_VERSION
         self.json_class_name = Mobile.CLASS_NAME
         self.logpath = ''
         self.capability = ['mobile']
         self.vnum = 0
         self.area = area
+        self.index = index
         self.events = event.Queue(self, "mobile")
         self.commands = {"vnum": ("integer", None),
                          "name": ("string", None)}
-        if self.filename != None:
-            self.load()
+        if data is not None:
+            self.load(data)
 
-    def load(self):
-        if os.path.exists(self.filename):
-            with open(self.filename, "r") as thefile:
-                mobile_file_dict = json.loads(thefile.read())
-                for eachkey, eachvalue in mobile_file_dict.items():
-                    setattr(self, eachkey, eachvalue)
-            self.race = races.racebyname(self.race)
+    def populate_index(self):
+        mobilelist_index.append(self)
+        mobilelist_by_vnum_index[self.vnum] = self
+        self.area.mobilelist_index.append(self)
+        self.area.mobilelist_by_vnum_index[self.vnum] = self
 
-            mobilelist_index.append(self)
-            mobilelist_by_vnum[self.vnum] = self
+    def populate_real(self):
+        mobilelist.append(self)
+        mobilelist_by_vnum[self.vnum] = self
+        self.area.mobilelist.append(self)
+        self.area.mobilelist_by_vnum[self.vnum] = self
+
+    def load(self, data):
+        for eachkey, eachvalue in json.loads(data).items():
+            setattr(self, eachkey, eachvalue)
+
+        self.location = None
+        self.race = races.racebyname(self.race)
+
+        if self.index:
+            self.populate_index()
+        else:
+            self.populate_real()
 
     def toJSON(self):
         if self.json_version == 1:
@@ -80,4 +94,14 @@ class Mobile(livingthing.LivingThing, olc.Editable):
             with open(f"{self.filename}", "w") as thefile:
                 thefile.write(self.toJSON())
 
+    def create_real(self, location=None):
+        new_mob = Mobile(self.area, self.toJSON(), index=False)
+        new_mob.aid = str(uuid.uuid4())
+
+        if location is None:
+            newroom = area.roomByVnum(new_mob.vnum)
+        else:
+            newroom = location
+
+        new_mob.move(newroom)
 
