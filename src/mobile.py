@@ -66,10 +66,11 @@ class Mobile(livingthing.LivingThing, olc.Editable):
     def toJSON(self):
         if self.json_version == 1:
             jsonable = self.toJSON_base()
-            jsonable["json_version"] = self.json_version
-            jsonable["json_class_name"] self.json_class_name
-            jsonable["vnum"] = self.vnum
+            mobile_json = {"json_version": self.json_version,
+                           "json_class_name": self.json_class_name,
+                           "vnum": self.vnum}
 
+            jsonable.update(mobile_json)
 
             return json.dumps(jsonable, sort_keys=True, indent=4)
 

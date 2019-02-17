@@ -65,12 +65,14 @@ class Player(livingthing.LivingThing):
     def toJSON(self):
         if self.json_version == 1:
             jsonable = self.toJSON_base()
-            jsonable["json_version"] = self.json_version
-            jsonable["json_class_name"] = self.json_class_name
-            jsonable["password"] = self.password
-            jsonable["lasthost"] = self.lasthost
-            jsonable["lasttime"] = self.lasttime
-            jsonable["oocflags_stored"] = self.oocflags_stored
+            player_json = {"json_version": self.json_version,
+                           "json_class_name": self.json_class_name,
+                           "password": self.password,
+                           "lasthost": self.lasthost,
+                           "lasttime": self.lasttime,
+                           "oocflags_stored": self.oocflags_stored}
+
+            jsonable.update(player_json)
 
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
