@@ -38,7 +38,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
     CLASS_NAME = "__Mobile__"
     FILE_VERSION = 1
 
-    def __init__(self, path=None):
+    def __init__(self, area, path=None):
         super().__init__()
         self.filename = path
         self.json_version = Mobile.FILE_VERSION
@@ -46,7 +46,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         self.logpath = ''
         self.capability = ['mobile']
         self.vnum = 0
-        self.area = None
+        self.area = area
         self.events = event.Queue(self, "mobile")
         self.commands = {"vnum": ("integer", None),
                          "name": ("string", None)}

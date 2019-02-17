@@ -71,7 +71,7 @@ class oneRoom(olc.Editable):
         super().__init__()
         self.json_version = oneRoom.FILE_VERSION
         self.json_class_name = oneRoom.CLASS_NAME
-        self.is_type = {"room": True}
+        self.capability = ['room']
         self.area = area
         self.builder = None
         if vnum != None:

@@ -73,7 +73,7 @@ def roomedit(caller, args, **kwargs):
         except:
             pass
         if len(args) == 0:
-            if "room" in caller.location.is_type:
+            if "room" in caller.location.capability:
                 caller.building = caller.location
                 caller.building.builder = caller
                 caller.write(f"Editing {{W{caller.location.vnum}{{x")
