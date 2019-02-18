@@ -14,6 +14,7 @@ import comm
 import grapevine
 import player
 import mobile
+import objects
 import server
 import world
 
@@ -394,6 +395,8 @@ def event_admin_system_status(event_):
            f"{{GPlayer Connections{{x: {{R{len(server.connlist)}{{x\n\r"
            f"{{G      Mobile Index{{x: {{R{len(mobile.mobilelist_index)}{{x\n\r"
            f"{{G           Mobiles{{x: {{R{len(mobile.mobilelist)}{{x\n\r"
+           f"{{G      Object Index{{x: {{R{len(objects.objectlist_index)}{{x\n\r"
+           f"{{G           Objects{{x: {{R{len(objects.objectlist)}{{x\n\r"
            f"{{G  Game Events List{{x\n\r"
            f"{{G        Player Events{{x: {{R{event_count['player']}{{x\n\r"
            f"{{G        Mobile Events{{x: {{R{event_count['mobile']}{{x\n\r"

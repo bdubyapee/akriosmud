@@ -25,6 +25,10 @@ import event
 import world
 
 
+# Temp for testing
+import mobile
+import objects
+
 # This is outside the scope of the rest of this module so we have a good
 # reference time to base our total startup time.  Used only in the server
 # __init__ to determine startup time.
@@ -195,6 +199,13 @@ class Server(asyncore.dispatcher):
         helpsys.init()
         races.init()
         area.init()
+
+
+        # Temp for testing XXX
+        if 1001 in mobile.mobilelist_by_vnum_index:
+            mobile.mobilelist_by_vnum_index[1001].create_real(location=1001)
+        if 1001 in objects.objectlist_by_vnum_index:
+            objects.objectlist_by_vnum_index[1001].create_real(location=1001)
 
         event.init_events_server(self)
 

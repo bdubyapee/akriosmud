@@ -1,0 +1,17 @@
+{
+    "capability": [
+        "object"
+    ],
+    "json_class_name": "__Object__",
+    "json_version": 1,
+    "keywords": [
+        "rock",
+        "stone",
+        "grey",
+        "small"
+    ],
+    "long_description": "An average looking stone",
+    "name": "stone",
+    "short_description": "A small grey stone",
+    "vnum": 1001
+}

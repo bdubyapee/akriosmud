@@ -16,6 +16,7 @@ import comm
 import event
 import exits
 import mobile
+import objects
 import olc
 import room
 import world
@@ -206,17 +207,22 @@ class oneArea(olc.Editable):
         filenames = glob.glob(mobilefilepath)
         for eachfile in filenames:
             with open(eachfile, 'r') as thefile:
-               mobile.Mobile(self, thefile.read()) #XXX
+                mobile.Mobile(self, thefile.read())
 
         # Load each Object in to the Indexes.
         objectfilepath = os.path.join(self.folder_path, f"objects/*.json")
         filenames = glob.glob(objectfilepath)
         for eachfile in filenames:
             with open(eachfile, 'r') as thefile:
-               # Update with object load.
-               # room.oneRoom(self, thefile.read()) #XXX
-               pass
+                objects.Object(self, thefile.read())
 
+        # Load the resets for this area.
+        resetfilepath = os.path.join(self.folder_path, f"resets/*.json")
+        filenames = glob.glob(resetfilepath)
+        for eachfile in filenames:
+            with open(eachfile, 'r') as thefile:
+                # Update with reset load.
+                pass
 
         # Add this area to the area list.
         arealist.append(self)
