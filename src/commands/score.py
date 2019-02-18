@@ -21,7 +21,7 @@ requirements = {'capability': ['player'],
 @Command(**requirements)
 def score(caller, args, **kwargs):
     caller.write("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-={BPlayer Information{x=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-    caller.write(f"{{BName{{x: {caller.name_cap} {caller.title}")
+    caller.write(f"{{BName{{x: {caller.disp_name} {caller.title}")
     caller.write(f"{{BGender{{x: {caller.gender.capitalize():10}  {{BRace{{x: {caller.race.name.capitalize():15} {{BDiscipline{{x: {caller.discipline.capitalize():10}")
     caller.write(f"{{BShort Desc{{x: {caller.short_description}")
     caller.write(f"{{BCapabilities{{x: {', '.join(caller.capability)}")

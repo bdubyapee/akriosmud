@@ -34,7 +34,7 @@ def ooc(caller, args, **kwargs):
             name = "You"
             plural = ''
         else:
-            name = caller.name_cap
+            name = caller.disp_name
             plural = 's'
             name = '\n\r' + name
         person.write(f"{{B{name} OOC{plural}: '{args_[:300]}'{{x")

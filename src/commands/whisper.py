@@ -23,6 +23,6 @@ requirements = {'capability': ['player', 'mobile'],
 def whisper(caller, args):
     target = kwargs['target']
     message = kargs['post']
-    target.write(f"\n\r{{g{caller.name_cap} whispers to you, '{message}'{{x.")
-    caller.write(f"\n\r{{gYou whisper to {target.name_cap}, '{message}'{{x.")
+    target.write(f"\n\r{{g{caller.disp_name} whispers to you, '{message}'{{x.")
+    caller.write(f"\n\r{{gYou whisper to {target.disp_name}, '{message}'{{x.")
 

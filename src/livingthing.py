@@ -274,10 +274,7 @@ class LivingThing(object):
         if tospot == None:
             comm.wiznet("Received None value in move:livingthing.py")
         else:
-            if self.is_player:
-                mover = self.name.capitalize()
-            else:
-                mover = self.short_description
+            mover = self.disp_name
 
             if direction == None:
                 rev_direction = "the ether"
@@ -354,5 +351,5 @@ class LivingThing(object):
             return False
 
     @property
-    def name_cap(self):
-        return self.name.capitalize()
+    def disp_name(self):
+        return self.name.capitalize() if self.is_player else self.short_description

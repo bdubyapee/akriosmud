@@ -20,7 +20,7 @@ requirements = {'capability': ['player', 'mobile'],
 
 @Command(**requirements)
 def quote(caller, args, **kwargs):
-    if caller.oocflags_stored['quote'] == 'false':
+    if caller.is_player and caller.oocflags_stored['quote'] == 'false':
         caller.write("You have the Quote channel disabled. Use the {Wtoggle{x command to enable it.")
         return
 
@@ -34,7 +34,7 @@ def quote(caller, args, **kwargs):
             name = "You"
             plural = ''
         else:
-            name = caller.name_cap
+            name = caller.disp_name
             plural = 's'
             name = '\n\r' + name
         person.write(f"{{y{name} Quote{plural}: '{args_[:300]}'{{x")

@@ -28,7 +28,7 @@ def sleep(caller, args, **kwargs):
         elif caller.position == "standing" or caller.position == "sitting":
             caller.position = "sleeping"
             caller.write("You lay down and go to sleep.")
-            message = f"{caller.name_cap} lays down to sleep."
+            message = f"{caller.disp_name} lays down to sleep."
             comm.message_to_room(caller.location, caller, message)
             return
 

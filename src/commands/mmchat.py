@@ -29,13 +29,13 @@ def mmchat(caller, args, **kwargs):
         grapevine.gsocket.msg_gen_message_channel_send(caller, "grapevine",  args) 
     except:
         caller.write(f"{{WError chatting to grapevine.haus Network, try again later{{x")
-        comm.wiznet(f"Error writing to grapevine.haus network. {caller.name_cap} : {args}")
+        comm.wiznet(f"Error writing to grapevine.haus network. {caller.disp_name} : {args}")
         return
     
     caller.write(f"{{GYou MultiMUD Chat{{x: '{{G{args}{{x'")
 
     for eachplayer in player.playerlist:
         if eachplayer.oocflags_stored['mmchat'] == 'true' and eachplayer.aid != caller.aid:
-            eachplayer.write(f"\n\r{{G{caller.name_cap} MultiMUD Chats{{x: '{{G{args}{{x'")
+            eachplayer.write(f"\n\r{{G{caller.disp_name} MultiMUD Chats{{x: '{{G{args}{{x'")
 
 

@@ -50,12 +50,10 @@ def look(caller, args, **kwargs):
                 else:
                     pretext = ""
 
-                if thing.is_player:
-                    caller.write(f"   {pretext} {thing.name_cap} is {thing.position} here.")
-                elif thing.is_mobile:
-                    caller.write(f"   {pretext} {thing.short_description} is {thing.position} here.")
-                elif thing.is_object:
-                    caller.write(f"   {pretext} {thing.short_description} is here.")
+                if thing.is_player or thing.is_mobile:
+                    caller.write(f"   {pretext} {thing.disp_name} is {thing.position} here.")
+                else:
+                    caller.write(f"   {pretext} {thing.disp_name} is here.")
               
     elif len(args) > 0:
         # Is it a room extra description?

@@ -25,15 +25,8 @@ def say(caller, args, **kwargs):
     message = kwargs['post']
        
     caller.write(f"\n\r{{cYou say, '{message[:300]}'{{x.")
- 
-    name = ''
-   
-    if caller.is_mobile:
-        name = caller.short_description
-    elif caller.is_player:
-        name = caller.name_cap
 
     for person in target_list:
         if person != caller:
-           person.write(f"\n\r\n\r{{c{name} says, '{message[:300]}'{{x.")
+           person.write(f"\n\r\n\r{{c{caller.disp_name} says, '{message[:300]}'{{x.")
 

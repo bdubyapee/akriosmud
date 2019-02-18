@@ -28,13 +28,13 @@ def sit(caller, args, **kwargs):
         elif caller.position == "standing":
             caller.position = "sitting"
             caller.write("You sit down.")
-            message = f"{caller.name_cap} sits down."
+            message = f"{caller.disp_name} sits down."
             comm.message_to_room(caller.location, caller, message)
             return
         elif caller.position == "sleeping":
             caller.position = "sitting"
             caller.write("You wake up and begin sitting")
-            message = f"{caller.name_cap} sits up and looks around."
+            message = f"{caller.disp_name} sits up and looks around."
             comm.message_to_room(caller.location, caller, message)
             caller.interp("look")
             return

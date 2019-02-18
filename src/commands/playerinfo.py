@@ -20,7 +20,7 @@ requirements = {'capability': ['admin'],
 @Command(**requirements)
 def playerinfo(caller, args):
     for person in player.playerlist:
-        name = person.name_cap
+        name = person.disp_name
         host = person.sock.host
         fileno = person.sock.socket.fileno()
 

@@ -38,7 +38,7 @@ def mmtell(caller, args, **kwargs):
         caller.write("Just use in game channels to talk to players on Akrios.")
         return
 
-    grapevine.gsocket.msg_gen_player_tells(caller.name_cap, game, target, message)
+    grapevine.gsocket.msg_gen_player_tells(caller.disp_name, game, target, message)
 
     
     caller.write(f"{{GYou MultiMUD tell {{y{target}@{game}{{x: '{{G{message}{{x'")

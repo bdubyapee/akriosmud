@@ -51,7 +51,7 @@ def who(caller, args, **kwargs):
             extra2 = '{W[{RCoding{W]{x'
         else:
             extra2 = ''
-        caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(), person.name_cap, person.title, extra2, extra1))
+        caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(), person.disp_name, person.title, extra2, extra1))
 
     caller.write("\n\r")
     caller.write("{BPlayers in other Realms on the Grapevine network{x:")

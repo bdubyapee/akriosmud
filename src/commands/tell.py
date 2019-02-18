@@ -23,5 +23,5 @@ requirements = {'capability': ['player', 'mobile'],
 def tell(caller, args, **kwargs):
     target = kwargs['target']
     message = kwargs['post']
-    target.write(f"\n\r{{y{caller.name_cap} tells you, '{message}'{{x.")
-    caller.write(f"\n\r{{yYou tell {target.name_cap}, '{message}'{{x.")
+    target.write(f"\n\r{{y{caller.disp_name} tells you, '{message}'{{x.")
+    caller.write(f"\n\r{{yYou tell {target.disp_name}, '{message}'{{x.")

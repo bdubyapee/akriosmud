@@ -30,7 +30,7 @@ def emote(caller, args, **kwargs):
         else:
             prefix = '\n\r'
             
-        name = caller.name_cap
+        name = caller.disp_name
         name = prefix + name
         person.write(f"\n\r{{g{name} {args_[:70]}{{x")
 
