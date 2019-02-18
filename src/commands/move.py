@@ -35,7 +35,7 @@ def move(caller, args):
                 return
 
             # We have passed all validity checks to move.  Housekeeping and move the thing.
-            if caller.is_building:
+            if caller.is_player and caller.is_building:
                 Command.commandhash['roomedit'](caller, 'done')
                 wasBuilding = True
             else:
