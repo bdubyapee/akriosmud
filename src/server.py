@@ -162,7 +162,6 @@ class ConnSocket(asyncore.dispatcher):
             comm.log(world.serverlog, f"Error in handle_write:server.py - {err}")
 
     def handle_close(self):
-        self.handle_write()
         if self in connlist:
             connlist.remove(self)
         self.clear()
