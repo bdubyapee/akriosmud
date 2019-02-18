@@ -82,7 +82,7 @@ class Login(object):
                     self.interp = self.confirm_new_char
                 else:
                     self.sock.dispatch("I'm sorry, we aren't allowing new characters at this time.\n\r")
-                    self.sock.dispatch("Contact phippsb@gmail.com for an invite!")
+                    self.sock.dispatch("Contact jubelo@akriosmud.funcity.org for an invite!")
                     self.sock.close()
                                 
     def get_char_password(self, inp):

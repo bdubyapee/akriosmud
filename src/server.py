@@ -25,9 +25,6 @@ import event
 import world
 
 
-# Short Test Only: XXX
-import mobile
-
 # This is outside the scope of the rest of this module so we have a good
 # reference time to base our total startup time.  Used only in the server
 # __init__ to determine startup time.
@@ -185,7 +182,6 @@ class Server(asyncore.dispatcher):
     done = False
     softboot = False
     
-
     def __init__(self):
         super().__init__()
         self.logpath = os.path.join(world.logDir, "server")
@@ -199,10 +195,6 @@ class Server(asyncore.dispatcher):
         helpsys.init()
         races.init()
         area.init()
-
-        # Temp XXX
-        if 1001 in mobile.mobilelist_by_vnum_index:
-            mobile.mobilelist_by_vnum_index[1001].create_real()
 
         event.init_events_server(self)
 

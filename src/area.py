@@ -48,7 +48,7 @@ def init():
         oneArea(each_area_directory, thefile[0])
 
 def roomByVnum(vnum):
-    if vnum in roomlist.keys():
+    if vnum in roomlist:
         return roomlist[vnum]
     else:
         return False

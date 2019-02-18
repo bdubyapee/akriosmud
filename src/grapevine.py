@@ -615,7 +615,7 @@ class GrapevineSocket(WebSocket):
 
         ref = str(uuid.uuid4())        
         payload = {"channel": channel,
-                   "name": caller.name.capitalize(),
+                   "name": caller.disp_name,
                    "message": message[:290]}
         msg = {"event": "channels/send",
                "ref": ref,

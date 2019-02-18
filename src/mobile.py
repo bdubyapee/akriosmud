@@ -46,7 +46,6 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         self.logpath = ''
         self.capability = ['mobile']
         self.vnum = 0
-        self.location_start = 0
         self.keywords = []
         self.area = area
         self.index = index
@@ -85,7 +84,6 @@ class Mobile(livingthing.LivingThing, olc.Editable):
             jsonable = self.toJSON_base()
             mobile_json = {"json_version": self.json_version,
                            "json_class_name": self.json_class_name,
-                           "location_start": self.location_start,
                            "keywords": self.keywords,
                            "vnum": self.vnum}
 
@@ -99,13 +97,22 @@ class Mobile(livingthing.LivingThing, olc.Editable):
                 thefile.write(self.toJSON())
 
     def create_real(self, location=None):
-        new_mob = Mobile(self.area, self.toJSON(), index=False)
-        new_mob.aid = str(uuid.uuid4())
-
+        '''
+            This creates a 'real' in game version of a mobile. We expect a location to be
+            provided in which to place the mobile.  If the location passed in is an int type
+            and if that int is a valid room vnum, put the mobile there.  If not we assume,
+            at this time, that it is a room object and we place it there.
+        '''
         if location is None:
-            newroom = area.roomByVnum(new_mob.location_start)
+            comm.wiznet(f"Cannot load Mobile to None Location.")
+            return
+        elif type(location) is int and location in area.roomlist:
+            newroom = area.roomByVnum(location)
         else:
             newroom = location
+
+        new_mob = Mobile(self.area, self.toJSON(), index=False)
+        new_mob.aid = str(uuid.uuid4())
 
         new_mob.move(newroom)
 

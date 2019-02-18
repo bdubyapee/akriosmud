@@ -275,7 +275,7 @@ def event_grapevine_receive_message(event_):
                 message = (f"\n\r{{GMultiMUD Tell to {{y{target}@{game}{{G "
                            f"returned an Error{{x: {{R{error_msg}{{x")
                 for eachplayer in player.playerlist:
-                    if eachplayer.name.capitalize() == caller:
+                    if eachplayer.disp_name == caller:
                         if eachplayer.oocflags_stored['mmchat'] == 'true':
                             eachplayer.write(message)
                             return
@@ -285,7 +285,7 @@ def event_grapevine_receive_message(event_):
                 message = (f"\n\r{{GMultiMUD Tell from {{y{sender}@{game}{{x: "
                            f"{{G{message}{{x.\n\rReceived at : {sent}.")
                 for eachplayer in player.playerlist:
-                    if eachplayer.name.capitalize() == target.capitalize():
+                    if eachplayer.disp_name == target.capitalize():
                         if eachplayer.oocflags_stored['mmchat'] == 'true':
                             eachplayer.write(message)
                             return
