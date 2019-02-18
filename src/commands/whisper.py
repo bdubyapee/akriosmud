@@ -17,7 +17,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'generic_fail': "See {WHelp whisper{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping'],
-                'target': 'target_single_player_room_post'}
+                'target': 'target_single_thing_room_post'}
 
 @Command(**requirements)
 def whisper(caller, args):

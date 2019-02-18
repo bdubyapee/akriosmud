@@ -123,6 +123,37 @@ def target_single_player_room_post(caller, args):
         
     return (False, None)
 
+def target_single_thing_room_nopost(caller, args):
+    '''
+        Expect: target
+        Target must be a thing, must be in same room as caller, no post target args.
+    '''
+    target = args.lower()
+
+    for eachthing in caller.location.contents:
+        name = eachthing.disp_name.lower()
+        if name.startswith(target):
+            return (eachthing, None)
+    return (False, None)
+
+def target_single_thing_room_post(caller, args):
+    '''
+        Expect: target <one or more character/words args>
+        Target must be a thing, must be in same room as caller, must have argumnets.
+    '''
+    target, *args = args.split()
+    target = target.lower()
+
+    if len(args) <= 0:
+        return (False, False)
+
+    for eachthing in caller.location.contents:
+        name = eachthing.disp_name.lower()
+        if name.startswith(target) and len(args) > 0:
+            return (eachthing, ' '.join(args))
+
+    return (False, None)
+
 def target_all_player_room_nopost(caller, args):
     '''
         Expect: 
@@ -190,6 +221,8 @@ class Command(object):
                "target_single_player_game_post": target_single_player_game_post,
                "target_single_player_room_nopost": target_single_player_room_nopost,
                "target_single_player_room_post": target_single_player_room_post,
+               "target_single_thing_room_nopost": target_single_thing_room_nopost,
+               "target_single_thing_room_post": target_single_thing_room_post,
                "target_all_player_room_nopost": target_all_player_room_nopost,
                "target_all_player_room_post": target_all_player_room_post,
                "target_all_things_room_nopost": target_all_things_room_nopost,
