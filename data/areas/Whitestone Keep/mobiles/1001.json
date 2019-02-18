@@ -67,7 +67,11 @@
     "inventory": [],
     "json_class_name": "__Mobile__",
     "json_version": 1,
-    "keywords": ['guard', 'soldier', 'militia'],
+    "keywords": [
+        "guard",
+        "soldier",
+        "militia"
+    ],
     "knownpeople": {},
     "level": 1,
     "location_start": 1001,
