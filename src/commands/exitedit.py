@@ -12,7 +12,7 @@ from commands import *
 name = "exitedit"
 version = 1
 
-requirements = {'capability': 'builder',
+requirements = {'capability': ['builder'],
                 'generic_fail': "See {WHelp exitedit{x for help with this command.",
                 'truth_checks':  ['is_standing'],
                 'false_checks': []}

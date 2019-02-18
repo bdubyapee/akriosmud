@@ -12,7 +12,7 @@ from commands import *
 name = "northwest"
 versin = 1
 
-@Command(capability="player")
+@Command(capability=["player", "mobile"])
 def northwest(caller, args):
     Command.commandhash['move'](caller, 'northwest')
 

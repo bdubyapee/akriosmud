@@ -13,7 +13,7 @@ name = "tell"
 version = 1
 
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player', 'mobile'],
                 'generic_fail' : "See {WHelp tell{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': [],

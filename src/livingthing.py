@@ -209,7 +209,7 @@ class LivingThing(object):
 
         inp = inp.split()
 
-        if hasattr(self, 'capability'):
+        if self.is_player:
             self.oocflags['afk'] = False
 
         isBuilding = hasattr(self, 'building')

@@ -14,7 +14,7 @@ from commands import *
 name = "mmchat"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp mmchat{x for help with this command.",
                 'truth_checks':  ['args_required'],
                 'false_checks': []}

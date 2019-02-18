@@ -13,7 +13,7 @@ from commands import *
 name = "close"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player', 'mobile'],
                 'generic_fail': "See {WHelp close{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}

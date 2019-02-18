@@ -12,7 +12,7 @@ from commands import *
 name = "viewolcdetails"
 version = 1
 
-requirements = {'capability': 'builder',
+requirements = {'capability': ['builder'],
                 'generic_fail': "See {WHelp viewolcdetails{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

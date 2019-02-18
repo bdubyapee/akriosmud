@@ -13,7 +13,7 @@ from commands import *
 name = "score"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp score{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

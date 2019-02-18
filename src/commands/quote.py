@@ -12,7 +12,7 @@ from commands import *
 name = "quote"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player', 'mobile'],
                 'generic_fail': "See {WHelp quote{x for help with this command.",
                 'truth_checks':  ['args_required'],
                 'false_checks': [],

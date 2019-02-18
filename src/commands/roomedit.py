@@ -12,7 +12,7 @@ from commands import *
 name = "roomedit"
 version = 1
 
-requirements = {'capability': 'builder',
+requirements = {'capability': ['builder'],
                 'generic_fail': "See {WHelp roomedit{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

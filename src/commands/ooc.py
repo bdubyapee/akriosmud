@@ -13,7 +13,7 @@ from commands import *
 name = "ooc"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp ooc{x for help with this command.",
                 'truth_checks':  ['arg_required'],
                 'false_checks': [],

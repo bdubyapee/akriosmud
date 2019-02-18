@@ -210,9 +210,12 @@ class Command(object):
                 caller.write("That command is disabled")
                 return
 
-            if self.dec_kwargs['capability'] not in caller.capability:
+            if not set(self.dec_kwargs['capability']) & set(caller.capability):
                 caller.write("Huh?")
                 return
+            #if self.dec_kwargs['capability'] not in caller.capability:
+            #    caller.write("Huh?")
+            #    return
 
             # If the command has target requirements perform those here.
             if 'target' in self.dec_kwargs:
@@ -272,6 +275,7 @@ from . import areastats
 from . import coding
 from . import dig
 from . import exitedit
+from . import force
 from . import grestart
 from . import helpedit
 from . import playerinfo

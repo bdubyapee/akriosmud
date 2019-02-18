@@ -14,7 +14,7 @@ from commands import *
 name = "who"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp who{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

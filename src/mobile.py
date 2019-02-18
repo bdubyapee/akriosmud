@@ -46,6 +46,8 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         self.logpath = ''
         self.capability = ['mobile']
         self.vnum = 0
+        self.location_start = 0
+        self.keywords = []
         self.area = area
         self.index = index
         self.events = event.Queue(self, "mobile")
@@ -83,6 +85,8 @@ class Mobile(livingthing.LivingThing, olc.Editable):
             jsonable = self.toJSON_base()
             mobile_json = {"json_version": self.json_version,
                            "json_class_name": self.json_class_name,
+                           "location_start": self.location_start,
+                           "keywords": self.keywords,
                            "vnum": self.vnum}
 
             jsonable.update(mobile_json)
@@ -99,9 +103,12 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         new_mob.aid = str(uuid.uuid4())
 
         if location is None:
-            newroom = area.roomByVnum(new_mob.vnum)
+            newroom = area.roomByVnum(new_mob.location_start)
         else:
             newroom = location
 
         new_mob.move(newroom)
+
+    def write(self, args):
+        print(f"Received mobile command write of: {args}")
 

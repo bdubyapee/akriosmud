@@ -12,7 +12,7 @@ from commands import *
 name = "raceslist"
 version = 1
 
-requirements = {'capability': 'builder',
+requirements = {'capability': ['builder'],
                 'generic_fail': "See {WHelp raceslist{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

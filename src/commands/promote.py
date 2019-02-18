@@ -12,7 +12,7 @@ from commands import *
 name = "promote"
 version = 1
 
-requirements = {'capability': 'admin',
+requirements = {'capability': ['admin'],
                 'generic_fail': "See {WHelp promote{x for help with this command.",
                 'truth_checks':  ['args_required'],
                 'false_checks': [],

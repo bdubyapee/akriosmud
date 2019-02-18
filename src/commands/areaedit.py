@@ -12,7 +12,7 @@ from commands import *
 name = "areaedit"
 version = 1
 
-requirements = {'capability': 'admin',
+requirements = {'capability': ['admin'],
                 'generic_fail': "See {WHelp areaedit{x for help with this command.",
                 'truth_checks':  ['is_standing'],
                 'false_checks': []}

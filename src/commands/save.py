@@ -13,7 +13,7 @@ from commands import *
 name = "save"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp save{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

@@ -15,7 +15,7 @@ from commands import *
 name = "alias"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp alias{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

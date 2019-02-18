@@ -14,7 +14,7 @@ from commands import *
 name = "sit"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player', 'mobile'],
                 'generic_fail': "See {WHelp sit{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

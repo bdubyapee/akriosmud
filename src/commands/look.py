@@ -13,7 +13,7 @@ from commands import *
 name = "look"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp look{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
@@ -35,7 +35,7 @@ def look(caller, args, **kwargs):
             theexits = ', '.join(caller.location.exits)
 
         desc = f"   {caller.location.description}"
-        people = (person for person in caller.location.contents)
+        things = (thing for thing in caller.location.contents)
         
         if theexits == '':
             theexits = 'none'
@@ -43,13 +43,20 @@ def look(caller, args, **kwargs):
         caller.write(f"\n\r{name}")
         caller.write(f"{desc}\n")
         caller.write(f"{{Y[{{GExits: {{B{theexits}{{Y]{{x")
-        for dude in people:
-            if dude is not caller and dude.name != '':
-                if dude.is_player and dude.oocflags['afk'] == True:
+        for thing in things:
+            if thing is not caller and thing.name != '':
+                if thing.is_player and thing.oocflags['afk'] == True:
                     pretext = "{W[{RAFK{W]{x"
                 else:
                     pretext = ""
-                caller.write(f"   {pretext} {dude.name_cap} is {dude.position} here.")
+
+                if thing.is_player:
+                    caller.write(f"   {pretext} {thing.name_cap} is {thing.position} here.")
+                elif thing.is_mobile:
+                    caller.write(f"   {pretext} {thing.short_description} is {thing.position} here.")
+                elif thing.is_object:
+                    caller.write(f"   {pretext} {thing.short_description} is here.")
+              
     elif len(args) > 0:
         # Is it a room extra description?
         if args in caller.location.extradescriptions:
@@ -62,10 +69,15 @@ def look(caller, args, **kwargs):
             lookingat = caller
             notfound = False
         else:
-            for person in caller.location.contents:
-                if person.is_player and args in person.name:
-                     lookingat = person
-                     notfound = False
+            for thing in caller.location.contents:
+                if hasattr(thing, "name"):
+                    if args in thing.name:
+                        lookingat = thing
+                        notfound = False
+                if hasattr(thing, "keywords"):
+                    if args in thing.keywords:
+                        lookingat = thing
+                        notfound = False
         if notfound == False:
             if lookingat.long_description == '':
                 caller.write("They don't appear to have a description set yet.")

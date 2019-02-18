@@ -13,7 +13,7 @@ name = "emote"
 version = 1
 
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player', 'mobile'],
                 'generic_fail': "See {WHelp emote{x for help with this command.",
                 'truth_checks':  ['args_required'],
                 'false_checks': ['is_sleeping'],

@@ -14,7 +14,7 @@ from commands import *
 name = "mmtell"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp mmtell{x for help with this command.",
                 'truth_checks':  ['args_required'],
                 'false_checks': []}

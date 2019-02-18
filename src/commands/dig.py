@@ -12,7 +12,7 @@ from commands import *
 name = "dig"
 version = 1
 
-requirements = {'capability': 'builder',
+requirements = {'capability': ['builder'],
                 'generic_fail': "See {WHelp dig{x for help with this command.",
                 'truth_checks':  ['is_standing', 'args_required'],
                 'false_checks': []}

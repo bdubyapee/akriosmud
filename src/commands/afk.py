@@ -15,7 +15,7 @@ from commands import *
 name = "afk"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp afk{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

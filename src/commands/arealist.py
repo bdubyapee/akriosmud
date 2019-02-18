@@ -12,7 +12,7 @@ from commands import *
 name = "arealist"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp arealist{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}

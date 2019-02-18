@@ -14,7 +14,7 @@ from commands import *
 name = "stand"
 version = 1
 
-requirements = {'capability': 'player',
+requirements = {'capability': ['player', 'mobile'],
                 'generic_fail': "See {WHelp stand{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}
