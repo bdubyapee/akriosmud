@@ -214,7 +214,7 @@ def init_events_player(player):
         event.ownertype = "admin"
         event.eventtype = "system status"
         event.func = event_admin_system_status
-        event.passes = 1 * PULSE_PER_MINUTE
+        event.passes = 5 * PULSE_PER_MINUTE
         event.totalpasses = event.passes
         player.events.add(event)
 

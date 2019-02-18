@@ -27,8 +27,7 @@ def commandslist(caller, args, **kwargs):
     caller.write("")
 
     cmd_list = [cmd for cmd in Command.commandhash
-                if Command.commandcapability[cmd] in caller.capability]
-
+                if set(Command.commandcapability[cmd]) & set(caller.capability)]
     
     cmd_list.sort()
     numcols = 4
