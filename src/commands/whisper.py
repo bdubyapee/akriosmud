@@ -20,9 +20,9 @@ requirements = {'capability': ['player', 'mobile'],
                 'target': 'target_single_thing_room_post'}
 
 @Command(**requirements)
-def whisper(caller, args):
+def whisper(caller, args, **kwargs):
     target = kwargs['target']
-    message = kargs['post']
+    message = kwargs['post']
     target.write(f"\n\r{{g{caller.disp_name} whispers to you, '{message}'{{x.")
     caller.write(f"\n\r{{gYou whisper to {target.disp_name}, '{message}'{{x.")
 
