@@ -14,6 +14,7 @@ import time
 
 import area
 import livingthing
+import objects
 import room
 import event
 import races
@@ -58,6 +59,15 @@ class Player(livingthing.LivingThing):
                 player_file_dict = json.loads(thefile.read())
                 for eachkey, eachvalue in player_file_dict.items():
                     setattr(self, eachkey, eachvalue)
+
+            if len(self.contents) != 0:
+                temp = {}
+                for eachvnum, eachobj in self.contents.items():
+                    temp[eachvnum] = objects.Object(None, eachobj, index=False, invload=True)
+                self.contents = temp
+            else:
+                self.contents = {}
+
             self.location = area.roomByVnum(self.location)
             self.move(self.location)
             self.race = races.racebyname(self.race)

@@ -35,8 +35,6 @@ import server
 import world
 
 
-
-
 # Basic truthfullness tests for command preparsing.
 
 def args_required(thing, args, **kwargs):
@@ -133,7 +131,12 @@ def target_single_thing_room_nopost(caller, args):
     for eachthing in caller.location.contents:
         name = eachthing.disp_name.lower()
         if name.startswith(target):
-            return (eachthing, None)
+            return (eachthing, one)
+        elif hasattr(eachthing, "keywords"):
+            for eachkw in eachthing.keywords:
+                if eachkw.startswith(target):
+                    return (eachthing, None)
+
     return (False, None)
 
 def target_single_thing_room_post(caller, args):
@@ -327,10 +330,13 @@ from . import beep
 from . import close
 from . import commandslist
 from . import down
+from . import drop
 from . import east
 from . import emote
+from . import get
 from . import goto
 from . import help
+from . import inventory
 from . import longdescription
 from . import look
 from . import mmchat

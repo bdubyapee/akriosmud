@@ -38,10 +38,11 @@ class Object(atomic.Atomic, olc.Editable):
     CLASS_NAME = "__Object__"
     FILE_VERSION = 1
 
-    def __init__(self, area, data=None, index=True):
+    def __init__(self, area, data=None, index=True, invload=False):
         super().__init__()
         self.json_version = Object.FILE_VERSION
         self.json_class_name = Object.CLASS_NAME
+        self.aid = 0
         self.capability = ['object']
         self.vnum = 0
         self.location = None
@@ -49,8 +50,10 @@ class Object(atomic.Atomic, olc.Editable):
         self.short_description = ''
         self.long_description = ''
         self.keywords = []
+        self.contents = {}
         self.area = area
         self.index = index
+        self.invload = invload
         self.events = event.Queue(self, "object")
         self.commands = {"vnum": ("integer", None),
                          "short_description": ("string", None),
@@ -78,7 +81,7 @@ class Object(atomic.Atomic, olc.Editable):
 
         if self.index:
             self.populate_index()
-        else:
+        elif self.invload == False:
             self.populate_real()
 
     def toJSON(self):
@@ -89,6 +92,7 @@ class Object(atomic.Atomic, olc.Editable):
                         "short_description": self.short_description,
                         "long_description": self.long_description,
                         "keywords": self.keywords,
+                        "contents": self.contents,
                         "vnum": self.vnum}
 
             return json.dumps(jsonable, sort_keys=True, indent=4)

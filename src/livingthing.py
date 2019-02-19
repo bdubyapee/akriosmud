@@ -17,6 +17,7 @@ import comm
 import commands
 import exits
 import helpsys
+import objects
 import races
 import room
 
@@ -77,12 +78,14 @@ class LivingThing(atomic.Atomic):
         self.short_description = ''
         self.gender = 'male'
         self.location = None
-        self.contents = []
+        self.contents = {}
         self.capability = []
         self.last_input = 0
         self.race = None
         self.skillpoints = 0
-        self.aid = 0
+        self.skills_learned = {}
+        self.skills_specialties = {}
+        self.aid = ''
         self.age = 1
         self.level = 1
         self.alignment = 'neutral'
@@ -121,14 +124,16 @@ class LivingThing(atomic.Atomic):
                                  'eighth circle': 0,
                                  'ninth circle': 0}
         self.memorizedspells = {}
+        self.spells_learned = {}
+        self.runes_imprinted = {}
+        self.psionic_abilities = {}
         self.guild = None
         self.council = None
         self.family = None
         self.clan = None
         self.deity = ''
         self.discipline = None
-        self.inventory = []
-        self.worn = {}
+        self.equipped = {}
         self.baceac = {'slashing' : 0,
                        'piercing' : 0,
                        'bashing' : 0,
@@ -148,6 +153,7 @@ class LivingThing(atomic.Atomic):
 
     def toJSON_base(self):
         jsonable = {"name" : self.name,
+                    "lastname": self.lastname,
                     "capability" : self.capability,
                     "long_description" : self.long_description,
                     "short_description" : self.short_description,
@@ -167,6 +173,9 @@ class LivingThing(atomic.Atomic):
                     "currentwillpower" : self.currentwillpower,
                     "totalmemoryslots" : self.totalmemoryslots,
                     "memorizedspells" : self.memorizedspells,
+                    "spells_learned": self.spells_learned,
+                    "runes_imprinted": self.runes_imprinted,
+                    "psionic_abilities": self.psionic_abilities,
                     "hitroll" : self.hitroll,
                     "damroll" : self.damroll,
                     "wimpy" : self.wimpy,
@@ -177,13 +186,14 @@ class LivingThing(atomic.Atomic):
                     "clan" : self.clan,
                     "deity" : self.deity,
                     "skillpoints" : self.skillpoints,
+                    "skills_learned": self.skills_learned,
+                    "skills_specialties": self.skills_specialties,
                     "seen_as" : self.seen_as,
                     "maximum_stat" : self.maximum_stat,
                     "current_stat" : self.current_stat,
                     "discipline" : self.discipline,
                     "exp" : self.exp,
-                    "inventory" : self.inventory,
-                    "worn" : self.worn,
+                    "equipped" : self.equipped,
                     "baceac" : self.baceac,
                     "currentac" : self.currentac,
                     "hunger" : self.hunger,
@@ -193,6 +203,14 @@ class LivingThing(atomic.Atomic):
                     "knownpeople" : self.knownpeople,
                     "prompt" : self.prompt,
                     "alias" : self.alias}
+        if len(self.contents) == 0:
+            jsonable["contents"] = {}
+        else:
+            tmp = {}
+            for eachvnum, eachobj in self.contents.items():
+                tmp[eachvnum] = eachobj.toJSON()
+            jsonable["contents"] = tmp
+
         return jsonable
         
 
