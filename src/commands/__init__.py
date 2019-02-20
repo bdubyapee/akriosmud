@@ -131,7 +131,7 @@ def target_single_thing_room_nopost(caller, args):
     for eachthing in caller.location.contents:
         name = eachthing.disp_name.lower()
         if name.startswith(target):
-            return (eachthing, one)
+            return (eachthing, None)
         elif hasattr(eachthing, "keywords"):
             for eachkw in eachthing.keywords:
                 if eachkw.startswith(target):

@@ -36,9 +36,9 @@ def drop(caller, args, **kwargs):
         caller.write(f"You don't seem to have a {args}.")
         return
 
-    caller.location.area.objectlist_by_vnum[object_.vnum] = object_
-    caller.location.area.objectlist.append(object_)
-    caller.contents.pop(aid)
+    caller.location.area.objectlist_by_vnum[target.vnum] = target
+    caller.location.area.objectlist.append(target)
+    caller.contents.pop(target.aid)
 
     target.location = caller.location
     target.location.contents.append(target)
