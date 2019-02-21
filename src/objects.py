@@ -31,14 +31,13 @@ WRITE_NEW_FILE_VERSION = False
 objectlist_index = []
 objectlist = []
 objectlist_by_vnum_index = {}
-objectlist_by_vnum = {}
 
 
 class Object(atomic.Atomic, olc.Editable):
     CLASS_NAME = "__Object__"
     FILE_VERSION = 1
 
-    def __init__(self, area, data=None, index=True, invload=False):
+    def __init__(self, area, data=None, load_type=None):
         super().__init__()
         self.json_version = Object.FILE_VERSION
         self.json_class_name = Object.CLASS_NAME
@@ -52,16 +51,15 @@ class Object(atomic.Atomic, olc.Editable):
         self.keywords = []
         self.contents = {}
         self.area = area
-        self.index = index
-        self.invload = invload
         self.events = event.Queue(self, "object")
         self.commands = {"vnum": ("integer", None),
                          "short_description": ("string", None),
                          "long_description": ("string", None),
                          "name": ("sting", None),
                          "keywords": ("list", None)}
-        if data is not None:
-            self.load(data)
+
+        if data is not None and load_type is not None:
+            self.load(data, load_type)
 
     def populate_index(self):
         objectlist_index.append(self)
@@ -69,21 +67,22 @@ class Object(atomic.Atomic, olc.Editable):
         self.area.objectlist_index.append(self)
         self.area.objectlist_by_vnum_index[self.vnum] = self
 
-    def populate_real(self):
+    def populate_instance(self):
         objectlist.append(self)
-        objectlist_by_vnum[self.vnum] = self
         self.area.objectlist.append(self)
-        self.area.objectlist_by_vnum[self.vnum] = self
 
-    def load(self, data):
+    def load(self, data, load_type):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
 
-        if self.index:
+        if load_type == "index":
             self.populate_index()
-        elif self.invload == False:
-            self.populate_real()
+            return
 
+        if load_type == "instance":
+            self.populate_instance()
+            return
+            
     def toJSON(self):
         if self.json_version == 1:
             jsonable = {"json_version": self.json_version,
@@ -102,7 +101,7 @@ class Object(atomic.Atomic, olc.Editable):
             with open(f"{self.filename}", "w") as thefile:
                 thefile.write(self.toJSON())
 
-    def create_real(self, location=None):
+    def create_instance(self, location=None):
         '''
             This creates a 'real' in game version of an object. We expect a location to be
             provided in which to place the object.  If the location passed in is an int type
@@ -117,7 +116,7 @@ class Object(atomic.Atomic, olc.Editable):
         else:
             newroom = location
 
-        new_obj = Object(self.area, self.toJSON(), index=False)
+        new_obj = Object(self.area, self.toJSON(), load_type="instance")
         new_obj.aid = str(uuid.uuid4())
 
         new_obj.move(newroom)

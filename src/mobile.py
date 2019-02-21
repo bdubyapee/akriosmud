@@ -96,7 +96,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
             with open(f"{self.filename}", "w") as thefile:
                 thefile.write(self.toJSON())
 
-    def create_real(self, location=None):
+    def create_instance(self, location=None):
         '''
             This creates a 'real' in game version of a mobile. We expect a location to be
             provided in which to place the mobile.  If the location passed in is an int type

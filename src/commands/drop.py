@@ -27,16 +27,17 @@ def drop(caller, args, **kwargs):
     for aid, object_ in caller.contents.items():
         if object_.disp_name.startswith(args):
             target = object_
+            continue
         for eachkw in object_.keywords:
             thekey = eachkw.lower()
             if thekey.startswith(args):
                 target = object_
+                continue
 
     if target is None:
         caller.write(f"You don't seem to have a {args}.")
         return
 
-    caller.location.area.objectlist_by_vnum[target.vnum] = target
     caller.location.area.objectlist.append(target)
     caller.contents.pop(target.aid)
 

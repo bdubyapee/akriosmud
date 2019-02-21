@@ -207,8 +207,8 @@ class LivingThing(atomic.Atomic):
             jsonable["contents"] = {}
         else:
             tmp = {}
-            for eachvnum, eachobj in self.contents.items():
-                tmp[eachvnum] = eachobj.toJSON()
+            for eachaid, eachobj in self.contents.items():
+                tmp[eachaid] = eachobj.toJSON()
             jsonable["contents"] = tmp
 
         return jsonable

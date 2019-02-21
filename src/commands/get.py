@@ -33,8 +33,7 @@ def get(caller, args, **kwargs):
     caller.contents[target.aid] = target
     target.location.contents.remove(target)
     target.location = None
-    if target.vnum in caller.location.area.objectlist_by_vnum:
-        caller.location.area.objectlist_by_vnum.pop(target.vnum)
+    if target in caller.location.area.objectlist:
         caller.location.area.objectlist.remove(target)
 
     caller.write(f"You pick up a {target.disp_name}") 

@@ -203,9 +203,9 @@ class Server(asyncore.dispatcher):
 
         # Temp for testing XXX
         if 1001 in mobile.mobilelist_by_vnum_index:
-            mobile.mobilelist_by_vnum_index[1001].create_real(location=1001)
+            mobile.mobilelist_by_vnum_index[1001].create_instance(location=1001)
         if 1001 in objects.objectlist_by_vnum_index:
-            objects.objectlist_by_vnum_index[1001].create_real(location=1001)
+            objects.objectlist_by_vnum_index[1001].create_instance(location=1001)
 
         event.init_events_server(self)
 

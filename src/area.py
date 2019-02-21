@@ -84,7 +84,6 @@ class oneArea(olc.Editable):
         self.mobilelist_by_vnum_index = {}
         self.objectlist = []
         self.objectlist_index = []
-        self.objectlist_by_vnum = {}
         self.objectlist_by_vnum_index = {}
         self.resetlist = []
         self.shoplist = []
@@ -214,7 +213,7 @@ class oneArea(olc.Editable):
         filenames = glob.glob(objectfilepath)
         for eachfile in filenames:
             with open(eachfile, 'r') as thefile:
-                objects.Object(self, thefile.read())
+                objects.Object(self, thefile.read(), load_type="index")
 
         # Load the resets for this area.
         resetfilepath = os.path.join(self.folder_path, f"resets/*.json")

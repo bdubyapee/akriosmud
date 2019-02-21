@@ -62,8 +62,9 @@ class Player(livingthing.LivingThing):
 
             if len(self.contents) != 0:
                 temp = {}
-                for eachvnum, eachobj in self.contents.items():
-                    temp[eachvnum] = objects.Object(None, eachobj, index=False, invload=True)
+                for eachaid, eachobj in self.contents.items():
+                    temp[eachaid] = objects.Object(None, eachobj, load_type="inventory")
+                    temp[eachaid].aid = eachaid
                 self.contents = temp
             else:
                 self.contents = {}
