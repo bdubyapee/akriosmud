@@ -203,35 +203,29 @@ class LivingThing(atomic.Atomic):
                     "knownpeople" : self.knownpeople,
                     "prompt" : self.prompt,
                     "alias" : self.alias}
-        if len(self.contents) == 0:
-            jsonable["contents"] = {}
-        else:
-            tmp = {}
-            for eachaid, eachobj in self.contents.items():
-                tmp[eachaid] = eachobj.toJSON()
-            jsonable["contents"] = tmp
+        
+        if self.contents:
+            jsonable["contents"] = {k: v.toJSON() for k,v in self.contents.items()}
 
         return jsonable
         
 
     def addKnown(self, idnum=None, name=None):
-        if idnum == None or name == None:
+        if idnum is None or name is None:
             comm.wiznet("You must provide id and name arguments.  addKnown:livingthing.py")
         else:
             self.knownpeople[idnum] = name
 
     def get_known(self, idnum=None):
-        if idnum == None:
+        if idnum is None:
             comm.wiznet("You must provide an ID to lookup. get_known:livingthing.py")
             return
 
-        if idnum not in self.knownpeople:
-            return ''
-        else:
-            return self.knownpeople[idnum]
+        return self.knownpeople[idnum] if idnum in self.knownpeople else ''
 
-    def write(self, msg):
-        if len(self.snooped_by) > 0:
+
+   # def write(self, msg):
+        if self.snooped_by:
             for each_person in self.snooped_by:
                 each_person.write(msg)
          

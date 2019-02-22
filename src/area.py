@@ -49,11 +49,7 @@ def init():
         oneArea(each_area_directory, thefile[0])
 
 def roomByVnum(vnum):
-    if vnum in roomlist:
-        return roomlist[vnum]
-    else:
-        return False
-
+    return roomlist[vnum] if vnum in roomlist else False
 
 
 class oneArea(olc.Editable):
@@ -196,8 +192,8 @@ class oneArea(olc.Editable):
                 fullpath, direction_fn = eachfile.split('.')[0].split('-')
                 roomvnum = fullpath.split('/')[-1:][0]
                 attached_room = roomByVnum(int(roomvnum))
-                if attached_room == False:
-                    comm.log(world.serverlog, f"roomByVnum failed in exit load in area.py: {roomvnum}")
+                if not attached_room:
+                    comm.log(world.serverlog, f"roomByVnum failed in exit load: {roomvnum}")
                 else:
                     exits.Exit(attached_room, direction_fn, thefile.read())
 

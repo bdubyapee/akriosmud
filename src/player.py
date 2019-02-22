@@ -60,14 +60,15 @@ class Player(livingthing.LivingThing):
                 for eachkey, eachvalue in player_file_dict.items():
                     setattr(self, eachkey, eachvalue)
 
-            if len(self.contents) != 0:
-                temp = {}
-                for eachaid, eachobj in self.contents.items():
-                    temp[eachaid] = objects.Object(None, eachobj, load_type="inventory")
-                    temp[eachaid].aid = eachaid
-                self.contents = temp
-            else:
-                self.contents = {}
+            if self.contents:
+                self.contents = {k: objects.Object(None, v, load_type="inventory")
+                                 for k,v in self.contents.items()} 
+
+                #temp = {}
+                #for eachaid, eachobj in self.contents.items():
+                #    temp[eachaid] = objects.Object(None, eachobj, load_type="inventory")
+                #    temp[eachaid].aid = eachaid
+                #self.contents = temp
 
             self.location = area.roomByVnum(self.location)
             self.move(self.location)
@@ -96,16 +97,9 @@ class Player(livingthing.LivingThing):
 
     @property
     def is_building(self):
-        if hasattr(self, "building"):
-            return True
-        else:
-            return False
+        return True if hasattr(self, "building") else False
 
     @property
     def is_editing(self):
-        if hasattr(self, "editing"):
-            return True
-        else:
-            return False
-
+        return True if hasattr(self, "editing") else False
 

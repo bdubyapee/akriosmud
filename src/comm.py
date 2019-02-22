@@ -24,25 +24,28 @@ def act():
     pass
 
 def message_to_player(each_player, sender, message=""):
-    if message == "":
+    if not message:
         return
+
     each_player.write(message)
     
 def message_to_room(room, sender, message=""):
-    if message == "":
+    if not message:
         return
+
     for eachthing in room.contents:
-        if eachthing != sender and eachthing.is_player:
+        if eachthing is not sender and eachthing.is_player:
             eachthing.write(f"\n\r\n\r{message}")
 
 def message_to_area(area, sender, message=""):
-    if message == "":
+    if not message:
         return
+
     for each_player in area.playerlist:
         each_player.write(message)
 
 def log(tofile=None, msg=""):
-    if tofile == None:
+    if tofile is None:
         wiznet(f"Trying to log to no file in comm.py: {msg}")
     else:
         with open(tofile, "a") as tofile:

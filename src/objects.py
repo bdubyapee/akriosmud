@@ -41,7 +41,7 @@ class Object(atomic.Atomic, olc.Editable):
         super().__init__()
         self.json_version = Object.FILE_VERSION
         self.json_class_name = Object.CLASS_NAME
-        self.aid = 0
+        self.aid = ''
         self.capability = ['object']
         self.vnum = 0
         self.location = None
@@ -87,6 +87,7 @@ class Object(atomic.Atomic, olc.Editable):
         if self.json_version == 1:
             jsonable = {"json_version": self.json_version,
                         "json_class_name": self.json_class_name,
+                        "aid": self.aid or str(uuid.uuid4()),
                         "name": self.name,
                         "short_description": self.short_description,
                         "long_description": self.long_description,

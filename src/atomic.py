@@ -23,7 +23,7 @@ class Atomic(object):
 
     def interp(self, inp=None):
 
-        if len(self.snooped_by) > 0:
+        if self.snooped_by:
             for each_person in self.snooped_by:
                 each_person.write(f"{self.name} typed: {inp}")
 
@@ -31,13 +31,12 @@ class Atomic(object):
 
         if self.is_player:
             self.oocflags['afk'] = False
+            self.last_input = time.time()
 
         isBuilding = hasattr(self, 'building')
         isEditing = hasattr(self, 'editing')
 
-        self.last_input = time.time()
-
-        if len(inp) == 0:
+        if not inp:
             if isBuilding and not isEditing:
                 self.write(self.building.display())
                 return
@@ -52,13 +51,13 @@ class Atomic(object):
         if inp[0] in self.alias:
             inp[0] = self.alias[inp[0]]
 
-        comfind = []
-
         # Added some time ago for OLC to work properly.  Fix this XXX
-        if len(inp) <= 0:
+        if not inp:
             inp = ['']
 
-        for item in sorted(commands.Command.commandhash.keys()):
+        comfind = []
+
+        for item in sorted(commands.Command.commandhash):
             if item.startswith(inp[0].lower()):
                 comfind.append(commands.Command.commandhash[item])
 
@@ -74,7 +73,7 @@ class Atomic(object):
                 inp.insert(0, types[self.building.__class__])
                 self.write('')
 
-        if len(comfind) > 0:
+        if comfind:
             try:
                 if isEditing:
                     comfind[-1](self, ' '.join(inp[1:]))
@@ -91,76 +90,63 @@ class Atomic(object):
             self.write("Huh?")
 
     def move(self, tospot=None, fromspot=None, direction=None):
-        if tospot == None:
+        if tospot is None:
             comm.wiznet("Received None value in move:livingthing.py")
-        else:
-            mover = self.disp_name
+            return
 
-            if direction == None:
-                rev_direction = "the ether"
-            elif direction != "goto":
-                rev_direction = exits.oppositedirection[direction]
+        mover = self.disp_name
 
-            if fromspot != None:
-                if direction == "goto":
-                    fromspot_message = f"{mover} has vanished into thin air."
-                else:
-                    fromspot_message = f"{mover} has left to the {direction}."
-                comm.message_to_room(fromspot, self, fromspot_message)
-                fromspot.contents.remove(self)
+        if direction is None:
+            rev_direction = "the ether"
+        elif direction != "goto":
+            rev_direction = exits.oppositedirection[direction]
 
-            # Once object notification is in, notify left room of departure and
-            # room we moved to of arrival.
-
-            tospot.contents.append(self)
-            self.location = tospot
-            if direction == "goto" or fromspot == None:
-                tospot_message = f"{mover} has sprung into existence!"
+        if fromspot is not None:
+            if direction == "goto":
+                fromspot_message = f"{mover} has vanished into thin air."
             else:
-                tospot_message = f"{mover} has arrived from the {rev_direction}."
-            comm.message_to_room(tospot, self, tospot_message)
+                fromspot_message = f"{mover} has left to the {direction}."
+            comm.message_to_room(fromspot, self, fromspot_message)
+            fromspot.contents.remove(self)
+
+        # Once object notification is in, notify left room of departure and
+        # room we moved to of arrival.
+
+        tospot.contents.append(self)
+        self.location = tospot
+
+        if direction == "goto" or fromspot is None:
+            tospot_message = f"{mover} has sprung into existence!"
+        else:
+            tospot_message = f"{mover} has arrived from the {rev_direction}."
+        comm.message_to_room(tospot, self, tospot_message)
+
+    def capability_contains(self, capability=''):
+        return True if capability and capability in self.capability else False
 
     @property
     def is_admin(self):
-        if 'admin' in self.capability:
-            return True
-        else:
-            return False
+        return self.capability_contains('admin')
 
     @property
     def is_deity(self):
-        if 'deity' in self.capability:
-            return True
-        else:
-            return False
+        return self.capability_contains('deity')
 
     @property
     def is_builder(self):
-        if 'builder' in self.capability:
-            return True
-        else:
-            return False
+        return self.capability_contains('builder')
 
     @property
     def is_player(self):
-        if 'player' in self.capability:
-            return True
-        else:
-            return False
+        return self.capability_contains('player')
 
     @property
     def is_mobile(self):
-        if 'mobile' in self.capability:
-            return True
-        else:
-            return False
+        return self.capability_contains('mobile')
 
     @property
     def is_object(self):
-        if 'object' in self.capability:
-            return True
-        else:
-            return False
+        return self.capability_contains('object')
 
     @property
     def disp_name(self):
