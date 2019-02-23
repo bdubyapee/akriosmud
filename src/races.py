@@ -18,15 +18,18 @@ import world
 WRITE_NEW_FILE_VERSION = False
 
 sizelist = ('tiny', 'small', 'medium', 'large', 'huge')
+
 alignment = ('lawful good', 'lawful neutral', 'lawful evil',
              'neutral good', 'neutral', 'neutral evil',
              'chaotic good', 'chaotic neutral', 'chaotic evil')
+
 bodypartslist = ('head', 'face', 'hand', 'leg', 'foot', 'nose', 'ear', 'scalp', 'torso', 'finger',
                  'toe', 'entrails', 'wing', 'tail', 'snout', 'shell', 'antenna', 'paw',
                  'fin', 'scale', 'rattle', 'tongue', 'eye', 'skull', 'arm', 'bone', 'pelt', 'heart',
                  'liver', 'stomach', 'kidney', 'lung', 'gills', 'claw', 'beak', 'feather',
                  'whisker', 'tooth', 'tusk', 'horn', 'hoof', 'hide', 'tentacle', 'mane', 'mandible',
                  'thorax')
+
 wearlocationslist = ('head', 'face', 'eyes', 'neck', 'left arm', 'right arm',
                      'right forearm', 'left forearm', 'finger', 'left hand',
                      'right hand', 'torso', 'back', 'waist', 'left leg',

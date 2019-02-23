@@ -507,7 +507,7 @@ class GrapevineSocket(WebSocket):
         # If we haven't assigned any channels, lets pull that out of our auth
         # so we aren't trying to auth to an empty string.  This also causes us
         # to receive an error back from Grapevine.
-        if len(self.channels) == 0 :
+        if not self.channels:
             payload.pop("channels")
  
 
@@ -542,7 +542,7 @@ class GrapevineSocket(WebSocket):
         Subscribe to a specific channel, or Gossip by default.
         '''
         ref = str(uuid.uuid4())
-        if not chan:
+        if chan is None or not chan:
             payload = {"channel": "gossip"}
         else:
             payload = {"channel": chan}

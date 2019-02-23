@@ -71,7 +71,7 @@ class Queue(object):
         return len(self.eventlist)
 
     def is_empty(self):
-        if len(self.eventlist) == 0:
+        if not self.eventlist:
             return True
         else:
             return False
@@ -251,19 +251,19 @@ def event_grapevine_restart(event_):
 
     grapevine.gsocket = grapevine.GrapevineSocket()
     grapevine_connected = grapevine.gsocket.gsocket_connect()
-    if grapevine_connected == False:
+    if not grapevine_connected:
         comm.wiznet("Could not connect to Grapevine in event restart")
 
 @reoccuring_event
 def event_grapevine_send_message(event_):
-    if len(event_.owner.outbound_frame_buffer) > 0:
+    if event_.owner.outbound_frame_buffer:
         event_.owner.handle_write()
 
 @reoccuring_event
 def event_grapevine_receive_message(event_):
     grapevine_ = event_.owner
     grapevine_.handle_read()
-    if len(grapevine_.inbound_frame_buffer) > 0:
+    if grapevine_.inbound_frame_buffer:
         # Assign rcvd_msg to a GrapevineReceivedMessage instance.
         rcvd_msg = grapevine_.receive_message()
         ret_value = rcvd_msg.parse_frame()
@@ -309,14 +309,14 @@ def event_grapevine_receive_message(event_):
                 message = f"\n\r{{GMultiMUD Status Update: {game} disconnected from network{{x"
             if rcvd_msg.event == "channels/broadcast":
                 name, game, message = ret_value
-                if name == None or game == None:
+                if name is None or game is None:
                     comm.wiznet("Received channels/broadcast with None type")
                     return
                 message = (f"\n\r{{GMultiMUD Chat{{x:{{y{name.capitalize()}"
                            f"@{game.capitalize()}{{x:{{G{message}{{x")
             if rcvd_msg.is_other_game_player_update():
                 name, inout, game = ret_value
-                if name == None or game == None:
+                if name is None or game is None:
                     comm.wiznet("Received other game player update")
                     return
                 message = (f"\n\r{{GMultiMUD Chat{{x: {{y{name.capitalize()}{{G "
@@ -349,7 +349,7 @@ def event_grapevine_state_check(event_):
 
     if time.time() - grapevine_.last_heartbeat > 60:
         grapevine_.state["connected"] = False
-        grapveine_.state["authenticated"] = False
+        grapevine_.state["authenticated"] = False
 
     if grapevine_.state["connected"] == True:
         grapevine_.other_games_players = {}
@@ -377,6 +377,7 @@ def event_grapevine_state_check(event_):
 def event_admin_system_status(event_):
     if event_.owner.is_building or event_.owner.is_editing:
         return
+
     event_count = {'player': 0,
                    'mobile': 0,
                    'object': 0,

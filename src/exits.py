@@ -65,7 +65,7 @@ class Exit(olc.Editable):
         self.json_class_name = Exit.CLASS_NAME
         self.capability = ['exit']
         self.room = room
-        if direction_fn == None:
+        if direction_fn is None:
             self.direction = ''
         else:
             self.direction = direction_fn

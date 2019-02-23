@@ -22,12 +22,20 @@ requirements = {'capability': ['player', 'mobile'],
 @Command(**requirements)
 def inventory(caller, args, **kwarg):
 
-   caller.write("Items currently in your inventory:")
-   caller.write("")
+    caller.write("Items currently in your inventory:")
+    caller.write("")
 
-   if len(caller.contents) == 0:
-       caller.write("You are carrying nothing.")
-       return
+    if not caller.contents:
+        caller.write("You are carrying nothing.")
+        return
 
-   for aid, object_ in caller.contents.items():
-       caller.write(f"{object_.vnum:6} {object_.disp_name:25} {aid}")
+    work_around = 0
+
+    for aid, object_ in caller.contents.items():
+        if aid in caller.equipped.values():
+            work_around += 1
+            continue
+        caller.write(f"{object_.vnum:6} {object_.disp_name:25} {aid}")
+
+    if work_around > 0:
+        caller.write("You are carrying nothing.")

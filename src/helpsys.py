@@ -109,9 +109,9 @@ def reload():
 
 def get_help(key, server=False):
     key = key.lower()
-    if key != '':
+    if key:
         if key in helpfiles:
-            if helpfiles[key].viewable.lower() == "true" or server == True:
+            if helpfiles[key].viewable.lower() == "true" or server:
                 return helpfiles[key].description
         else:
             filename = os.path.join(world.logDir, "missinghelp")

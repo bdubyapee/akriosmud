@@ -150,7 +150,7 @@ class Login(object):
             self.interp = self.confirm_new_password
         else:
             inp = inp.encode('utf-8')
-            self.password = bcrypt.hashpw(inp[:71], bcrypt.gensalt(12)).decode('utf-8')
+            self.password = bcrypt.hashpw(inp[:71], bcrypt.gensalt(10)).decode('utf-8')
             self.sock.do_echo_telnet()
             self.show_races()
             self.sock.dispatch('Please choose a race: ', trail=False)
@@ -212,7 +212,7 @@ class Login(object):
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             comm.log(newobject.logpath, f"Logging in from: {newobject.sock.host}")
             newobject.interp("look")
-            #Notify Grapevine of return player Login.
+
             grapevine.gsocket.msg_gen_player_login(newobject.name)
             newobject.lasttime = time.ctime()
             newobject.lasthost = newobject.sock.host
@@ -240,7 +240,6 @@ class Login(object):
         inp = inp.lower()
         if inp in races.racesdict:
             self.newchar['race'] = races.racebyname(inp)
-            self.newchar['aid'] = str(uuid.uuid4())
             self.sock.dispatch('')
             self.sock.dispatch("Available genders are: Female Male")
             self.sock.dispatch('Please choose a gender: ', trail=False)
@@ -285,12 +284,9 @@ class Login(object):
         bonus = 5
         if dice(1,20) == 20:
             bonus += 10
-            #self.sock.dispatch("")
-            #self.sock.dispatch("{W*** You rolled a 1d20 bonus! ***{x")
         if dice(1,100) == 100:
             bonus += 20
-            #self.sock.dispatch("")
-            #self.sock.dispatch("{R!!! You rolled a 1d100 bonus! !!!{x")
+
         self.newstats['strength'] = dice(6, 18, bonus)
         self.newstats['intelligence'] = dice(6, 18, bonus)
         self.newstats['wisdom'] = dice(6, 18, bonus)
@@ -320,7 +316,8 @@ class Login(object):
             newplayer.lasttime = time.ctime()
             newplayer.lasthost = self.sock.host
             newplayer.race = self.newchar['race']
-            newplayer.aid = self.newchar['aid']
+            newplayer.aid = str(uuid.uuid4())
+            newplayer.equipped = {k: None for k in newplayer.race.wearlocations}
             newplayer.gender = self.newchar['gender']
             newplayer.discipline = self.newchar['discipline']
             newplayer.position = 'standing'

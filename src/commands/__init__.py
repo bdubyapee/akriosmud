@@ -249,9 +249,6 @@ class Command(object):
             if not set(self.dec_kwargs['capability']) & set(caller.capability):
                 caller.write("Huh?")
                 return
-            #if self.dec_kwargs['capability'] not in caller.capability:
-            #    caller.write("Huh?")
-            #    return
 
             # If the command has target requirements perform those here.
             if 'target' in self.dec_kwargs:
@@ -333,9 +330,11 @@ from . import down
 from . import drop
 from . import east
 from . import emote
+from . import equipped
 from . import get
 from . import goto
 from . import help
+from . import hold
 from . import inventory
 from . import longdescription
 from . import look
@@ -350,6 +349,7 @@ from . import open
 from . import prompt
 from . import quit
 from . import quote
+from . import remove
 from . import save
 from . import say
 from . import score
@@ -364,8 +364,9 @@ from . import tell
 from . import title
 from . import toggle
 from . import up
+from . import wear
 from . import west
 from . import whisper
+from . import wield
 from . import who
-
 

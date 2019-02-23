@@ -76,19 +76,15 @@ class ConnSocket(asyncore.dispatcher):
             self.send(DOECHOTELNET)
         except:
             pass
-        return
 
     def dont_echo_telnet(self):
         try:
             self.send(DONTECHOTELNET)
         except:
-            pass
-        return        
+            pass      
         
     def writable(self):
-        if self.outbuf != "":
-            return True
-        return False
+        return True if self.outbuf else False
 
     def parse_input(self, text):
         # Below we decode the bytes input into a string,
@@ -212,7 +208,7 @@ class Server(asyncore.dispatcher):
         grapevine.gsocket = grapevine.GrapevineSocket()
 
         grapevine_connected = grapevine.gsocket.gsocket_connect()
-        if grapevine_connected == False:
+        if not grapevine_connected:
             print("Could not connect to grapevine on startup.")
 
         print(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
@@ -226,7 +222,7 @@ class Server(asyncore.dispatcher):
             timenow = currenttime()
             if timenow < timedelta:
                 time.sleep(timedelta - timenow)
-        if Server.softboot == False:
+        if not Server.softboot:
             for conn in connlist:
                 conn.close()
         else:

@@ -74,7 +74,7 @@ class oneRoom(olc.Editable):
         self.capability = ['room']
         self.area = area
         self.builder = None
-        if vnum != None:
+        if vnum is not None:
             self.vnum = vnum
         else:
             self.vnum = 0

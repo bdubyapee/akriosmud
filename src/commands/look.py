@@ -44,7 +44,7 @@ def look(caller, args, **kwargs):
         caller.write(f"{desc}\n")
         caller.write(f"{{Y[{{GExits: {{B{theexits}{{Y]{{x")
         for thing in things:
-            if thing is not caller and thing.name != '':
+            if thing is not caller and thing.name:
                 if thing.is_player and thing.oocflags['afk'] == True:
                     pretext = "{W[{RAFK{W]{x"
                 else:
@@ -77,16 +77,23 @@ def look(caller, args, **kwargs):
                         lookingat = thing
                         notfound = False
         if notfound == False:
-            if lookingat.long_description == '':
+            if not lookingat.long_description:
                 caller.write("They don't appear to have a description set yet.")
             else:
                 caller.write(lookingat.long_description)
             caller.write("")
-            caller.write("They are wearing:")
-            caller.write("Nothing yet!")
+            if lookingat.is_player or lookingat.is_mobile:
+                caller.write("They are wearing:")
+                for each_loc, each_aid in target.equipped:
+                    eq_name = ''
+                    if target.equipped[each_aid] is None:
+                        eq_name = "nothing"
+                    else:
+                        eq_name = target.contents[each_aid].disp_name
+                    caller.write(f"     <{each_loc:15}>   {eq_name}")
+            caller.write("")
             return
         caller.write("You don't see anything like that.")
-        return
     else:
         caller.write("{xNowhere Special{x")
         caller.write("You see nothing in any direction.")

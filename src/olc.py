@@ -22,7 +22,7 @@ class Editable(object):
                     "integer": doInteger,
                     "description": doDescription}
         
-        if args == None or command == None:
+        if args is None or command is None:
             raise SyntaxError("Error occured in doAttrib:olc.py")
         
         commtype, commset = self.commands[command]
@@ -33,31 +33,31 @@ class Editable(object):
             raise SyntaxError("A command failed.  doAttrib.olc.py")
 
 def doString(theobject=None, thestring=None, value=None, inset=None):
-    if theobject == None:
+    if theobject is None:
         raise SyntaxError("No object given to doString. doString:olc.py")
-    elif thestring == None:
+    elif thestring is None:
         raise SyntaxError("No name given to doString:olc.py")
-    elif value == None:
+    elif value is None:
         return getattr(theobject, f"{thestring}")
     else:
         value = value.strip()
-        if len(value) > 0 and len(value) < 50:
-            if inset != None and value not in inset:
+        if value and len(value) < 50:
+            if inset is not None and value not in inset:
                 raise SyntaxError(f"I'm sorry, valid options are: {inset}")
             setattr(theobject, thestring, value)
         else:
             raise SyntaxError("Strings must be between 3 and 15 characters.")
 
 def doList(theobject=None, thestring=None, value=None, inset=None):
-    if theobject == None:
+    if theobject is None:
         raise SyntaxError("No object given to doList.")
-    elif thestring == None:
+    elif thestring is None:
         raise SyntaxError("No name given to doList.")
-    elif value == None:
+    elif value is None:
         return getattr(theobject, f"{thestring}")
     else:
         value = value.lower().strip()
-        if len(value) > 0 and len(value) < 30:
+        if value and len(value) < 30:
             if inset != None and value not in inset:
                 raise SyntaxError(f"I'm sorry, valid options are: {inset}")
             theattrib = getattr(theobject, f"{thestring}")
@@ -67,18 +67,18 @@ def doList(theobject=None, thestring=None, value=None, inset=None):
                 theattrib.append(value)
                 
 def dointList(theobject=None, thestring=None, value=None, inset=None):
-    if theobject == None:
+    if theobject is None:
         raise SyntaxError("No object given to doList.")
-    elif thestring == None:
+    elif thestring is None:
         raise SyntaxError("No name given to doList.")
-    elif value == None:
+    elif value is None:
         return getattr(theobject, f"{thestring}")
     else:
         try:
             value = int(value)
         except:
             raise SyntaxError("I'm sorry, thats not an integer!")
-        if inset != None and value not in inset:
+        if inset is not None and value not in inset:
             raise SyntaxError(f"I'm sorry, valid options are: {inset}")
         theattrib = getattr(theobject, f"{thestring}")
         if value in theattrib:
@@ -87,11 +87,11 @@ def dointList(theobject=None, thestring=None, value=None, inset=None):
             theattrib.append(value)
 
 def doInteger(theobject=None, thestring=None, value=None, inset=None):
-    if theobject == None:
+    if theobject is None:
         raise SyntaxError("No object given to doInteger.")
-    elif thestring == None:
+    elif thestring is None:
         raise SyntaxError("No name given to doInteger.")
-    elif value == None:
+    elif value is None:
         return getattr(theobject, f"{thestring}")
     else:
         value = value.lower().strip()
@@ -99,7 +99,7 @@ def doInteger(theobject=None, thestring=None, value=None, inset=None):
             value = int(value)
         except:
             raise SyntaxError("That is not a number.")
-        if inset != None and value not in inset:
+        if inset is not None and value not in inset:
             raise SyntaxError(f"I'm sorry, valid options are: {inset}")
         setattr(theobject, thestring, value)
 
@@ -107,22 +107,22 @@ def doDict(theobject=None, thestring=None, args=None, sets=None):
     key = args.split()[0]
     value = ' '.join(args.split()[1:])
     keyset, valueset = sets
-    if theobject == None:
+    if theobject is None:
         raise SyntaxError("No object given to doDict.")
-    elif thestring == None:
+    elif thestring is None:
         raise SyntaxError("No name given to doDict.")
-    elif key == None:
+    elif key is None:
         theattrib = getattr(theobject, f"{thestring}")
         return theattrib
-    elif value == None:
+    elif value is None:
         theattrib = getattr(theobject, f"{thestring}")
-        if key in list(theattrib.keys()):
+        if key in theattrib:
             return theattrib[key]
         else:
             raise SyntaxError("Key not found in doDict.")
     else:
         theattrib = getattr(theobject, f"{thestring}")
-        if keyset != None and key not in keyset:
+        if keyset is not None and key not in keyset:
             raise SyntaxError("Key not in key set in doDict.")
         if valueset != None and value not in valueset:
             raise SyntaxError(f"Value {value} not in value set {valueset} in doDict.")
@@ -132,9 +132,9 @@ def doDict(theobject=None, thestring=None, args=None, sets=None):
             theattrib[key] = value
 
 def doDescription(theobject=None, thestring=None, value=None, set=None):
-    if theobject == None:
+    if theobject is None:
         raise SyntaxError("No object give to doDescription.")
-    elif thestring == None:
+    elif thestring is None:
         raise SyntaxError("No name given to doDescription.")
     else:
         value = getattr(theobject.builder.building, thestring)
@@ -146,7 +146,7 @@ def doDescription(theobject=None, thestring=None, value=None, set=None):
 class Buffer(object):
     def __init__(self, oldbuffer=None):
         super().__init__()
-        if oldbuffer != None:
+        if oldbuffer is not None:
             self.lines = oldbuffer.split("\n")
         else:
             self.lines = []

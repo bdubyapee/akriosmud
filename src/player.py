@@ -50,7 +50,7 @@ class Player(livingthing.LivingThing):
                                 'quote': 'true'}
         self.events = event.Queue(self, "player")
         self.sock = None
-        if self.filename != None:
+        if self.filename is not None:
             self.load()
 
     def load(self):
@@ -64,15 +64,13 @@ class Player(livingthing.LivingThing):
                 self.contents = {k: objects.Object(None, v, load_type="inventory")
                                  for k,v in self.contents.items()} 
 
-                #temp = {}
-                #for eachaid, eachobj in self.contents.items():
-                #    temp[eachaid] = objects.Object(None, eachobj, load_type="inventory")
-                #    temp[eachaid].aid = eachaid
-                #self.contents = temp
+            self.race = races.racebyname(self.race)
+
+            if not self.equipped:
+                self.equipped = {k: None for k in self.race.wearlocations}
 
             self.location = area.roomByVnum(self.location)
             self.move(self.location)
-            self.race = races.racebyname(self.race)
 
     def toJSON(self):
         if self.json_version == 1:
