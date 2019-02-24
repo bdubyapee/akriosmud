@@ -29,13 +29,12 @@ def inventory(caller, args, **kwarg):
         caller.write("You are carrying nothing.")
         return
 
-    work_around = 0
+    inventory = 0
 
     for aid, object_ in caller.contents.items():
-        if aid in caller.equipped.values():
-            work_around += 1
-            continue
-        caller.write(f"{object_.vnum:6} {object_.disp_name:25} {aid}")
+        if aid not in caller.equipped.values():
+            caller.write(f"{object_.vnum:6} {object_.disp_name:25} {aid}")
+            inventory += 1
 
-    if work_around > 0:
+    if inventory == 0:
         caller.write("You are carrying nothing.")

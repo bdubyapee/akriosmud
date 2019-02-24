@@ -25,12 +25,13 @@ def hold(caller, args, **kwargs):
     args = args.lower()
     
     for aid, object_ in caller.contents.items():
-        if object_.disp_name.startswith(args):
+        print(f"{caller.equipped.values()}")
+        if object_.disp_name.startswith(args) and aid not in caller.equipped.values():
             target = object_
             break
         for eachkw in object_.keywords:
             thekey = eachkw.lower()
-            if thekey.startswith(args):
+            if thekey.startswith(args) and aid not in caller.equipped.values():
                 target = object_
                 break
 

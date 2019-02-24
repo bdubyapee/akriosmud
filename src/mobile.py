@@ -73,6 +73,9 @@ class Mobile(livingthing.LivingThing, olc.Editable):
 
         self.location = None
         self.race = races.racebyname(self.race)
+        
+        if not self.equipped:
+            self.equipped = {k: None for k in self.race.wearlocations}
 
         if self.index:
             self.populate_index()

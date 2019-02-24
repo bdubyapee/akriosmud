@@ -84,13 +84,13 @@ def look(caller, args, **kwargs):
             caller.write("")
             if lookingat.is_player or lookingat.is_mobile:
                 caller.write("They are wearing:")
-                for each_loc, each_aid in target.equipped:
+                for each_loc, each_aid in lookingat.equipped.items():
                     eq_name = ''
-                    if target.equipped[each_aid] is None:
+                    if lookingat.equipped[each_loc] is None:
                         eq_name = "nothing"
                     else:
-                        eq_name = target.contents[each_aid].disp_name
-                    caller.write(f"     <{each_loc:15}>   {eq_name}")
+                        eq_name = lookingat.contents[each_aid].disp_name
+                    caller.write(f"     <{each_loc:^21}>   {eq_name}")
             caller.write("")
             return
         caller.write("You don't see anything like that.")

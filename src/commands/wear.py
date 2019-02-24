@@ -40,12 +40,12 @@ def wear(caller, args, **kwargs):
         return
 
     for aid, object_ in caller.contents.items():
-        if object_.disp_name.startswith(target_text):
+        if object_.disp_name.startswith(target_text) and aid not in caller.equipped.values():
             target = object_
             break
         for eachkw in object_.keywords:
             thekey = eachkw.lower()
-            if thekey.startswith(target_text):
+            if thekey.startswith(target_text) and aid not in caller.equipped.values():
                 target = object_
                 break
 
