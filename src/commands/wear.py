@@ -30,6 +30,10 @@ def wear(caller, args, **kwargs):
     location = None
     args = args.lower()
 
+    if not args:
+        caller.write("What would you like to wear?")
+        return
+
     if ' on ' in args:
         target_text, location = args.split(' on ')
         target_text = target_text.strip()

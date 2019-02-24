@@ -22,7 +22,7 @@ def areaedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp areaedit{x for instructions."
     args = args.split()
 
-    if len(args) == 0:
+    if not args:
         if caller.is_building:
             caller.write(caller.building.display())
             return

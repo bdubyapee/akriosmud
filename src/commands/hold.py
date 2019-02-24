@@ -24,6 +24,10 @@ def hold(caller, args, **kwargs):
     target = None
     args = args.lower()
     
+    if not args:
+        caller.write("What would you like to hold?")
+        return
+
     for aid, object_ in caller.contents.items():
         print(f"{caller.equipped.values()}")
         if object_.disp_name.startswith(args) and aid not in caller.equipped.values():

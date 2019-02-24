@@ -29,7 +29,11 @@ def remove(caller, args, **kwargs):
 
     target = None
     args = args.lower()
-    
+   
+    if not args:
+        caller.write("What would you like to remove?")
+        return
+ 
     if ' from ' in args:
         target_text, location = args.split(' from ')
         target_text = target_text.strip()

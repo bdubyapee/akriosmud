@@ -24,6 +24,10 @@ def wield(caller, args, **kwargs):
     target = None
     args = args.lower()
     
+    if not args:
+        caller.write("What would you like to wield?")
+        return
+
     for aid, object_ in caller.contents.items():
         if object_.disp_name.startswith(args) and aid not in caller.equipped.values():
             target = object_
