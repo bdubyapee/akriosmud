@@ -105,6 +105,7 @@ things_with_events = {"player": [],
                       "exit": [],
                       "mobile": [],
                       "object": [],
+                      "reset": [],
                       "server": [],
                       "socket": [],
                       "grapevine": []}
@@ -158,6 +159,9 @@ def init_events_area(area):
     pass
 
 def init_events_room(room):
+    pass
+
+def init_events_reset(reset):
     pass
 
 def init_events_exit(exit_):
@@ -383,6 +387,7 @@ def event_admin_system_status(event_):
                    'object': 0,
                    'area': 0,
                    'room': 0,
+                   'reset': 0,
                    'exit': 0,
                    'server': 0,
                    'socket': 0,
@@ -404,6 +409,7 @@ def event_admin_system_status(event_):
            f"{{G        Object Events{{x: {{R{event_count['object']}{{x\n\r"
            f"{{G          Area Events{{x: {{R{event_count['area']}{{x\n\r"
            f"{{G          Room Events{{x: {{R{event_count['room']}{{x\n\r"
+           f"{{G         Reset Events{{x: {{R{event_count['reset']}{{x\n\r"
            f"{{G          Exit Events{{x: {{R{event_count['exit']}{{x\n\r"
            f"{{G        Server Events{{x: {{R{event_count['server']}{{x\n\r"
            f"{{G        Socket Events{{x: {{R{event_count['socket']}{{x\n\r"
