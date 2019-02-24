@@ -18,6 +18,7 @@ import exits
 import mobile
 import objects
 import olc
+import reset
 import room
 import world
 
@@ -81,8 +82,7 @@ class oneArea(olc.Editable):
         self.objectlist = []
         self.objectlist_index = []
         self.objectlist_by_vnum_index = {}
-        self.resetlist = []
-        self.shoplist = []
+        self.resetlist = None
         self.playerlist = []
         self.events = event.Queue(self, "area")
         event.init_events_area(self)
@@ -212,16 +212,13 @@ class oneArea(olc.Editable):
                 objects.Object(self, thefile.read(), load_type="index")
 
         # Load the resets for this area.
-        resetfilepath = os.path.join(self.folder_path, f"resets/*.json")
-        filenames = glob.glob(resetfilepath)
-        for eachfile in filenames:
-            with open(eachfile, 'r') as thefile:
-                # Update with reset load.
-                pass
+        resetfilepath = os.path.join(self.folder_path, f"resets/resets.json")
+        if os.path.exists(resetfilepath):
+            with open(resetfilepath, 'r') as thefile:
+                reset.Reset(self, thefile.read())
 
         # Add this area to the area list.
         arealist.append(self)
-
 
    
     def display(self):
