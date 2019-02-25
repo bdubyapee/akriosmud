@@ -28,7 +28,6 @@
     ],
     "clan": null,
     "council": null,
-    "contents": {},
     "current_stat": {
         "agility": 43,
         "charisma": 90,
@@ -51,6 +50,31 @@
     "damroll": 0,
     "deity": "",
     "discipline": "mental",
+    "equipped": {
+        "back": null,
+        "eyes": null,
+        "face": null,
+        "finger": null,
+        "floating nearby": null,
+        "head": null,
+        "left arm": null,
+        "left foot": null,
+        "left forearm": null,
+        "left hand": null,
+        "left leg": null,
+        "left shin": null,
+        "left shoulder": null,
+        "neck": null,
+        "right arm": null,
+        "right foot": null,
+        "right forearm": null,
+        "right hand": null,
+        "right leg": null,
+        "right shin": null,
+        "right shoulder": null,
+        "torso": null,
+        "waist": null
+    },
     "exp": {
         "combat": 0,
         "explore": 0,
@@ -65,7 +89,6 @@
     },
     "hitroll": 0,
     "hunger": 0,
-    "inventory": [],
     "json_class_name": "__Mobile__",
     "json_version": 1,
     "keywords": [
@@ -74,6 +97,7 @@
         "militia"
     ],
     "knownpeople": {},
+    "lastname": "",
     "level": 1,
     "long_description": "Before you stands a Test Mobile!",
     "maxhp": 1,
@@ -123,6 +147,5 @@
     },
     "vnum": 1001,
     "weight": 1,
-    "wimpy": 0,
-    "worn": {}
+    "wimpy": 0
 }

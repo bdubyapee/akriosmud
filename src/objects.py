@@ -97,11 +97,6 @@ class Object(atomic.Atomic, olc.Editable):
 
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
-    def save(self):
-        if self.json_version == 1:
-            with open(f"{self.filename}", "w") as thefile:
-                thefile.write(self.toJSON())
-
     def create_instance(self, location=None):
         '''
             This creates a 'real' in game version of an object. We expect a location to be

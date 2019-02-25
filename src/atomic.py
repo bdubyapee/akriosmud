@@ -14,6 +14,8 @@ import area
 import comm
 import commands
 import exits
+import helpsys
+import races
 import room
 
 

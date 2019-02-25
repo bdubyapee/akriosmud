@@ -151,7 +151,6 @@ class oneArea(olc.Editable):
                     thefile.write(mobile.toJSON())
 
         # Write new JSON formateed Objects for the area.
-
         for eacharea in arealist:
             objects_path = os.path.join(eacharea.folder_path, "objects")
             if not os.path.exists(objects_path):
@@ -162,6 +161,16 @@ class oneArea(olc.Editable):
                     thefile.write(object_.toJSON())
 
         # Write new JSON formatted reset information for the area.
+        for eacharea in arealist:
+            if eacharea.resetlist is None:
+                continue
+
+            resets_path = os.path.join(eacharea.folder_path, "resets")
+            if not os.path.exists(resets_path):
+                os.makedirs(resets_path)
+            filename = os.path.join(eacharea.folder_path, f"resets/resets.json")
+            with open(filename, 'w') as thefile:
+                thefile.write(eacharea.resetlist.toJSON())
 
         # Write new JSON formatted Area header for the area.
         for eacharea in arealist:
