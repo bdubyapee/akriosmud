@@ -233,9 +233,9 @@ class Login(object):
         neutral_races = races.race_names_by_alignment('neutral')
         evil_races = races.race_names_by_alignment('evil')
 
-        self.sock.dispatch(f"{BGood races{x: {good_races.title()}")
-        self.sock.dispatch(f"{BNeutral races{x: {neutral_races.title()}")
-        self.sock.dispatch(f"{BEvil races{x: {evil_races.title()}")
+        self.sock.dispatch(f"{{BGood races{{x: {good_races.title()}")
+        self.sock.dispatch(f"{{BNeutral races{{x: {neutral_races.title()}")
+        self.sock.dispatch(f"{{BEvil races{{x: {evil_races.title()}")
         self.sock.dispatch('')
                         
     def get_race(self, inp):
@@ -346,7 +346,7 @@ class Login(object):
             player.playerlist.append(newplayer)
             player.playerlist_by_name[newplayer.name] = newplayer
             player.playerlist_by_aid[newplayer.aid] = newplayer
-            newroom = area.roomByVnum(101)
+            newroom = area.roomByVnum(1001)
             newplayer.move(newroom)
             newplayer.alias['s'] = 'south'
             newplayer.alias['n'] = 'north'
