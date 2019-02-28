@@ -45,7 +45,7 @@ Discipline = namedtuple("Discipline", "name")
 disciplines = {"physical": Discipline("physical"),
                "mental": Discipline("mental"),
                "mystic": Discipline("mystic"),
-               "religious": Discipline("religious")}
+               "divine": Discipline("divine")}
 
 
 StatType = namedtuple("StatType", "name")

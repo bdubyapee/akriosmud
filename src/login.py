@@ -26,6 +26,7 @@ import livingthing
 
 
 badwords = []
+
 with open(f"{world.dataDir}/badwords.txt") as thefile:
     for eachword in thefile.readlines():
         badwords.append(eachword.strip())
@@ -225,15 +226,16 @@ class Login(object):
     def show_races(self):
         self.sock.dispatch('')
         self.sock.dispatch('\n\rCurrently available races of Akrios')
+        self.sock.dispatch('Please type "{Bhelp <race name>{x" for details')
         self.sock.dispatch('')
 
         good_races = races.race_names_by_alignment('good')
         neutral_races = races.race_names_by_alignment('neutral')
         evil_races = races.race_names_by_alignment('evil')
 
-        self.sock.dispatch(f"Good races: {good_races.title()}")
-        self.sock.dispatch(f"Neutral races: {neutral_races.title()}")
-        self.sock.dispatch(f"Evil races: {evil_races.title()}")
+        self.sock.dispatch(f"{BGood races{x: {good_races.title()}")
+        self.sock.dispatch(f"{BNeutral races{x: {neutral_races.title()}")
+        self.sock.dispatch(f"{BEvil races{x: {evil_races.title()}")
         self.sock.dispatch('')
                         
     def get_race(self, inp):
@@ -241,9 +243,14 @@ class Login(object):
         if inp in races.racesdict:
             self.newchar['race'] = races.racebyname(inp)
             self.sock.dispatch('')
-            self.sock.dispatch("Available genders are: Female Male")
+            self.sock.dispatch("Available genders are: {BFemale Male{x")
             self.sock.dispatch('Please choose a gender: ', trail=False)
             self.interp = self.get_gender
+        elif len(inp.split()) > 1:
+            if inp.split()[0] == 'help' and inp.split()[1] in races.racesdict:
+                self.sock.dispatch(helpsys.get_help(inp.split()[1], server=True))
+                self.show_races()
+                self.sock.dispatch('Please choose a race: ', trail=False)
         else:
             self.sock.dispatch('That is not a valid race.')
             self.show_races()
@@ -258,14 +265,16 @@ class Login(object):
             self.interp = self.get_discipline
         else:
             self.sock.dispatch("That isn't a valid gender.")
-            self.sock.dispatch("Available genders are: male female")
+            self.sock.dispatch("Available genders are: {Bmale female{x")
             self.sock.dispatch("Please choose a gender: ", trail=False)
         
     def show_disciplines(self):
         self.sock.dispatch('')
         self.sock.dispatch('Current base disciplines of Akrios:')
+        self.sock.dispatch('Please type "{Bhelp <discipline>{x" for details.')
+        self.sock.dispatch('')
         disciplines = ', '.join(livingthing.disciplines)
-        self.sock.dispatch(f"{disciplines.title()}")
+        self.sock.dispatch(f"{{B{disciplines.title()}{{x")
         self.sock.dispatch('')
         
     def get_discipline(self, inp):
@@ -276,6 +285,11 @@ class Login(object):
             self.show_stats()
             self.sock.dispatch('Are these statistics acceptable? ', trail=False)
             self.interp = self.get_roll_stats
+        elif len(inp.split()) > 1: 
+            if inp.split()[0] == 'help' and inp.split()[1] in livingthing.disciplines:
+                self.sock.dispatch(helpsys.get_help(inp.split()[1], server=True))
+                self.show_disciplines()
+                self.sock.dispatch('Please choose a base discipline: ', trail=False)
         else:
             self.sock.dispatch('That is not a valid discipline.  Choose a discipline: ', trail=False)
             self.show_disciplines()
@@ -300,7 +314,7 @@ class Login(object):
         self.sock.dispatch('')
         self.sock.dispatch('Randomly rolled statistics:')
         for item in self.newstats.keys():
-            self.sock.dispatch(f"{item.capitalize()} {self.newstats[item]}")
+            self.sock.dispatch(f"{item.capitalize()} {{B{self.newstats[item]}{{x")
         self.sock.dispatch('')
                         
     def get_roll_stats(self, inp):
