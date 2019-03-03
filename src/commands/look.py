@@ -90,7 +90,7 @@ def look(caller, args, **kwargs):
                         eq_name = "nothing"
                     else:
                         eq_name = lookingat.contents[each_aid].disp_name
-                    caller.write(f"     <{each_loc:^21}>   {eq_name}")
+                    caller.write(f"  <{each_loc:17}>   {eq_name:40}")
             caller.write("")
             return
         caller.write("You don't see anything like that.")

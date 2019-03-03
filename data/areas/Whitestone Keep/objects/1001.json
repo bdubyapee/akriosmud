@@ -1,8 +1,22 @@
 {
     "aid": "f9972334-6f24-45ea-b9c6-c794c6343612",
+    "allowable_wear_loc": [
+        "left hand",
+        "right hand",
+        "upper left hand",
+        "upper right hand"
+    ],
+    "armor_type": "",
+    "container_type": "",
     "contents": {},
+    "craft_tool_data": {},
+    "generic_size": "tiny",
+    "default_wear_loc": "left hand",
+    "drink_type": "",
+    "food_type": "",
     "json_class_name": "__Object__",
     "json_version": 1,
+    "key_data": {},
     "keywords": [
         "rock",
         "stone",
@@ -10,7 +24,14 @@
         "small"
     ],
     "long_description": "An average looking stone",
+    "material_type": "stone",
     "name": "stone",
+    "primary_type": "generic",
+    "rune_data": {},
+    "scroll_data": {},
     "short_description": "A small grey stone",
-    "vnum": 1001
+    "spellbook_data": {},
+    "vnum": 1001,
+    "wand_data": {},
+    "weapon_type": ""
 }

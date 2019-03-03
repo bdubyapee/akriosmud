@@ -34,7 +34,7 @@ wearlocationslist = ('head', 'face', 'eyes', 'neck', 'left arm', 'right arm',
                      'right forearm', 'left forearm', 'finger', 'left hand',
                      'right hand', 'torso', 'back', 'waist', 'left leg',
                      'right leg', 'left shin', 'right shin', 'left foot',
-                     'right foot', 'left shoulder', 'right shoulder',
+                     'right foot', 'legs', 'feet', 'left shoulder', 'right shoulder',
                      'upper right arm', 'upper left arm', 
                      'upper right hand', 'upper left hand', 'upper right forearm',
                      'upper left forearm', 'horns', 'floating nearby', 'tail')

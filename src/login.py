@@ -19,7 +19,7 @@ import event
 import grapevine
 import helpsys
 import races
-from math_utils import dice
+from math_utils import dice, fuzz
 import world
 import player
 import livingthing
@@ -295,20 +295,31 @@ class Login(object):
             self.show_disciplines()
             
     def roll_stats(self):
-        bonus = 5
+        bonus = 0
         if dice(1,20) == 20:
-            bonus += 10
+            bonus += 5
         if dice(1,100) == 100:
-            bonus += 20
+            bonus += 10
+          
+        # Set base stat to the race default
+        self.newstats['strength'] = fuzz(-4, 2, self.newchar['race'].strength)
+        self.newstats['intelligence'] = fuzz(-4, 2, self.newchar['race'].intelligence)
+        self.newstats['wisdom'] = fuzz(-4, 2, self.newchar['race'].wisdom)
+        self.newstats['agility'] = fuzz(-4, 2, self.newchar['race'].agility)
+        self.newstats['speed'] = fuzz(-4, 2, self.newchar['race'].speed)
+        self.newstats['charisma'] = fuzz(-4, 2, self.newchar['race'].charisma)
+        self.newstats['luck'] = fuzz(-4, 2, self.newchar['race'].luck)
+        self.newstats['constitution'] = fuzz(-4, 2, self.newchar['race'].constitution)
 
-        self.newstats['strength'] = dice(6, 18, bonus)
-        self.newstats['intelligence'] = dice(6, 18, bonus)
-        self.newstats['wisdom'] = dice(6, 18, bonus)
-        self.newstats['agility'] = dice(6, 18, bonus)
-        self.newstats['speed'] = dice(6, 18, bonus)
-        self.newstats['charisma'] = dice(6, 18, bonus)
-        self.newstats['luck'] = dice(6, 18, bonus)
-        self.newstats['constitution'] = dice(6, 18, bonus)
+
+        self.newstats['strength'] += dice(2, 3, bonus)
+        self.newstats['intelligence'] += dice(2, 3, bonus)
+        self.newstats['wisdom'] += dice(2, 3, bonus)
+        self.newstats['agility'] += dice(2, 3, bonus)
+        self.newstats['speed'] += dice(2, 3, bonus)
+        self.newstats['charisma'] += dice(2, 3, bonus)
+        self.newstats['luck'] += dice(2, 3, bonus)
+        self.newstats['constitution'] += dice(2, 3, bonus)
         
     def show_stats(self):
         self.sock.dispatch('')

@@ -57,6 +57,9 @@ def who(caller, args, **kwargs):
     caller.write("{BPlayers in other Realms on the Grapevine network{x:")
     caller.write("")
     for eachgame in grapevine.gsocket.other_games_players:
+        # Fix this so we can direct 'who sindome' as an option XXX
+        if eachgame == 'sindome' or eachgame == 'Sindome':
+            continue
         if len(grapevine.gsocket.other_games_players[eachgame]) == 1:
             the_player = grapevine.gsocket.other_games_players[eachgame][0].capitalize()
             caller.write(f"     {the_player} {{R@{{x {eachgame.capitalize()}")

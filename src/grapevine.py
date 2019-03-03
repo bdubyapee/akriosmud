@@ -735,6 +735,10 @@ class GrapevineSocket(WebSocket):
                 print(f"Error sending data frame: {outdata}")
 
     def receive_message(self):
-        return GrapevineReceivedMessage(self.read_in(), self)
+        try:
+            return GrapevineReceivedMessage(self.read_in(), self)
+        except:
+            if self.debug:
+                print("Error receiving message from Grapevine.")
 
 

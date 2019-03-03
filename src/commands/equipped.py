@@ -31,6 +31,6 @@ def equipped(caller, args, **kwarg):
             eq_name = "nothing"
         else:
             eq_name = caller.contents[each_aid].disp_name
-        caller.write(f"     <{each_loc:^21}>   {eq_name}")
+        caller.write(f"  <{each_loc:17}>   {eq_name:40}")
 
     caller.write("")

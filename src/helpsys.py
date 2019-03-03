@@ -85,6 +85,7 @@ class oneHelp(olc.Editable):
                 f"{{BKeywords{{x: {', '.join(self.keywords)}\n"
                 f"{{BTopics{{x: {self.topics}\n"
                 f"{{BSection{{x: {self.section}\n"
+                f"   {{y{', '.join(sections)}\n"
                 f"{{BDescription{{x:\n\r"
                 f"{self.description[:190]}|...{{x\n\r")
 
