@@ -7,7 +7,7 @@
     },
     "object_list": {
         "1001": "{\n    \"target_loc_is\": \"room\",\n    \"target_loc_vnum\": 1001,\n    \"target_max_amount\": 10,\n    \"target_mobile_wear\": \"false\",\n    \"target_type\": \"object\",\n    \"target_vnum\": 1001\n}",
-        "1002": "{\n    \"target_loc_is\": \"room\",\n    \"target_loc_vnum\": 1002,\n    \"target_max_amount\": 10,\n    \"target_mobile_wear\": \"false\",\n    \"target_type\": \"object\",\n    \"target_vnum\": 1001\n}",
+        "1002": "{\n    \"target_loc_is\": \"room\",\n    \"target_loc_vnum\": 1002,\n    \"target_max_amount\": 10,\n    \"target_mobile_wear\": \"false\",\n    \"target_type\": \"object\",\n    \"target_vnum\": 1001\n}"
     },
     "shop_list": {}
 }

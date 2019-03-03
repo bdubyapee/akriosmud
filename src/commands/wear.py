@@ -66,7 +66,7 @@ def wear(caller, args, **kwargs):
         return
 
     if location not in object_.allowable_wear_loc:
-        caller.write("You cannot wear a {args} there!")
+        caller.write(f"You cannot wear a {args} there!")
         return
 
     caller.equipped[location] = target.aid    
