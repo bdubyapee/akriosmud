@@ -65,6 +65,10 @@ def wear(caller, args, **kwargs):
         caller.write(f"You are already wearing something in that location.")
         return
 
+    if location not in object_.allowable_wear_loc:
+        caller.write("You cannot wear a {args} there!")
+        return
+
     caller.equipped[location] = target.aid    
     caller.write(f"You wear a {target.disp_name} on your {location}.")
     comm.message_to_room(caller.location, caller, f"{caller.disp_name} wears a {target.disp_name}.")

@@ -125,6 +125,8 @@ class Object(atomic.Atomic, olc.Editable):
         self.short_description = ''
         self.long_description = ''
         self.weight = 0
+        self.hitpoints = 0
+        self.damage = 0
         self.generic_size = ''
         self.primary_type = ''
         self.weapon_type = ''
@@ -152,6 +154,8 @@ class Object(atomic.Atomic, olc.Editable):
                          "long_description": ("string", None),
                          "name": ("string", None),
                          "weight": ("integer", None),
+                         "hitpoints": ("integer", None),
+                         "damage": ("integer", None),
                          "generic_size": ("string", generic_size_types),
                          "keywords": ("list", None),
                          "default_wear_loc": ("string", races.wearlocationslist),
@@ -204,6 +208,8 @@ class Object(atomic.Atomic, olc.Editable):
                         "short_description": self.short_description,
                         "long_description": self.long_description,
                         "weight": self.weight,
+                        "hitpoints": self.hitpoints,
+                        "damage": self.damage,
                         "generic_size": self.generic_size,
                         "keywords": self.keywords,
                         "contents": self.contents,
