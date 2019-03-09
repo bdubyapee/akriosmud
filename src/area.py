@@ -99,6 +99,18 @@ class oneArea(olc.Editable):
         if os.path.exists(self.area_path):
             self.load()
 
+    def mobile_inst_by_vnum(self, vnum):
+        for eachmob in self.mobilelist:
+            if eachmob.vnum == vnum:
+                return eachmob
+        return False
+
+    def object_inst_by_vnum(self, vnum):
+        for eachobj in self.objectlist:
+            if eachobj.vnum == vnum:
+                return eachobj
+        return False
+
     def toJSON(self):
         if self.json_version == 1:
             jsonable = {"json_version" : self.json_version,

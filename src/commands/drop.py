@@ -24,23 +24,43 @@ def drop(caller, args, **kwargs):
     target = None
     args = args.lower()
 
+    equipped_items_matched = {}
+    inventory_items_matched = {}
+
     for aid, object_ in caller.contents.items():
         if object_.disp_name.startswith(args):
-            target = object_
-            break
+            if object_.aid in caller.equipped.values():
+                equipped_items_matched[object_.aid] = object_
+            else:
+                inventory_items_matched[object_.aid] = object_
+            #target = object_
+            #break
         for eachkw in object_.keywords:
             thekey = eachkw.lower()
             if thekey.startswith(args):
-                target = object_
-                break
+                if object_.aid in caller.equipped.values():
+                    equipped_items_matched[object_.aid] = object_
+                else:
+                    inventory_items_matched[object_.aid] = object_
+                #target = object_
+                #break
 
-    if target is None:
+    #if target is None:
+    if not equipped_items_matched and not inventory_items_matched:
         caller.write(f"You don't seem to have a {args}.")
         return
 
-    if target.aid in caller.equipped.values():
-        caller.write("You need to remove {target.disp_name} before dropping it.")
+    #if target.aid in caller.equipped.values():
+    if not inventory_items_matched and equipped_items_matched:
+        caller.write(f"You need to remove '{args}' before dropping it.")
         return
+
+    matched_inv = list(inventory_items_matched.values())
+    
+    if len(matched_inv) >= 1:
+        target = matched_inv[0]
+    else:
+        caller.write(f"Something terribly wrong has happened")
 
     caller.location.area.objectlist.append(target)
     caller.contents.pop(target.aid)

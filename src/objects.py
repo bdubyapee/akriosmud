@@ -73,9 +73,9 @@ food_types = {"bread": FoodType("bread")}
 
 
 
-DrinkType = namedtuple("DrinkType", "name")
+LiquidType = namedtuple("LiquidType", "name")
 
-drink_types = {"water": DrinkType("water")}
+liquid_types = {"water": LiquidType("water")}
 
 
 
@@ -132,7 +132,7 @@ class Object(atomic.Atomic, olc.Editable):
         self.weapon_type = ''
         self.armor_type = ''
         self.food_type = ''
-        self.drink_type = ''
+        self.liquid_type = ''
         self.container_type = ''
         self.material_type = ''
         self.keywords = []
@@ -164,7 +164,7 @@ class Object(atomic.Atomic, olc.Editable):
                          "weapon_type": ("string", weapon_types),
                          "armor_type": ("string", armor_types),
                          "food_type": ("string", food_types),
-                         "drink_type": ("string", drink_types),
+                         "liquid_type": ("string", liquid_types),
                          "container_type": ("string", container_types),
                          "material_type": ("string", material_types),
                          "wand_data": ("dict", (None, None)),
@@ -219,7 +219,7 @@ class Object(atomic.Atomic, olc.Editable):
                         "weapon_type": self.weapon_type,
                         "armor_type": self.armor_type,
                         "food_type": self.food_type,
-                        "drink_type": self.drink_type,
+                        "liquid_type": self.liquid_type,
                         "container_type": self.container_type,
                         "material_type": self.material_type,
                         "vnum": self.vnum,
@@ -231,25 +231,42 @@ class Object(atomic.Atomic, olc.Editable):
 
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
-    def create_instance(self, location=None):
+    def create_instance(self, reset_data=None):
         '''
-            This creates a 'real' in game version of an object. We expect a location to be
-            provided in which to place the object.  If the location passed in is an int type
-            and if that int is a valid room vnum, put the object there.  If not we assume,
-            at this time, that it is a room object and we place it there.
+            This creates a 'real' in game version of an object. We expect the reset
+            data to contain the appropriate location information and any details.
         '''
-        if location is None:
+        if reset_data is None:
             comm.wiznet(f"Cannot load Object to None Location.")
             return
-        elif type(location) is int and location in area.roomlist:
-            newroom = area.roomByVnum(location)
+
+        location = reset_data.target_loc_vnum
+        target_location = None
+
+        if reset_data.target_loc_is == "mobile":
+            target_location = self.area.mobile_inst_by_vnum(location)
+            if not target_location:
+                return
+        elif reset_data.target_loc_is == "room":
+            if type(location) is int and location in area.roomlist:
+                target_location = area.roomByVnum(location)
         else:
-            newroom = location
+            return
 
         new_obj = Object(self.area, self.toJSON(), load_type="instance")
         new_obj.aid = str(uuid.uuid4())
 
-        new_obj.move(newroom)
+
+        if target_location is not None and reset_data.target_loc_is == "room":
+            new_obj.move(target_location)
+        elif target_location is not None and reset_data.target_loc_is == "mobile":
+            target_location.contents[new_obj.aid] = new_obj
+            if reset_data.target_mobile_wear:
+                if 'hand' in self.default_wear_loc and self.keywords:
+                    comm = f"hold {self.keywords[0]}"
+                elif self.keywords:
+                    comm = f"wear {self.keywords[0]} on {self.default_wear_loc}"
+                target_location.interp(comm)
 
     def write(self, args):
         print(f"Received object command write of: {args}")

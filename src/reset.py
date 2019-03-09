@@ -29,13 +29,15 @@ class BaseReset(object):
     def __init__(self):
         super().__init__()
         self.aid = str(uuid.uuid4())
+        self.reset_vnum = 0
         self.target_vnum = 0
         self.target_max_amount = 0
         self.target_type = None
         self.target_loc_vnum = 0
 
     def basetoJSON(self):
-        jsonable = {"target_vnum": self.target_vnum,
+        jsonable = {"reset_vnum": self.reset_vnum,
+                    "target_vnum": self.target_vnum,
                     "target_max_amount": self.target_max_amount,
                     "target_type": self.target_type,
                     "target_loc_vnum": self.target_loc_vnum}
@@ -59,6 +61,7 @@ class MobileReset(BaseReset):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
 
+        # needed?
         if type(self.target_loc_vnum) is str:
             self.target_loc_vnum = int(self.target_loc_vnum)
 
@@ -100,8 +103,14 @@ class ObjectReset(BaseReset):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
 
+        # needed?
         if type(self.target_loc_vnum) is str:
-            self.target_loc_vnum = int(self.target_oc_vnum)
+            self.target_loc_vnum = int(self.target_loc_vnum)
+
+        if self.target_mobile_wear == "true":
+            self.target_mobile_wear = True
+        else:
+            self.target_mobile_wear = False
 
     def execute(self):
         if self.target_vnum not in objects.objectlist_by_vnum_index:
@@ -122,9 +131,7 @@ class ObjectReset(BaseReset):
 
         # Count current objects of this vnum, if at or exceeding max then bail out. 
 
-        loc = self.target_loc_vnum
-
-        objects.objectlist_by_vnum_index[self.target_vnum].create_instance(location=loc)
+        objects.objectlist_by_vnum_index[self.target_vnum].create_instance(self)
 
 
 class Reset(olc.Editable):

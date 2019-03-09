@@ -13,7 +13,7 @@
     "damage": 0,
     "generic_size": "tiny",
     "default_wear_loc": "left hand",
-    "drink_type": "",
+    "liquid_type": "",
     "food_type": "",
     "hitpoints": 1,
     "json_class_name": "__Object__",
