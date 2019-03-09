@@ -29,7 +29,6 @@ def hold(caller, args, **kwargs):
         return
 
     for aid, object_ in caller.contents.items():
-        print(f"{caller.equipped.values()}")
         if object_.disp_name.startswith(args) and aid not in caller.equipped.values():
             target = object_
             break
