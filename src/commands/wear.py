@@ -69,7 +69,11 @@ def wear(caller, args, **kwargs):
         caller.write(f"You cannot wear a {args} there!")
         return
 
-    caller.equipped[location] = target.aid    
-    caller.write(f"You wear a {target.disp_name} on your {location}.")
-    comm.message_to_room(caller.location, caller, f"{caller.disp_name} wears a {target.disp_name}.")
+    caller.equipped[location] = target.aid
+    if 'hand' in location:
+        caller.write(f"You hold a {target.disp_name} in your {location}")
+        comm.message_to_room(caller.location, caller, f"{caller.disp_name} holds a {target.disp_name}.")
+    else:
+        caller.write(f"You wear a {target.disp_name} on your {location}.")
+        comm.message_to_room(caller.location, caller, f"{caller.disp_name} wears a {target.disp_name}.")
 
