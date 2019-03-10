@@ -10,6 +10,7 @@ import random
 import time
 import uuid
 
+import area
 import comm
 import grapevine
 import player
