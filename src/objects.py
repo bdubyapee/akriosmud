@@ -23,16 +23,6 @@ import races
 WRITE_NEW_FILE_VERSION = False
 
 
-# This warrants some explanation.  The _index lists or dicts below are the in-memory
-# version of the object.  We will load all Objects for an area into this list.
-# During the final loading phase for an area we will go through all of the 
-# reset information and instanciate in-game versions of the Objects.
-
-objectlist_index = []
-objectlist = []
-objectlist_by_vnum_index = {}
-
-
 
 PrimaryType = namedtuple("PrimaryType", "name")
 
@@ -178,13 +168,10 @@ class Object(atomic.Atomic, olc.Editable):
             self.load(data, load_type)
 
     def populate_index(self):
-        objectlist_index.append(self)
-        objectlist_by_vnum_index[self.vnum] = self
         self.area.objectlist_index.append(self)
         self.area.objectlist_by_vnum_index[self.vnum] = self
 
     def populate_instance(self):
-        objectlist.append(self)
         self.area.objectlist.append(self)
 
     def load(self, data, load_type):
@@ -248,8 +235,8 @@ class Object(atomic.Atomic, olc.Editable):
             if not target_location:
                 return
         elif reset_data.target_loc_is == "room":
-            if type(location) is int and location in area.roomlist:
-                target_location = area.roomByVnum(location)
+            if type(location) is int and location in self.area.roomlist:
+                target_location = self.area.room_by_vnum(location)
         else:
             return
 

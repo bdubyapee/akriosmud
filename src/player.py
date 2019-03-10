@@ -69,7 +69,7 @@ class Player(livingthing.LivingThing):
             if not self.equipped:
                 self.equipped = {k: None for k in self.race.wearlocations}
 
-            self.location = area.roomByVnum(self.location)
+            self.location = area.room_by_vnum_global(self.location)
             self.move(self.location)
 
     def toJSON(self):

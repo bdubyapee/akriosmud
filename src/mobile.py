@@ -24,17 +24,6 @@ import races
 WRITE_NEW_FILE_VERSION = False
 
 
-# This warrants some explanation.  The _index lists or dicts below are the in-memory
-# version of the mobile.  We will load all Mobiles for an area into this list.
-# During the final loading phase for an area we will go through all of the 
-# reset information and instanciate in-game versions of the Mobiles.
-
-mobilelist_index = []
-mobilelist = []
-mobilelist_by_vnum_index = {}
-mobilelist_by_vnum = {}
-
-
 class Mobile(livingthing.LivingThing, olc.Editable):
     CLASS_NAME = "__Mobile__"
     FILE_VERSION = 1
@@ -56,14 +45,10 @@ class Mobile(livingthing.LivingThing, olc.Editable):
             self.load(data)
 
     def populate_index(self):
-        mobilelist_index.append(self)
-        mobilelist_by_vnum_index[self.vnum] = self
         self.area.mobilelist_index.append(self)
         self.area.mobilelist_by_vnum_index[self.vnum] = self
 
     def populate_real(self):
-        mobilelist.append(self)
-        mobilelist_by_vnum[self.vnum] = self
         self.area.mobilelist.append(self)
         self.area.mobilelist_by_vnum[self.vnum] = self
 
@@ -104,8 +89,8 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         if location is None:
             comm.wiznet(f"Cannot load Mobile to None Location.")
             return
-        elif type(location) is int and location in area.roomlist:
-            newroom = area.roomByVnum(location)
+        elif type(location) is int and location in self.area.roomlist:
+            newroom = self.area.room_by_vnum(location)
         else:
             newroom = location
 

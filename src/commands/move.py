@@ -23,7 +23,7 @@ requirements = {'capability': ['player', 'mobile', 'object'],
 def move(caller, args):
     if args in caller.location.exits:
         exit = caller.location.exits[args]
-        if exit.destination in area.roomlist:
+        if exit.destination in caller.location.area.roomlist:
             # Does the exit have a door and is it closed?
             if exit.hasdoor == 'true' and exit.dooropen == 'false':
                 caller.write("The door in that direction is closed.")
@@ -40,7 +40,7 @@ def move(caller, args):
                 wasBuilding = True
             else:
                 wasBuilding = False
-            newroom = area.roomByVnum(exit.destination)
+            newroom = caller.location.area.room_by_vnum(exit.destination)
             caller.move(newroom, caller.location, args)
             caller.interp("look")
             if wasBuilding:

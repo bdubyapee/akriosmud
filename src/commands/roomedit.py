@@ -96,13 +96,12 @@ def roomedit(caller, args, **kwargs):
                 if myvnum < myarea.vnumrange[0] or myvnum > myarea.vnumrange[1]:
                     caller.write("That vnum is not in this areas range!")
                     return
-                if myvnum in area.roomlist:
+                if myvnum in myarea.roomlist:
                     caller.write("That room already exists.  Please edit it directly.")
                     return
                 else:
                     newroom = room.oneRoom(caller.location.area, vnum=myvnum)
                     caller.building = newroom
-                    area.roomlist[myvnum] = newroom
                     newroom.area.roomlist[myvnum] = newroom
                     caller.building.builder = caller
                     caller.write(f"Editing {{W{args[1]}{{x")
@@ -118,16 +117,14 @@ def roomedit(caller, args, **kwargs):
             except:
                 caller.write("Vnum argument must be an integer")
                 return
-            if myvnum in area.roomlist and myvnum in caller.location.area.roomlist:
-                newroom = area.roomByVnum(1)
-                for person in area.roomlist[myvnum].playerlist:
-                    util.moveFrom(person, person.location.playerlist)
-                    util.moveTo(person, newroom, newroom.playerlist)
-                area.roomlist.pop(myvnum)
+            if myvnum in caller.location.area.roomlist:
+                newroom = area.room_by_vnum_global(1)
+                for thing in caller.location.area.roomlist[myvnum].contents:
+                    thing.move(newroom, None, "goto")
                 caller.location.area.roomlist.pop(myvnum)
                 caller.write(f"Room {myvnum} deleted.")
-        elif myvnum in area.roomlist:
-            caller.building = area.roomlist[int(args[0])]
+        elif myvnum in caller.location.area.roomlist:
+            caller.building = caller.location.area.roomlist[int(args[0])]
             caller.building.builder = caller
             caller.write(f"Editing room: {{W{args[0]}{{x.")
             caller.write(helpstring)

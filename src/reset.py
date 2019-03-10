@@ -66,7 +66,7 @@ class MobileReset(BaseReset):
             self.target_loc_vnum = int(self.target_loc_vnum)
 
     def execute(self):
-        if self.target_vnum not in mobile.mobilelist_by_vnum_index:
+        if self.target_vnum not in self.area.mobilelist_by_vnum_index:
             print(f"Unable to find mobile vnum {self.target_vnum}")
             return
 
@@ -79,7 +79,7 @@ class MobileReset(BaseReset):
         # Count current mobiles of this vnum, if at or exceeding max then bail out. 
 
         loc = self.target_loc_vnum
-        mobile.mobilelist_by_vnum_index[self.target_vnum].create_instance(location=loc)
+        self.area.mobilelist_by_vnum_index[self.target_vnum].create_instance(location=loc)
 
 
 class ObjectReset(BaseReset):
@@ -113,7 +113,7 @@ class ObjectReset(BaseReset):
             self.target_mobile_wear = False
 
     def execute(self):
-        if self.target_vnum not in objects.objectlist_by_vnum_index:
+        if self.target_vnum not in self.area.objectlist_by_vnum_index:
             print(f"Unable to find object vnum {self.target_vnum}")
             return
 
@@ -123,7 +123,7 @@ class ObjectReset(BaseReset):
             print(f"roomlist = {self.area.roomlist}")
             return
 
-        mli = mobile.mobilelist_by_vnum_index
+        mli = self.area.mobilelist_by_vnum_index
 
         if self.target_loc_is == 'mobile' and self.target_loc_vnum not in mli:
             print(f"Unable to find mobile vnum {self.target_loc_vnum}")
@@ -131,7 +131,7 @@ class ObjectReset(BaseReset):
 
         # Count current objects of this vnum, if at or exceeding max then bail out. 
 
-        objects.objectlist_by_vnum_index[self.target_vnum].create_instance(self)
+        self.area.objectlist_by_vnum_index[self.target_vnum].create_instance(self)
 
 
 class Reset(olc.Editable):

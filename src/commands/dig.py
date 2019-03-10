@@ -28,7 +28,7 @@ def dig(caller, args, **kwargs):
             return
         else:
             targetvnum = int(args[1])
-            if targetvnum in area.roomlist:
+            if targetvnum in caller.location.area.roomlist:
                 caller.write(f"Room {{W{targetvnum}{{x already exists!")
                 return
             if args[0] in caller.location.exits:
@@ -49,7 +49,6 @@ def dig(caller, args, **kwargs):
                 return
             else:
                 newroom = room.oneRoom(caller.location.area, vnum=targetvnum)
-                area.roomlist[targetvnum] = newroom
                 newroom.area.roomlist[targetvnum] = newroom
                 exits.Exit(targetvnum, None, revexitdataJSON)
                 exits.Exit(caller.location.vnum, None, newexitdataJSON)

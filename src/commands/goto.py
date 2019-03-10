@@ -27,8 +27,8 @@ def goto(caller, args, **kwargs):
 
     newroom = None
 
-    if vnum != None and vnum in area.roomlist:
-        newroom = area.roomByVnum(vnum)
+    if vnum is not None:
+        newroom = area.room_by_vnum_global(vnum)
 
     if args[0].lower() in player.playerlist_by_name:
         newroom = player.playerlist_by_name[args[0].lower()].location

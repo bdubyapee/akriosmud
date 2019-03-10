@@ -124,12 +124,9 @@ class Exit(olc.Editable):
 
     def load(self, data):
         for eachkey, eachvalue in json.loads(data).items():
-            setattr(self, eachkey, eachvalue)
+            if eachkey != "room":
+                setattr(self, eachkey, eachvalue)
 
-        # Here we do any post load processing.  Some attributes will be stored as their
-        # regular name, we'll need to reference the actual type based on that name.
-
-        self.room = area.roomByVnum(self.room)
         self.room.exits[self.direction] = self
 
     def display(self):

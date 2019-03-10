@@ -117,7 +117,6 @@ class oneRoom(olc.Editable):
             setattr(self, eachkey, eachvalue)
 
         self.area.roomlist[self.vnum] = self
-        area.roomlist[self.vnum] = self
 
     def display(self):
         return(f"{{BArea{{x: {self.area.name}\n"

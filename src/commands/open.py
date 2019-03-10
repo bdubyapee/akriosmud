@@ -22,7 +22,7 @@ requirements = {'capability': ['player', 'mobile'],
 def open(caller, args, **kwargs):
     if args in caller.location.exits:
         exit = caller.location.exits[args]
-        if exit.destination in area.roomlist:
+        if exit.destination in caller.location.area.roomlist:
             # Does the exit have a door and is it closed?
             if exit.hasdoor == 'true':
                 if exit.dooropen == 'true':

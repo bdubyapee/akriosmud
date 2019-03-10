@@ -39,11 +39,12 @@ def areaedit(caller, args, **kwargs):
         elif args[0] == 'populate':
             myarea = caller.building
             myvnum = caller.building.vnumlow
-            if myvnum in area.roomlist.keys():
+            room_exists = area.room_by_vnum_global(myvnum)
+            if room_exists:
                 caller.write("That room already exists.  Please edit it directly.")
+                return
             else:
                 newroom = room.oneRoom(caller.building, vnum=myvnum)
-                area.roomlist[myvnum] = newroom
                 newroom.area.roomlist[myvnum] = newroom
                 caller.write(f"First new room {newroom.vnum} has been created.")
         elif args[0] in caller.building.commands:

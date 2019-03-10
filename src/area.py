@@ -24,7 +24,6 @@ import world
 
 
 arealist = []
-roomlist = {}
 
 # Define some named tuples of various Area values.
 Plane = namedtuple("Planes", "name")
@@ -49,8 +48,10 @@ def init():
         thefile = glob.glob(os.path.join(each_area_directory, '*.json'))
         oneArea(each_area_directory, thefile[0])
 
-def roomByVnum(vnum):
-    return roomlist[vnum] if vnum in roomlist else False
+def room_by_vnum_global(vnum):
+    for eacharea in arealist:
+        if vnum in eacharea.roomlist:
+            return eacharea.roomlist[vnum]
 
 
 class oneArea(olc.Editable):
@@ -99,6 +100,9 @@ class oneArea(olc.Editable):
         if os.path.exists(self.area_path):
             self.load()
 
+    def room_by_vnum(self, vnum):
+        return self.roomlist[vnum] if vnum in self.roomlist else None
+
     def mobile_inst_by_vnum(self, vnum):
         for eachmob in self.mobilelist:
             if eachmob.vnum == vnum:
@@ -134,7 +138,7 @@ class oneArea(olc.Editable):
             if not os.path.exists(exits_path):
                 os.makedirs(exits_path)
             for eachroom in eacharea.roomlist:
-                theroom = roomByVnum(eachroom)
+                theroom = eacharea.room_by_vnum(eachroom)
                 for eachexit in theroom.exits:
                     theexit = eacharea.roomlist[eachroom].exits[eachexit]
                     filename = os.path.join(eacharea.folder_path, f"exits/{eachroom}-{eachexit}.json")
@@ -147,7 +151,7 @@ class oneArea(olc.Editable):
             if not os.path.exists(rooms_path):
                 os.makedirs(rooms_path)
             for eachroom in eacharea.roomlist:
-                theroom = roomByVnum(eachroom)
+                theroom = eacharea.room_by_vnum(eachroom)
                 filename = os.path.join(eacharea.folder_path, f"rooms/{eachroom}.json")
                 with open(filename, 'w') as thefile:
                     thefile.write(theroom.toJSON())
@@ -212,9 +216,9 @@ class oneArea(olc.Editable):
             with open(eachfile, 'r') as thefile:
                 fullpath, direction_fn = eachfile.split('.')[0].split('-')
                 roomvnum = fullpath.split('/')[-1:][0]
-                attached_room = roomByVnum(int(roomvnum))
-                if not attached_room:
-                    comm.log(world.serverlog, f"roomByVnum failed in exit load: {roomvnum}")
+                attached_room = self.room_by_vnum(int(roomvnum))
+                if attached_room is None:
+                    comm.log(world.serverlog, f"room_by_vnum_global failed in exit load: {roomvnum}")
                 else:
                     exits.Exit(attached_room, direction_fn, thefile.read())
 
