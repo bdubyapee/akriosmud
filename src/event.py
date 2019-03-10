@@ -397,12 +397,24 @@ def event_admin_system_status(event_):
         for each_thing in things_with_events[each_type]:
             event_count[each_type] += each_thing.events.num_events()
 
+  
+    moblist_index = 0
+    moblist = 0
+    objlist_index = 0
+    objlist = 0
+
+    for eacharea in area.arealist:
+        moblist_index += len(eacharea.moblist_index)
+        moblist += len(eacharea.moblist)
+        objlist_index += len(eacharea.objectlist_index)
+        objlist += len(eacharea.objectlist)
+
     msg = (f"\n\r{{RAkrios System Status (5 minute update){{x\n\r"
            f"{{GPlayer Connections{{x: {{R{len(server.connlist)}{{x\n\r"
-           f"{{G      Mobile Index{{x: {{R{len(mobile.mobilelist_index)}{{x\n\r"
-           f"{{G           Mobiles{{x: {{R{len(mobile.mobilelist)}{{x\n\r"
-           f"{{G      Object Index{{x: {{R{len(objects.objectlist_index)}{{x\n\r"
-           f"{{G           Objects{{x: {{R{len(objects.objectlist)}{{x\n\r"
+           f"{{G      Mobile Index{{x: {{R{moblist_index}{{x\n\r"
+           f"{{G           Mobiles{{x: {{R{moblist}{{x\n\r"
+           f"{{G      Object Index{{x: {{R{objlist_index}{{x\n\r"
+           f"{{G           Objects{{x: {{R{objlist}{{x\n\r"
            f"{{G  Game Events List{{x\n\r"
            f"{{G        Player Events{{x: {{R{event_count['player']}{{x\n\r"
            f"{{G        Mobile Events{{x: {{R{event_count['mobile']}{{x\n\r"

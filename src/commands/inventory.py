@@ -33,7 +33,7 @@ def inventory(caller, args, **kwarg):
 
     for aid, object_ in caller.contents.items():
         if aid not in caller.equipped.values():
-            caller.write(f"{object_.vnum:6} {object_.disp_name:25} {aid}")
+            caller.write(f"{object_.disp_name:45}")
             inventory += 1
 
     if inventory == 0:
