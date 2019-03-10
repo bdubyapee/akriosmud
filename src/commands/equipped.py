@@ -31,6 +31,16 @@ def equipped(caller, args, **kwarg):
             eq_name = "nothing"
         else:
             eq_name = caller.contents[each_aid].disp_name
-        caller.write(f"  <{each_loc:17}>   {eq_name:40}")
+
+        preface = "worn on "
+        if each_loc == "floating nearby":
+            preface = ""
+        if 'hand' in each_loc:
+            preface = "held in "
+        if each_loc in ["neck", "waiste"]:
+            preface = "worn around "
+        each_loc = f"{preface}{each_loc}"
+
+        caller.write(f"  <{each_loc:22}>   {eq_name:40}")
 
     caller.write("")
