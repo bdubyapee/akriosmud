@@ -405,8 +405,8 @@ def event_admin_system_status(event_):
     objlist = 0
 
     for eacharea in area.arealist:
-        moblist_index += len(eacharea.moblist_index)
-        moblist += len(eacharea.moblist)
+        moblist_index += len(eacharea.mobilelist_index)
+        moblist += len(eacharea.mobilelist)
         objlist_index += len(eacharea.objectlist_index)
         objlist += len(eacharea.objectlist)
 

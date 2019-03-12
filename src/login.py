@@ -212,7 +212,10 @@ class Login(object):
             event.init_events_player(newobject)
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             comm.log(newobject.logpath, f"Logging in from: {newobject.sock.host}")
-            newobject.interp("look")
+            if newobject.position == "sleeping":
+                newobject.write("You are sleeping.")
+            else:
+                newobject.interp("look")
 
             grapevine.gsocket.msg_gen_player_login(newobject.name)
             newobject.lasttime = time.ctime()

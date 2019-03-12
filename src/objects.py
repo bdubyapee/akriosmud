@@ -30,23 +30,30 @@ primary_types = {"weapon": PrimaryType("weapon"),
                  "armor": PrimaryType("armor"),
                  "food": PrimaryType("food"),
                  "container": PrimaryType("container"),
+                 "drinkcontainer": PrimaryType("drinkcontainer"),
                  "wand": PrimaryType("wand"),
+                 "staff": PrimaryType("staff"),
                  "spell book": PrimaryType("spell book"),
                  "rune": PrimaryType("rune"),
                  "scroll": PrimaryType("scroll"),
+                 "potion": PrimaryType("potion"),
+                 "pill": PrimaryType("pill"),
                  "key": PrimaryType("key"),
                  "raw material": PrimaryType("raw material"),
+                 "raw mineral": PrimeType("raw mineral"),
                  "craft tool": PrimaryType("craft tool"),
+                 "corpse": PrimarType("corpse"),
+                 "trash": PrimaryType("trash"),
+                 "furniture": PrimaryTYpe("furniture"),
                  "generic": PrimaryType("generic")}
 
 
 
-WeaponType = namedtuple("WeaponType", "name dicenum diceside handed")
+WeaponType = namedtuple("WeaponType", "name dicenum diceside crit handed")
 
-weapon_types = {"short sword": WeaponType('short sword', 1, 4, 1),
-                "dagger": WeaponType('dagger', 1, 2, 1),
-                "broad sword": WeaponType('broad sword', 2, 3, 2)}
-
+weapon_types = {"short sword": WeaponType('short sword', 1, 4, 2, 1),
+                "dagger": WeaponType('dagger', 1, 2, 2, 1),
+                "broad sword": WeaponType('broad sword', 2, 3, 2, 2)}
 
 
 ArmorType = namedtuple("ArmorType", "name ac_slash ac_bash ac_pierce ac_blud")
@@ -54,7 +61,6 @@ ArmorType = namedtuple("ArmorType", "name ac_slash ac_bash ac_pierce ac_blud")
 armor_types = {"leather helmet": ArmorType('leather helmet', 1, 1, 1, 1),
                "leather shirt": ArmorType('leather shirt', 1, 1, 1, 1),
                "steel helmet": ArmorType('steel helmet', 5, 5, 5, 5)}
-
 
 
 FoodType = namedtuple("FoodType", "name")
@@ -68,7 +74,6 @@ LiquidType = namedtuple("LiquidType", "name")
 liquid_types = {"water": LiquidType("water")}
 
 
-
 ContainerType = namedtuple("ContainerType", "name opening liquid maxnum")
 
 container_types = {"bottle": ContainerType('bottle', 'small', True, 30),
@@ -77,7 +82,6 @@ container_types = {"bottle": ContainerType('bottle', 'small', True, 30),
                    "small bag": ContainerType('small bag', 'small', False, 20),
                    "medium bag": ContainerType('medium bag', 'medium', False, 35),
                    "large bag": ContainerType('large bag', 'large', False, 45)}
-
 
 
 MaterialType = namedtuple("MaterialType", "name hardness durability")

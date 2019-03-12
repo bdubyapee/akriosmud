@@ -26,9 +26,12 @@ import room
 
 Position = namedtuple("Position", "name")
 
-positions = {"crawling": Position("crawling"),
+positions = {"dead": Position("dead"),
+             "incapacitated": Position("incapacitated"),
              "sleeping": Position("sleeping"),
+             "stunned": Position("stunned"),
              "laying": Position("laying"),
+             "crawling": Position("crawling"),
              "sitting": Position("sitting"),
              "standing": Position("standing")}
 
