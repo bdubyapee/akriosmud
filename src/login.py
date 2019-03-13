@@ -305,14 +305,14 @@ class Login(object):
             bonus += 10
           
         # Set base stat to the race default
-        self.newstats['strength'] = fuzz(-4, 2, self.newchar['race'].strength)
-        self.newstats['intelligence'] = fuzz(-4, 2, self.newchar['race'].intelligence)
-        self.newstats['wisdom'] = fuzz(-4, 2, self.newchar['race'].wisdom)
-        self.newstats['agility'] = fuzz(-4, 2, self.newchar['race'].agility)
-        self.newstats['speed'] = fuzz(-4, 2, self.newchar['race'].speed)
-        self.newstats['charisma'] = fuzz(-4, 2, self.newchar['race'].charisma)
-        self.newstats['luck'] = fuzz(-4, 2, self.newchar['race'].luck)
-        self.newstats['constitution'] = fuzz(-4, 2, self.newchar['race'].constitution)
+        self.newstats['strength'] = fuzz(-5, 4, self.newchar['race'].strength)
+        self.newstats['intelligence'] = fuzz(-5, 4, self.newchar['race'].intelligence)
+        self.newstats['wisdom'] = fuzz(-5, 4, self.newchar['race'].wisdom)
+        self.newstats['agility'] = fuzz(-5, 4, self.newchar['race'].agility)
+        self.newstats['speed'] = fuzz(-5, 4, self.newchar['race'].speed)
+        self.newstats['charisma'] = fuzz(-5, 4, self.newchar['race'].charisma)
+        self.newstats['luck'] = fuzz(-5, 4, self.newchar['race'].luck)
+        self.newstats['constitution'] = fuzz(-5, 4, self.newchar['race'].constitution)
 
 
         self.newstats['strength'] += dice(2, 3, bonus)

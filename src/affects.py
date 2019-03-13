@@ -71,17 +71,5 @@ class OneAffect(object:
         self.value = value
 
 
-class AffectedBy(object):
-    def __init__(self):
-        self.affects = {}
-        
-    def remove_affect(name=None):
-        pass
-
-    def add_affect(name=None):
-        pass
-
-    def affected_By(*args):
-        pass
 
     
