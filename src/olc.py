@@ -242,7 +242,7 @@ class Buffer(object):
     def display(self, args=None):
         output = []
         output.append("-=-=-=-=-=-=-=-=-= Entering Edit Mode =-=-=-=-=-=-=-=-=-".center(76))
-        output.append("Type .h for help, .s to show the text or @ to exit.".center(76))
+        output.append("Type {W.h{x for help, {W.s{x to show the text or {W@{x to exit.".center(76))
         output.append("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-".center(76))
         for number, line in enumerate(self.lines):
             output.append(f"{number}: {line}")
