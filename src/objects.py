@@ -40,11 +40,11 @@ primary_types = {"weapon": PrimaryType("weapon"),
                  "pill": PrimaryType("pill"),
                  "key": PrimaryType("key"),
                  "raw material": PrimaryType("raw material"),
-                 "raw mineral": PrimeType("raw mineral"),
+                 "raw mineral": PrimaryType("raw mineral"),
                  "craft tool": PrimaryType("craft tool"),
-                 "corpse": PrimarType("corpse"),
+                 "corpse": PrimaryType("corpse"),
                  "trash": PrimaryType("trash"),
-                 "furniture": PrimaryTYpe("furniture"),
+                 "furniture": PrimaryType("furniture"),
                  "generic": PrimaryType("generic")}
 
 
