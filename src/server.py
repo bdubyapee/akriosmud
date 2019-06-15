@@ -37,7 +37,7 @@ connlist = []
 validchars = string.printable
 validchars = validchars.replace(string.whitespace[1:], "")
 
-# Variables containing telnet codes for Go-Ahead Suppression
+# Variables containing telnet codes for Go-Ahead Suppression and Echo
 SGARequest = IAC + WILL + SGA
 SGAAcknowledge = IAC + DO + SGA
 DOECHOTELNET = IAC + WONT + ECHO + theNULL

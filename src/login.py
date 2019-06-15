@@ -268,7 +268,7 @@ class Login(object):
             self.interp = self.get_discipline
         else:
             self.sock.dispatch("That isn't a valid gender.")
-            self.sock.dispatch("Available genders are: {Bmale female{x")
+            self.sock.dispatch("Available genders are: {BFemale Male{x")
             self.sock.dispatch("Please choose a gender: ", trail=False)
         
     def show_disciplines(self):
