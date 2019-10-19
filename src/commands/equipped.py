@@ -37,7 +37,7 @@ def equipped(caller, args, **kwarg):
             preface = ""
         if 'hand' in each_loc:
             preface = "held in "
-        if each_loc in ["neck", "waiste"]:
+        if each_loc in ["neck", "waist"]:
             preface = "worn around "
         each_loc = f"{preface}{each_loc}"
 
