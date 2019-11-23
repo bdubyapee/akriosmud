@@ -10,13 +10,13 @@
 # Imports here
 import time
 
-from . import area
-from . import comm
-from . import commands
-from . import exits
-from . import helpsys
-from . import races
-from . import room
+import area
+import comm
+import commands
+import exits
+import helpsys
+import races
+import room
 
 
 class Atomic(object):
