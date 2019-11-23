@@ -74,7 +74,7 @@ from websocket import WebSocket
 # being commented, but others you will need to implement (like heartbeat player list).
 import comm
 import event
-from keys import CLIENT_ID, SECRET_KEY
+from keys import LIVE, CLIENT_ID, SECRET_KEY
 import player
 import world
 
