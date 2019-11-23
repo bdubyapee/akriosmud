@@ -54,8 +54,14 @@ def who(caller, args, **kwargs):
         caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(), person.disp_name, person.title, extra2, extra1))
 
     caller.write("\n\r")
+
+    if not grapevine.LIVE:
+        caller.write("{BGrapevine network disabled.{x:")
+        return
+
     caller.write("{BPlayers in other Realms on the Grapevine network{x:")
     caller.write("")
+
     for eachgame in grapevine.gsocket.other_games_players:
         # Fix this so we can direct 'who sindome' as an option XXX
         if eachgame == 'sindome' or eachgame == 'Sindome':
