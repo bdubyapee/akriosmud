@@ -10,7 +10,7 @@
     Starting point for launching AkriosMUD.
 """
 
-import server
+from . import server
     
 if __name__ == "__main__":
     game = server.Server()
