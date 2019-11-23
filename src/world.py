@@ -9,8 +9,7 @@
 import os
 
 # Directory Configuration values
-# homeDir = 'c:\\akrios'
-homeDir = "/home/bwp/programming/muds/akrios/"
+homeDir = "/home/bwp/PycharmProjects/akriosmud/"
 dataDir = os.path.join(homeDir, "data")
 logDir = os.path.join(dataDir, "log")
 helpDir = os.path.join(dataDir, "help")
@@ -21,5 +20,5 @@ areaDir = os.path.join(dataDir, "areas")
 serverlog = os.path.join(logDir, "server.log")
 
 
-# Generic Configurables
+# Generic Configurable Variables
 allownewCharacters = True
