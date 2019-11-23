@@ -9,7 +9,6 @@
 from collections import namedtuple
 
 
-
 Affect = namedtuple("Affect", "name")
 
 affects = {"blind", Affect("blind"),
@@ -17,7 +16,7 @@ affects = {"blind", Affect("blind"),
            "charm", Affect("charm"),
            "invisible", Affect("invisible"),
            "detect evil", Affect("detect evil"),
-           "detect invis", Affect("detect invis"),
+           "detect invisibility", Affect("detect invisibility"),
            "detect magic", Affect("detect magic"),
            "detect hidden", Affect("detect hidden"),
            "detect good", Affect("detect good"),
@@ -41,10 +40,10 @@ affects = {"blind", Affect("blind"),
            "slow", Affect("slow"),
            "stone skin", Affect("stone skin"),
            "stun", Affect("stun"),
-           "clumbsy", Affect("clumbsy"),
+           "clumsy", Affect("clumsy"),
            "focus", Affect("focus"),
            "mute", Affect("mute"),
-           "truesight", Affect("truesight"),
+           "true sight", Affect("true sight"),
            "deaf", Affect("deaf"),
            "terror", Affect("terror"),
            "paralyzed", Affect("paralyzed"),
@@ -61,15 +60,11 @@ affects = {"blind", Affect("blind"),
            "stat constitution", Affect("stat constitution")}
 
 
-class OneAffect(object:
+class OneAffect(object):
     def __init__(self, name, duration=0, value=0):
         if name not in affects:
-            raise("Creating affect not in list")
+            raise Exception("Creating affect not in list")
 
         self.name = ""
         self.duration = duration
         self.value = value
-
-
-
-    
