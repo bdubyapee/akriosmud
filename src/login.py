@@ -216,8 +216,8 @@ class Login(object):
                 newobject.write("You are sleeping.")
             else:
                 newobject.interp("look")
-
-            grapevine.gsocket.msg_gen_player_login(newobject.name)
+            if grapevine.LIVE:
+                grapevine.gsocket.msg_gen_player_login(newobject.name)
             newobject.lasttime = time.ctime()
             newobject.lasthost = newobject.sock.host
         else:
