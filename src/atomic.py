@@ -51,7 +51,7 @@ class Atomic(object):
             if is_building and not is_editing:
                 self.write(self.building.display())
                 return
-            if isEditing:
+            if is_editing:
                 self.editing.add('')
                 return
             else:
@@ -86,9 +86,9 @@ class Atomic(object):
 
         if comfind:
             try:
-                if isEditing:
+                if is_editing:
                     comfind[-1](self, ' '.join(inp[1:]))
-                elif isBuilding:
+                elif is_building:
                     if comfind[0].__name__ not in types.values():
                         comfind[0](self, ' '.join(inp[2:]))
                     else:

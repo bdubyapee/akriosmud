@@ -9,18 +9,17 @@
 from collections import namedtuple
 import os
 import json
-import re
 import glob
 
-from . import comm
-from . import event
-from . import exits
-from . import mobile
-from . import objects
-from . import olc
-from . import reset
-from . import room
-from . import world
+import comm
+import event
+import exits
+import mobile
+import objects
+import olc
+import reset
+import room
+import world
 
 
 arealist = []
