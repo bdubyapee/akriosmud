@@ -12,15 +12,15 @@ import json
 import re
 import glob
 
-import comm
-import event
-import exits
-import mobile
-import objects
-import olc
-import reset
-import room
-import world
+from . import comm
+from . import event
+from . import exits
+from . import mobile
+from . import objects
+from . import olc
+from . import reset
+from . import room
+from . import world
 
 
 arealist = []
@@ -46,7 +46,8 @@ difficulty = {"all": Difficulty("all"),
 def init():
     for each_area_directory in glob.glob(os.path.join(world.areaDir, '*')):
         thefile = glob.glob(os.path.join(each_area_directory, '*.json'))
-        oneArea(each_area_directory, thefile[0])
+        OneArea(each_area_directory, thefile[0])
+
 
 def room_by_vnum_global(vnum):
     for eacharea in arealist:
@@ -54,15 +55,15 @@ def room_by_vnum_global(vnum):
             return eacharea.roomlist[vnum]
 
 
-class oneArea(olc.Editable):
-    CLASS_NAME = "__oneArea__"
+class OneArea(olc.Editable):
+    CLASS_NAME = "__OneArea__"
     FILE_VERSION = 1
 
     def __init__(self, fpath, path):
         super().__init__()
 
-        self.json_version = oneArea.FILE_VERSION
-        self.json_class_name = oneArea.CLASS_NAME
+        self.json_version = OneArea.FILE_VERSION
+        self.json_class_name = OneArea.CLASS_NAME
         self.folder_path = fpath
         self.area_path = path
         self.name = ''
@@ -245,7 +246,6 @@ class oneArea(olc.Editable):
         # Add this area to the area list.
         arealist.append(self)
 
-   
     def display(self):
         return(f"{{BName{{x: {self.name}\n"
                f"{{BAuthor{{x: {self.author}\n"

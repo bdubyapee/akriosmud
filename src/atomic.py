@@ -10,18 +10,27 @@
 # Imports here
 import time
 
-import area
-import comm
-import commands
-import exits
-import helpsys
-import races
-import room
+from . import area
+from . import comm
+from . import commands
+from . import exits
+from . import helpsys
+from . import races
+from . import room
 
 
 class Atomic(object):
     def __init__(self):
         super().__init__()
+        self.alias = {}
+        self.building = False
+        self.capability = []
+        self.location = None
+        self.last_input = 0
+        self.name = ''
+        self.oocflags = {}
+        self.short_description = ''
+        self.snooped_by = []
 
     def interp(self, inp=None):
 
@@ -35,11 +44,11 @@ class Atomic(object):
             self.oocflags['afk'] = False
             self.last_input = time.time()
 
-        isBuilding = hasattr(self, 'building')
-        isEditing = hasattr(self, 'editing')
+        is_building = hasattr(self, 'building')
+        is_editing = hasattr(self, 'editing')
 
         if not inp:
-            if isBuilding and not isEditing:
+            if is_building and not is_editing:
                 self.write(self.building.display())
                 return
             if isEditing:
@@ -63,10 +72,10 @@ class Atomic(object):
             if item.startswith(inp[0].lower()):
                 comfind.append(commands.Command.commandhash[item])
 
-        if isBuilding:
+        if is_building:
             types = {helpsys.oneHelp: 'helpedit',
                      races.oneRace: 'raceedit',
-                     area.oneArea: 'areaedit',
+                     area.OneArea: 'areaedit',
                      room.oneRoom: 'roomedit',
                      exits.Exit: 'exitedit'}
             if self.building.__class__ in types:
@@ -92,6 +101,8 @@ class Atomic(object):
             self.write("Huh?")
 
     def move(self, tospot=None, fromspot=None, direction=None):
+        rev_direction = "the ether"
+
         if tospot is None:
             comm.wiznet("Received None value in move:livingthing.py")
             return
