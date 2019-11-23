@@ -6,10 +6,9 @@
 # 
 # By: Jubelo
 
-'''
+"""
     Starting point for launching AkriosMUD.
-'''
-
+"""
 
 import server
     
