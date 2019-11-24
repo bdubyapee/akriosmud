@@ -141,7 +141,7 @@ class LivingThing(atomic.Atomic):
         self.alias = {}
         self.snooped_by = []
 
-    def toJSON_base(self):
+    def to_json_base(self):
         jsonable = {"name": self.name,
                     "lastname": self.lastname,
                     "capability": self.capability,
@@ -211,8 +211,3 @@ class LivingThing(atomic.Atomic):
             return
 
         return self.knownpeople[idnum] if idnum in self.knownpeople else ''
-
-    # def write(self, msg):
-    #     if self.snooped_by:
-    #         for each_person in self.snooped_by:
-    #             each_person.write(msg)

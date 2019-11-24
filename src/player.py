@@ -74,7 +74,7 @@ class Player(livingthing.LivingThing):
 
     def toJSON(self):
         if self.json_version == 1:
-            jsonable = self.toJSON_base()
+            jsonable = self.to_json_base()
             player_json = {"json_version": self.json_version,
                            "json_class_name": self.json_class_name,
                            "location": self.location.vnum,
@@ -91,7 +91,6 @@ class Player(livingthing.LivingThing):
         if self.json_version == 1:
             with open(f"{self.filename}", "w") as thefile:
                 thefile.write(self.toJSON())
-
 
     @property
     def is_building(self):
