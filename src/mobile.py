@@ -6,17 +6,12 @@
 # 
 # By: Jubelo
 
-from collections import namedtuple
-import importlib
 import json
-import os
-import time
 import uuid
 
-import area
+import comm
 import livingthing
 import olc
-import room
 import event
 import races
 
@@ -80,12 +75,12 @@ class Mobile(livingthing.LivingThing, olc.Editable):
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def create_instance(self, location=None):
-        '''
+        """
             This creates a 'real' in game version of a mobile. We expect a location to be
             provided in which to place the mobile.  If the location passed in is an int type
             and if that int is a valid room vnum, put the mobile there.  If not we assume,
             at this time, that it is a room object and we place it there.
-        '''
+        """
         if location is None:
             comm.wiznet(f"Cannot load Mobile to None Location.")
             return
@@ -99,6 +94,6 @@ class Mobile(livingthing.LivingThing, olc.Editable):
 
         new_mob.move(newroom)
 
-    def write(self, args):
+    @staticmethod
+    def write(args):
         print(f"Received mobile command write of: {args}")
-

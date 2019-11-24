@@ -61,7 +61,6 @@
 
 """
 
-
 import datetime
 import json
 import socket
@@ -69,13 +68,12 @@ import time
 import uuid
 from websocket import WebSocket
 
-# The below imports are for Akrios.  PLEASE LOOK BELOW FOR COMMENTS WITH XXX
-# in them to see how I tied in my side.  You can safely ignore some of them
-# being commented, but others you will need to implement (like heartbeat player list).
 import comm
 import event
 from keys import LIVE, CLIENT_ID, SECRET_KEY
 import player
+
+gsocket = None
 
 
 class GrapevineReceivedMessage(object):
@@ -93,7 +91,7 @@ class GrapevineReceivedMessage(object):
         # Used for adding to and removing refs as well as keeping the foreign player
         # cache in the gsocket up to date.
         self.gsock = gsock
-        
+
         # When we receive a JSON message from grapevine it will always have an event type.
         self.rcvr_func = {"heartbeat": (self.gsock.msg_gen_heartbeat, None),
                           "authenticate": (self.received_auth, None),
@@ -128,7 +126,7 @@ class GrapevineReceivedMessage(object):
                 retvalue = exec_func()
             else:
                 retvalue = exec_func(args)
-                
+
             if retvalue:
                 return retvalue
 
@@ -170,7 +168,7 @@ class GrapevineReceivedMessage(object):
             # XXX
             comm.wiznet("received_auth: Sending Authentication message to Grapevine.")
             self.gsock.msg_gen_authenticate()
-        
+
     def received_restart(self):
         """
         We received a restart event. We'll assign the value to the restart_downtime
@@ -320,7 +318,7 @@ class GrapevineReceivedMessage(object):
             game = self.payload['from_game']
             sent = self.payload['sent_at']
             message = self.payload['message']
-                
+
             return sender, target, game, sent, message
 
     def received_games_status(self, sent_refs):
@@ -342,8 +340,8 @@ class GrapevineReceivedMessage(object):
                 supports = self.payload['supports']
                 num_players = self.payload['players_online_count']
 
-                return(game, display_name, description, homepage, user_agent,
-                       user_agent_repo, connections, supports, num_players)
+                return (game, display_name, description, homepage, user_agent,
+                        user_agent_repo, connections, supports, num_players)
 
         if hasattr(self, "ref") and hasattr(self, "error") and self.is_event_status("failure"):
             orig_req = sent_refs.pop(self.ref)
@@ -407,7 +405,7 @@ class GrapevineReceivedMessage(object):
 class GrapevineSocket(WebSocket):
     def __init__(self):
         super().__init__(sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),))
-        
+
         self.debug = False
 
         self.inbound_frame_buffer = []
@@ -416,7 +414,7 @@ class GrapevineSocket(WebSocket):
         # requirements, or comment/delete the below line.
         # XXX
         self.events = event.Queue(self, "grapevine")
-        
+
         # Replace the below with your specific information
         # XXX
         self.client_id = CLIENT_ID
@@ -434,9 +432,9 @@ class GrapevineSocket(WebSocket):
 
         self.subscribed = {}
         for each_channel in self.channels:
-            self.subscribed[each_channel] = False        
+            self.subscribed[each_channel] = False
 
-        # This event initialization is specific to AkriosMUD. This would be a good
+            # This event initialization is specific to AkriosMUD. This would be a good
         # spot to initialize in your event system if required.  
         # Otherwise comment/delete this line.
         # XXX
@@ -614,7 +612,7 @@ class GrapevineSocket(WebSocket):
         if channel not in self.subscribed:
             return
 
-        ref = str(uuid.uuid4())        
+        ref = str(uuid.uuid4())
         payload = {"channel": channel,
                    "name": caller.disp_name,
                    "message": message[:290]}
@@ -741,5 +739,3 @@ class GrapevineSocket(WebSocket):
         except:
             if self.debug:
                 print("Error receiving message from Grapevine.")
-
-

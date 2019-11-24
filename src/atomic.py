@@ -72,7 +72,7 @@ class Atomic(object):
                 comfind.append(commands.Command.commandhash[item])
 
         if is_building:
-            types = {helpsys.oneHelp: 'helpedit',
+            types = {helpsys.OneHelp: 'helpedit',
                      races.oneRace: 'raceedit',
                      area.OneArea: 'areaedit',
                      room.oneRoom: 'roomedit',

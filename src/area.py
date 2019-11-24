@@ -131,7 +131,8 @@ class OneArea(olc.Editable):
                         "vnumhigh": self.vnumhigh}
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
-    def save(self):
+    @staticmethod
+    def save():
         # Write new JSON formatted Exits for the area.
         for eacharea in arealist:
             exits_path = os.path.join(eacharea.folder_path, "exits")

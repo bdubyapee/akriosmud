@@ -9,14 +9,15 @@
 import random
 from functools import reduce
 
+
 def dice(num, sides, bonus=0):
-    def accumulate(x, y, s=sides): 
+    def accumulate(x, s=sides):
         return x + random.randrange(s)
     
     roll = reduce(accumulate, list(list(range(num+1)))) + num
 
     return roll + bonus
 
+
 def fuzz(x, y, z):
     return random.randint(x, y) + z
-
