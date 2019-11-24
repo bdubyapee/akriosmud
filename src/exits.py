@@ -8,9 +8,7 @@
 
 from collections import namedtuple
 import json
-import os
 
-import area
 import olc
 import event
 
@@ -33,13 +31,13 @@ oppositedirection = {'north': 'south',
 # Define named tuples for exits as a full blown class may be overkill for now.
 Exit_Size = namedtuple('Exit_Sizes', 'name height width')
 
-exit_size_vast = Exit_Size('vast', 1000, 1000)     # Vast, Wide Open
-exit_size_huge = Exit_Size('huge', 240, 240)       # 20' x 20'
-exit_size_large = Exit_Size('large', 120, 120)     # 10' x 10 '
-exit_size_medium = Exit_Size('medium', 84, 84)     # 7' x 7'
-exit_size_small = Exit_Size('small', 48, 48)       # 4' x 4'
-exit_size_tiny = Exit_Size('tiny', 12, 12)         # 1' x 1'
-exit_size_miniscule = Exit_Size('miniscule', 6, 6) # 5" x 5"
+exit_size_vast = Exit_Size('vast', 1000, 1000)      # Vast, Wide Open
+exit_size_huge = Exit_Size('huge', 240, 240)        # 20' x 20'
+exit_size_large = Exit_Size('large', 120, 120)      # 10' x 10 '
+exit_size_medium = Exit_Size('medium', 84, 84)      # 7' x 7'
+exit_size_small = Exit_Size('small', 48, 48)        # 4' x 4'
+exit_size_tiny = Exit_Size('tiny', 12, 12)          # 1' x 1'
+exit_size_miniscule = Exit_Size('miniscule', 6, 6)  # 5" x 5"
 
 exit_sizes = {'vast': exit_size_vast,
               'huge': exit_size_huge,
@@ -103,23 +101,23 @@ class Exit(olc.Editable):
 
     def toJSON(self):
         if self.json_version == 1:
-            jsonable = {"json_version" : self.json_version,
-                        "json_class_name" : self.json_class_name,
-                        "direction" : self.direction,
-                        "room" : int(self.room.vnum),
-                        "destination" : self.destination,
-                        "locked" : self.locked,
-                        "lockdifficulty" : self.lockdifficulty,
-                        "keyvnum" : self.keyvnum,
-                        "magiclocked" : self.magiclocked,
-                        "physicaldifficulty" : self.physicaldifficulty,
-                        "magiclockdifficulty" : self.magiclockdifficulty,
-                        "casterid" : self.casterid,
-                        "magiclocktype" : self.magiclocktype,
-                        "size" : self.size,
-                        "hasdoor" : self.hasdoor,
-                        "dooropen" : self.dooropen,
-                        "keywords" : self.keywords}
+            jsonable = {"json_version": self.json_version,
+                        "json_class_name": self.json_class_name,
+                        "direction": self.direction,
+                        "room": int(self.room.vnum),
+                        "destination": self.destination,
+                        "locked": self.locked,
+                        "lockdifficulty": self.lockdifficulty,
+                        "keyvnum": self.keyvnum,
+                        "magiclocked": self.magiclocked,
+                        "physicaldifficulty": self.physicaldifficulty,
+                        "magiclockdifficulty": self.magiclockdifficulty,
+                        "casterid": self.casterid,
+                        "magiclocktype": self.magiclocktype,
+                        "size": self.size,
+                        "hasdoor": self.hasdoor,
+                        "dooropen": self.dooropen,
+                        "keywords": self.keywords}
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def load(self, data):
