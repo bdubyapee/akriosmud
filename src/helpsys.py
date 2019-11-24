@@ -16,7 +16,7 @@ import olc
 import world
 
 
-WRITE_NEW_FILE_VERSION = True
+WRITE_NEW_FILE_VERSION = False
 
 
 # Define some named tuples for various Help file values
