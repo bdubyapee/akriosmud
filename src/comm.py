@@ -6,7 +6,6 @@
 # 
 # By: Jubelo
 
-import os
 import pytz
 import datetime
 

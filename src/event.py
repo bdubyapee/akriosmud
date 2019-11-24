@@ -14,10 +14,7 @@ import area
 import comm
 import grapevine
 import player
-import mobile
-import objects
 import server
-import world
 
 PULSE_PER_SECOND = 8
 PULSE_PER_MINUTE = 60 * PULSE_PER_SECOND
@@ -37,7 +34,7 @@ class Queue(object):
         self.eventlist.append(event)
 
     def remove(self, event):
-        # Some events may be destroyed within an event.  Player autoquit
+        # Some events may be destroyed within an event.  Player auto quit
         # and a player being forced to drop within an event and having their
         # queue cleared is one example.
         if event in self.eventlist:
@@ -47,7 +44,7 @@ class Queue(object):
                 things_with_events[self.owner_type].remove(self.owner)
 
     def remove_event_type(self, eventtype=None):
-        if eventtype == None:
+        if eventtype is None:
             return
         for eachevent in self.eventlist:
             if eachevent.eventtype == eventtype:
@@ -55,7 +52,7 @@ class Queue(object):
 
     def update(self):
         for event in self.eventlist:
-            if event == None or event.func == None:
+            if event is None or event.func is None:
                 self.eventlist.remove(event)
                 return
             event.passes -= 1
@@ -78,7 +75,6 @@ class Queue(object):
             return False
 
 
-
 class Event(object):
     def __init__(self):
         super().__init__()
@@ -93,12 +89,11 @@ class Event(object):
 
     def fire(self):
         self.func(self)
-        owner_exists = self.owner != None
+        owner_exists = self.owner is not None
         owner_has_events_attrib = hasattr(self.owner, "events")
         if owner_exists and owner_has_events_attrib:
             self.owner.events.remove(self)
         
-
 
 things_with_events = {"player": [],
                       "area": [],
@@ -124,9 +119,11 @@ def heartbeat():
 
 def init_events_socket(socket):
     pass
-    
+
+
 def init_events_server(server):
     pass
+
 
 def init_events_grapevine(grapevine_):
     event = Event()
@@ -135,7 +132,7 @@ def init_events_grapevine(grapevine_):
     event.eventtype = "grapevine receive"
     event.func = event_grapevine_receive_message
     event.passes = 1 * PULSE_PER_SECOND
-    event.totalpasses =event.passes
+    event.totalpasses = event.passes
     grapevine_.events.add(event)
 
     event = Event()
@@ -156,20 +153,26 @@ def init_events_grapevine(grapevine_):
     event.totalpasses = event.passes
     grapevine_.events.add(event)
 
+
 def init_events_area(area):
     pass
+
 
 def init_events_room(room):
     pass
 
+
 def init_events_reset(reset):
     pass
+
 
 def init_events_exit(exit_):
     pass
 
+
 def init_events_mobile(mobile):
     pass
+
 
 def init_events_player(player):
     # Begin with events _all_ players will have.
@@ -194,7 +197,6 @@ def init_events_player(player):
     event.totalpasses = event.passes
     player.events.add(event)
 
-
     # Player dependant events go below here.
 
     # If player is a newbie, or has the flag enabled send them newbie tips.
@@ -207,7 +209,7 @@ def init_events_player(player):
         event.passes = 45 * PULSE_PER_SECOND
         event.totalpasses = event.passes
         player.events.add(event)
-        if player.sock == None:
+        if player.sock is None:
             return
         player.sock.dispatch("\n\r{P[NEWBIE TIP]{x: You will receive Newbie Tips periodically "
                              "until disabled.\n\r              Use the 'toggle newbie' command "
@@ -224,9 +226,9 @@ def init_events_player(player):
         event.totalpasses = event.passes
         player.events.add(event)
 
+
 def init_events_object(object_):
     pass
-
 
 
 # Below are the actual events.
@@ -259,10 +261,12 @@ def event_grapevine_restart(event_):
     if not grapevine_connected:
         comm.wiznet("Could not connect to Grapevine in event restart")
 
+
 @reoccuring_event
 def event_grapevine_send_message(event_):
     if event_.owner.outbound_frame_buffer:
         event_.owner.handle_write()
+
 
 @reoccuring_event
 def event_grapevine_receive_message(event_):
@@ -302,7 +306,6 @@ def event_grapevine_receive_message(event_):
                     # grapevine.  Do what you will here with the information,
                     # Not going to do anything with it in Akrios at the moment.
                     return
-
 
             # Received Grapevine Info that goes to all players goes here.
             message = ""
@@ -348,6 +351,7 @@ def event_grapevine_receive_message(event_):
             nextevent.totalpasses = nextevent.passes
             grapevine_.events.add(nextevent)
 
+
 @reoccuring_event
 def event_grapevine_state_check(event_):
     grapevine_ = event_.owner
@@ -356,7 +360,7 @@ def event_grapevine_state_check(event_):
         grapevine_.state["connected"] = False
         grapevine_.state["authenticated"] = False
 
-    if grapevine_.state["connected"] == True:
+    if grapevine_.state["connected"]:
         grapevine_.other_games_players = {}
         grapevine_.msg_gen_player_status_query()
         return
@@ -398,7 +402,6 @@ def event_admin_system_status(event_):
         for each_thing in things_with_events[each_type]:
             event_count[each_type] += each_thing.events.num_events()
 
-  
     moblist_index = 0
     moblist = 0
     objlist_index = 0
@@ -431,9 +434,11 @@ def event_admin_system_status(event_):
 
     event_.owner.write(msg)
 
+
 @reoccuring_event
 def event_player_autosave(event_):
     event_.owner.save()
+
 
 @reoccuring_event
 def event_player_idle_check(event_):
@@ -448,17 +453,18 @@ def event_player_idle_check(event_):
         return
 
     if idle_time > 8 * 60:
-        event_.owner.write("\n\r{WYou have been idle for over 8 mimutes. Auto logout in 2 minutes.{x")
+        event_.owner.write("\n\r{WYou have been idle for over 8 minutes. Auto logout in 2 minutes.{x")
         event_.owner.sock.send(b'\x07')
         return
 
     if idle_time >= 5 * 60:
         event_.owner.save()
-        if event_.owner.oocflags['afk'] == True:
+        if event_.owner.oocflags['afk']:
             return
         event_.owner.write("\n\r{WYou have been idle for over 5 minutes.  Placing you in AFK.{x")
         event_.owner.sock.send(b'\x07')
         event_.owner.oocflags['afk'] = True
+
 
 @reoccuring_event
 def event_player_newbie_notify(event_):

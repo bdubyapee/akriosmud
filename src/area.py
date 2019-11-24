@@ -117,22 +117,22 @@ class OneArea(olc.Editable):
 
     def toJSON(self):
         if self.json_version == 1:
-            jsonable = {"json_version" : self.json_version,
-                        "json_class_name" : self.json_class_name,
-                        "name" : self.name,
-                        "author" : self.author,
-                        "plane" : self.plane,
-                        "hometown" : self.hometown,
-                        "difficulty" : self.difficulty,
-                        "alignment" : self.alignment,
-                        "locationx" : self.locationx,
-                        "locationy" : self.locationy,
-                        "vnumlow" : self.vnumlow,
-                        "vnumhigh" : self.vnumhigh}
+            jsonable = {"json_version": self.json_version,
+                        "json_class_name": self.json_class_name,
+                        "name": self.name,
+                        "author": self.author,
+                        "plane": self.plane,
+                        "hometown": self.hometown,
+                        "difficulty": self.difficulty,
+                        "alignment": self.alignment,
+                        "locationx": self.locationx,
+                        "locationy": self.locationy,
+                        "vnumlow": self.vnumlow,
+                        "vnumhigh": self.vnumhigh}
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def save(self):
-        # Write new JSON formated Exits for the area.
+        # Write new JSON formatted Exits for the area.
         for eacharea in arealist:
             exits_path = os.path.join(eacharea.folder_path, "exits")
             if not os.path.exists(exits_path):
@@ -166,7 +166,7 @@ class OneArea(olc.Editable):
                 with open(filename, 'w') as thefile:
                     thefile.write(mobile.toJSON())
 
-        # Write new JSON formateed Objects for the area.
+        # Write new JSON formatted Objects for the area.
         for eacharea in arealist:
             objects_path = os.path.join(eacharea.folder_path, "objects")
             if not os.path.exists(objects_path):
@@ -207,7 +207,7 @@ class OneArea(olc.Editable):
         filenames = glob.glob(roomfilepath)
         for eachfile in filenames:
             with open(eachfile, 'r') as thefile:
-               room.oneRoom(self, thefile.read())
+                room.oneRoom(self, thefile.read())
  
         # Load each Exit and attach it to a room
         exitfilepath = os.path.join(self.folder_path, f"exits/*.json")
