@@ -208,7 +208,7 @@ class OneArea(olc.Editable):
         filenames = glob.glob(roomfilepath)
         for eachfile in filenames:
             with open(eachfile, 'r') as thefile:
-                room.oneRoom(self, thefile.read())
+                room.OneRoom(self, thefile.read())
  
         # Load each Exit and attach it to a room
         exitfilepath = os.path.join(self.folder_path, f"exits/*.json")
