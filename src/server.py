@@ -8,9 +8,9 @@
 
 import asyncore
 import os
-from socket import AF_INET, AF_INET6, SOCK_STREAM
+from socket import AF_INET6, SOCK_STREAM
 import string
-from telnetlib import IAC, DONT, DO, WONT, WILL, theNULL, ECHO, SGA
+from telnetlib import IAC, DO, WONT, WILL, theNULL, ECHO, SGA
 import time
 import sys
 
@@ -43,8 +43,8 @@ SGAAcknowledge = IAC + DO + SGA
 DOECHOTELNET = IAC + WONT + ECHO + theNULL
 DONTECHOTELNET = IAC + WILL + ECHO + theNULL
 
-class ConnSocket(asyncore.dispatcher):
 
+class ConnSocket(asyncore.dispatcher):
     def __init__(self, connection, address):
         super().__init__(connection) 
         self.owner = None
@@ -100,7 +100,7 @@ class ConnSocket(asyncore.dispatcher):
         if text == "\r\n":
             return text
     
-        # Sift through the input and validate good alphanums using a comprehension.
+        # Sift through the input and validate good alpha nums using a comprehension.
         output = "".join(char for char in text if char in validchars)
         
         output = output.lstrip()
@@ -113,12 +113,12 @@ class ConnSocket(asyncore.dispatcher):
         return output
 
     def handle_read(self):
+        indata = ""
         try:
             indata = self.recv(4096)
         except Exception as err:
             self.handle_close()
             comm.log(world.serverlog, f"Error in handle_read:server.py : {err}")
-     
 
         # Clients usually send the Suppress-Go-Ahead on connection.  This
         # tests for the suggestion, and sends the "Go ahead and suppress it"
@@ -142,8 +142,8 @@ class ConnSocket(asyncore.dispatcher):
             if hasattr(self.owner, "editing"):
                 output = ">"
                 self.send(output.encode("utf8"))
-            elif self.promptable == True:
-                if self.owner.oocflags["afk"] == True:
+            elif self.promptable:
+                if self.owner.oocflags["afk"]:
                     pretext = "{W[{RAFK{W]{x "
                 else:
                     pretext = ""
@@ -159,7 +159,7 @@ class ConnSocket(asyncore.dispatcher):
             connlist.remove(self)
         self.clear()
         self.close()
-        del(self)
+        del self
 
     def dispatch(self, msg, trail=True):
         if trail:
@@ -184,14 +184,12 @@ class Server(asyncore.dispatcher):
         self.events = event.Queue(self, "server")      
         self.create_socket(AF_INET6, SOCK_STREAM)
         self.set_reuse_addr()
-        self.bind(("",5678))
+        self.bind(("", 5678))
         self.listen(5)
-        
-        
+
         helpsys.init()
         races.init()
         area.init()
-
 
         event.init_events_server(self)
 
@@ -204,7 +202,8 @@ class Server(asyncore.dispatcher):
 
         print(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
 
-    def run(self):
+    @staticmethod
+    def run():
         currenttime = time.time
         while not Server.done:
             timedelta = currenttime() + 0.125
@@ -235,4 +234,3 @@ class Server(asyncore.dispatcher):
         newconn.greeting()
         comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
         return sock
-

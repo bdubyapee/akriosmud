@@ -8,28 +8,24 @@
 
 from collections import namedtuple
 import json
-import os
-import glob
 
 import olc
-import area
 import event
-import exits
 
 
-# Define some named tuples for varios room values.
+# Define some named tuples for various room values.
 
 # Flags specific to one room.
 RoomFlag = namedtuple("RoomFlag", "name")
 
 room_flags = {"none": RoomFlag("none"),
               "fire": RoomFlag("fire"),
-              "deadzone" : RoomFlag("deadzone"),
-              "dark" : RoomFlag("dark"),
-              "sanctuary" : RoomFlag("sanctuary"),
-              "peace" : RoomFlag("peace"),
-              "inn" : RoomFlag("inn"),
-              "nomagic" : RoomFlag("nomagic")}
+              "deadzone": RoomFlag("deadzone"),
+              "dark": RoomFlag("dark"),
+              "sanctuary": RoomFlag("sanctuary"),
+              "peace": RoomFlag("peace"),
+              "inn": RoomFlag("inn"),
+              "nomagic": RoomFlag("nomagic")}
 
 
 # Sector Types that can be set per room.
@@ -62,15 +58,14 @@ property_values = {"very poor": PropertyValue("very poor"),
                    "very rich": PropertyValue("very rich")}
 
 
-
-class oneRoom(olc.Editable):
-    CLASS_NAME = "__oneRoom__"
+class OneRoom(olc.Editable):
+    CLASS_NAME = "__OneRoom__"
     FILE_VERSION = 1
 
     def __init__(self, area, data=None, vnum=None):
         super().__init__()
-        self.json_version = oneRoom.FILE_VERSION
-        self.json_class_name = oneRoom.CLASS_NAME
+        self.json_version = OneRoom.FILE_VERSION
+        self.json_class_name = OneRoom.CLASS_NAME
         self.capability = ['room']
         self.area = area
         self.builder = None
@@ -101,15 +96,15 @@ class oneRoom(olc.Editable):
 
     def to_json(self):
         if self.json_version == 1:
-            jsonable = {"json_version" : self.json_version,
-                        "json_class_name" : self.json_class_name,
-                        "vnum" : self.vnum,
-                        "name" : self.name,
-                        "description" : self.description,
-                        "flags" : self.flags,
-                        "sectortype" : self.sectortype,
-                        "propertyvalue" : self.propertyvalue,
-                        "extradescriptions" : self.extradescriptions}
+            jsonable = {"json_version": self.json_version,
+                        "json_class_name": self.json_class_name,
+                        "vnum": self.vnum,
+                        "name": self.name,
+                        "description": self.description,
+                        "flags": self.flags,
+                        "sectortype": self.sectortype,
+                        "propertyvalue": self.propertyvalue,
+                        "extradescriptions": self.extradescriptions}
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def load(self, data):
@@ -132,5 +127,3 @@ class oneRoom(olc.Editable):
                f"{{BExtraDescriptions{{x: {self.extradescriptions}\n"
                f"{{BExits{{x: {', '.join(self.exits)}\n"
                f"{{BDescription{{x: {self.description[:180]}{{x\n")
-
-

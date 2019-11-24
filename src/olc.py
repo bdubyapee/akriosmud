@@ -8,6 +8,7 @@
 
 import textwrap
 
+
 class Editable(object):
     def __init__(self):
         super().__init__()
@@ -32,6 +33,7 @@ class Editable(object):
         except:
             raise SyntaxError("A command failed.  doAttrib.olc.py")
 
+
 def doString(theobject=None, thestring=None, value=None, inset=None):
     if theobject is None:
         raise SyntaxError("No object given to doString. doString:olc.py")
@@ -48,6 +50,7 @@ def doString(theobject=None, thestring=None, value=None, inset=None):
         else:
             raise SyntaxError("Strings must be between 3 and 15 characters.")
 
+
 def doList(theobject=None, thestring=None, value=None, inset=None):
     if theobject is None:
         raise SyntaxError("No object given to doList.")
@@ -58,14 +61,15 @@ def doList(theobject=None, thestring=None, value=None, inset=None):
     else:
         value = value.lower().strip()
         if value and len(value) < 30:
-            if inset != None and value not in inset:
+            if inset is not None and value not in inset:
                 raise SyntaxError(f"I'm sorry, valid options are: {inset}")
             theattrib = getattr(theobject, f"{thestring}")
             if value in theattrib:
                 theattrib.remove(value)
             else:
                 theattrib.append(value)
-                
+
+
 def dointList(theobject=None, thestring=None, value=None, inset=None):
     if theobject is None:
         raise SyntaxError("No object given to doList.")
@@ -86,6 +90,7 @@ def dointList(theobject=None, thestring=None, value=None, inset=None):
         else:
             theattrib.append(value)
 
+
 def doInteger(theobject=None, thestring=None, value=None, inset=None):
     if theobject is None:
         raise SyntaxError("No object given to doInteger.")
@@ -102,6 +107,7 @@ def doInteger(theobject=None, thestring=None, value=None, inset=None):
         if inset is not None and value not in inset:
             raise SyntaxError(f"I'm sorry, valid options are: {inset}")
         setattr(theobject, thestring, value)
+
 
 def doDict(theobject=None, thestring=None, args=None, sets=None):
     key = args.split()[0]
@@ -124,12 +130,13 @@ def doDict(theobject=None, thestring=None, args=None, sets=None):
         theattrib = getattr(theobject, f"{thestring}")
         if keyset is not None and key not in keyset:
             raise SyntaxError("Key not in key set in doDict.")
-        if valueset != None and value not in valueset:
+        if valueset is not None and value not in valueset:
             raise SyntaxError(f"Value {value} not in value set {valueset} in doDict.")
         if "delete" in value:
             del theattrib[key]
         else:
             theattrib[key] = value
+
 
 def doDescription(theobject=None, thestring=None, value=None, set=None):
     if theobject is None:
@@ -163,7 +170,8 @@ class Buffer(object):
                          ".h": self.helpfunc,
                          "@": self.done}
 
-    def spellcheck(self, args):
+    @staticmethod
+    def spellcheck(args):
         return False
 
     def add(self, args):
@@ -240,15 +248,15 @@ class Buffer(object):
         return True
 
     def display(self, args=None):
-        output = []
-        output.append("-=-=-=-=-=-=-=-=-= Entering Edit Mode =-=-=-=-=-=-=-=-=-".center(76))
-        output.append("Type {W.h{x for help, {W.s{x to show the text or {W@{x to exit.".center(76))
-        output.append("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-".center(76))
+        output = ["-=-=-=-=-=-=-=-=-= Entering Edit Mode =-=-=-=-=-=-=-=-=-".center(76),
+                  "Type {W.h{x for help, {W.s{x to show the text or {W@{x to exit.".center(76),
+                  "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-".center(76)]
         for number, line in enumerate(self.lines):
             output.append(f"{number}: {line}")
         return "\n\r".join(output)
 
-    def helpfunc(self, args):
+    @staticmethod
+    def helpfunc(args):
         return (".ld #             Delete the given line number.\n\r"
                 ".lr # text        Replace the given line number with text.\n\r"
                 ".li # text        Inserts the text above line number #\n\r"
@@ -256,7 +264,7 @@ class Buffer(object):
                 ".d # the text     Delete 'the text' on line number #.\n\r"
                 ".r # old new      Replace old text with new text.\n\r"
                 ".c                Clear the entire buffer.  {R(Beware!){x.\n\r"
-                ".sc word          Spellcheck the given word {W(Broken){x.\n\r"
+                ".sc word          Spell check the given word {W(Broken){x.\n\r"
                 ".s                Show the string so far.\n\r"
                 ".f                Format the text to 80 characters wide.\n\r"
                 "                  {y(Do not do the above on preformatted text){x\n\r"

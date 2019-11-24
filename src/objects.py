@@ -11,6 +11,7 @@ import json
 import uuid
 
 import atomic
+import comm
 import olc
 import event
 import races
@@ -216,10 +217,10 @@ class Object(atomic.Atomic, olc.Editable):
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def create_instance(self, reset_data=None):
-        '''
+        """
             This creates a 'real' in game version of an object. We expect the reset
             data to contain the appropriate location information and any details.
-        '''
+        """
         if reset_data is None:
             comm.wiznet(f"Cannot load Object to None Location.")
             return
@@ -246,11 +247,12 @@ class Object(atomic.Atomic, olc.Editable):
             target_location.contents[new_obj.aid] = new_obj
             if reset_data.target_mobile_wear:
                 if 'hand' in self.default_wear_loc and self.keywords:
-                    comm = f"hold {self.keywords[0]}"
+                    comm_ = f"hold {self.keywords[0]}"
+                    target_location.interp(comm_)
                 elif self.keywords:
-                    comm = f"wear {self.keywords[0]} on {self.default_wear_loc}"
-                target_location.interp(comm)
+                    comm_ = f"wear {self.keywords[0]} on {self.default_wear_loc}"
+                    target_location.interp(comm_)
 
-    def write(self, args):
+    @staticmethod
+    def write(args):
         print(f"Received object command write of: {args}")
-
