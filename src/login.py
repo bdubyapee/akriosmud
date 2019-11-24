@@ -9,7 +9,6 @@
 import bcrypt
 import os
 import time
-import random
 import json
 import uuid
 
@@ -33,12 +32,15 @@ with open(f"{world.dataDir}/badwords.txt") as thefile:
 
 
 class Login(object):
-    def __init__(self, name = ''):
+    def __init__(self, name=''):
         super().__init__()
         self.interp = self.get_char_name
+        self.lasthost = ""
+        self.lasttime = ""
         self.name = name
         self.newchar = {}
         self.newstats = {}
+        self.password = ""
         self.sock = None
 
     def clear(self):
@@ -48,7 +50,7 @@ class Login(object):
         self.sock = None
 
     def greeting(self):
-        self.sock.dispatch(helpsys.get_help('greet', server=True ))
+        self.sock.dispatch(helpsys.get_help('greet', server=True))
         self.sock.dispatch('\n\rPlease choose a character name: ', trail=False)
                 
     def get_char_name(self, inp):
@@ -92,15 +94,15 @@ class Login(object):
             self.sock.dispatch("\n\rI'm sorry, that isn't the correct password. Good bye.")
             self.sock.handle_close()
             self.clear()
-            del(self)
+            del self
         else:
             self.sock.do_echo_telnet()
             for person in player.playerlist:
                 if person.name == self.name:
                     self.sock.dispatch("\n\rYour character seems to be logged in already.  Reconnecting you.")
-                    del(person.sock.owner)
+                    del person.sock.owner
                     person.sock.close()
-                    del(person.sock)
+                    del person.sock
                     testsock = self.sock
                     self.clear()
                     person.sock = testsock
@@ -171,7 +173,7 @@ class Login(object):
         inp = inp.lower()
         if inp == '1':
             self.interp = self.character_login
-            self.interp('')
+            self.interp()
         elif inp == '2':
             self.sock.dispatch(helpsys.get_help('motd', server=True))
             self.sock.dispatch('')
@@ -181,18 +183,18 @@ class Login(object):
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
             self.sock.handle_close()
             self.clear()
-            del(self)
+            del self
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')
             comm.wiznet(f"Character {self.name} deleted by {self.sock.host}")
             os.remove(f"{world.playerDir}/{self.name}.json")
             self.sock.handle_close()
             self.clear()
-            del(self)
+            del self
         else:
             self.main_menu()
                         
-    def character_login(self, inp):
+    def character_login(self):
         path = f"{world.playerDir}/{self.name}.json"
         if os.path.exists(path):
             newobject = player.Player(path)
@@ -299,9 +301,9 @@ class Login(object):
             
     def roll_stats(self):
         bonus = 0
-        if dice(1,20) == 20:
+        if dice(1, 20) == 20:
             bonus += 5
-        if dice(1,100) == 100:
+        if dice(1, 100) == 100:
             bonus += 10
           
         # Set base stat to the race default
@@ -313,8 +315,6 @@ class Login(object):
         self.newstats['charisma'] = fuzz(-5, 4, self.newchar['race'].charisma)
         self.newstats['luck'] = fuzz(-5, 4, self.newchar['race'].luck)
         self.newstats['constitution'] = fuzz(-5, 4, self.newchar['race'].constitution)
-
-
         self.newstats['strength'] += dice(2, 3, bonus)
         self.newstats['intelligence'] += dice(2, 3, bonus)
         self.newstats['wisdom'] += dice(2, 3, bonus)
@@ -379,9 +379,8 @@ class Login(object):
             newplayer.save()
             event.init_events_player(newplayer)
             comm.wiznet(f"{newplayer.name} is a new character entering Akrios.")
-            del(self)
+            del self
         else:
             self.roll_stats()
             self.show_stats()
             self.sock.dispatch('Are these statistics acceptable? ', trail=False)
-
