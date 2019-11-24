@@ -94,7 +94,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         else:
             newroom = location
 
-        new_mob = Mobile(self.area, self.toJSON(), index=False)
+        new_mob = Mobile(self.area, self.to_json(), index=False)
         new_mob.aid = str(uuid.uuid4())
 
         new_mob.move(newroom)
