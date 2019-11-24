@@ -9,18 +9,9 @@
 
 # Imports here
 from collections import namedtuple
-import time
 
-import area
 import atomic
 import comm
-import commands
-import exits
-import helpsys
-import objects
-import races
-import room
-
 
 # Define named tuples for living things.
 
@@ -35,13 +26,11 @@ positions = {"dead": Position("dead"),
              "sitting": Position("sitting"),
              "standing": Position("standing")}
 
-
 Gender = namedtuple("Gender", "name")
 
 genders = {"male": Gender("male"),
            "female": Gender("female"),
            "other": Gender("other")}
-
 
 Discipline = namedtuple("Discipline", "name")
 
@@ -49,7 +38,6 @@ disciplines = {"physical": Discipline("physical"),
                "mental": Discipline("mental"),
                "mystic": Discipline("mystic"),
                "divine": Discipline("divine")}
-
 
 StatType = namedtuple("StatType", "name")
 
@@ -117,8 +105,8 @@ class LivingThing(atomic.Atomic):
         self.currentwillpower = 0
         self.hitroll = 0
         self.damroll = 0
-        self.totalmemoryslots = {'first circle' : 0,
-                                 'second circle' : 0,
+        self.totalmemoryslots = {'first circle': 0,
+                                 'second circle': 0,
                                  'third circle': 0,
                                  'fourth circle': 0,
                                  'fifth circle': 0,
@@ -137,14 +125,14 @@ class LivingThing(atomic.Atomic):
         self.deity = ''
         self.discipline = None
         self.equipped = {}
-        self.baceac = {'slashing' : 0,
-                       'piercing' : 0,
-                       'bashing' : 0,
-                       'lashing' : 0}
-        self.currentac = {'slashing' : 0,
-                          'piercing' : 0,
-                          'bashing' : 0,
-                          'lashing' : 0}
+        self.baceac = {'slashing': 0,
+                       'piercing': 0,
+                       'bashing': 0,
+                       'lashing': 0}
+        self.currentac = {'slashing': 0,
+                          'piercing': 0,
+                          'bashing': 0,
+                          'lashing': 0}
         self.position = None
         self.title = ''
         self.seen_as = ''
@@ -153,67 +141,65 @@ class LivingThing(atomic.Atomic):
         self.alias = {}
         self.snooped_by = []
 
-
     def toJSON_base(self):
-        jsonable = {"name" : self.name,
+        jsonable = {"name": self.name,
                     "lastname": self.lastname,
-                    "capability" : self.capability,
-                    "long_description" : self.long_description,
-                    "short_description" : self.short_description,
-                    "race" : self.race.name,
-                    "age" : self.age,
-                    "gender" : self.gender,
-                    "level" : self.level,
-                    "alignment" : self.alignment,
-                    "money" : self.money,
-                    "height" : self.height,
-                    "weight" : self.weight,
-                    "maxhp" : self.maxhp,
-                    "currenthp" :self.currenthp,
-                    "maxmovement" : self.maxmovement,
-                    "currentmovement" : self.currentmovement,
-                    "maxwillpower" : self.maxwillpower,
-                    "currentwillpower" : self.currentwillpower,
-                    "totalmemoryslots" : self.totalmemoryslots,
-                    "memorizedspells" : self.memorizedspells,
+                    "capability": self.capability,
+                    "long_description": self.long_description,
+                    "short_description": self.short_description,
+                    "race": self.race.name,
+                    "age": self.age,
+                    "gender": self.gender,
+                    "level": self.level,
+                    "alignment": self.alignment,
+                    "money": self.money,
+                    "height": self.height,
+                    "weight": self.weight,
+                    "maxhp": self.maxhp,
+                    "currenthp": self.currenthp,
+                    "maxmovement": self.maxmovement,
+                    "currentmovement": self.currentmovement,
+                    "maxwillpower": self.maxwillpower,
+                    "currentwillpower": self.currentwillpower,
+                    "totalmemoryslots": self.totalmemoryslots,
+                    "memorizedspells": self.memorizedspells,
                     "spells_learned": self.spells_learned,
                     "runes_imprinted": self.runes_imprinted,
                     "psionic_abilities": self.psionic_abilities,
-                    "hitroll" : self.hitroll,
-                    "damroll" : self.damroll,
-                    "wimpy" : self.wimpy,
-                    "title" : self.title,
-                    "guild" : self.guild,
-                    "council" : self.council,
-                    "family" : self.family,
-                    "clan" : self.clan,
-                    "deity" : self.deity,
-                    "skillpoints" : self.skillpoints,
+                    "hitroll": self.hitroll,
+                    "damroll": self.damroll,
+                    "wimpy": self.wimpy,
+                    "title": self.title,
+                    "guild": self.guild,
+                    "council": self.council,
+                    "family": self.family,
+                    "clan": self.clan,
+                    "deity": self.deity,
+                    "skillpoints": self.skillpoints,
                     "skills_learned": self.skills_learned,
                     "skills_specialties": self.skills_specialties,
-                    "seen_as" : self.seen_as,
-                    "maximum_stat" : self.maximum_stat,
-                    "current_stat" : self.current_stat,
-                    "discipline" : self.discipline,
-                    "exp" : self.exp,
-                    "equipped" : self.equipped,
-                    "baceac" : self.baceac,
-                    "currentac" : self.currentac,
-                    "hunger" : self.hunger,
-                    "thirst" : self.thirst,
-                    "position" : self.position,
-                    "aid" : self.aid,
-                    "knownpeople" : self.knownpeople,
-                    "prompt" : self.prompt,
-                    "alias" : self.alias}
-        
+                    "seen_as": self.seen_as,
+                    "maximum_stat": self.maximum_stat,
+                    "current_stat": self.current_stat,
+                    "discipline": self.discipline,
+                    "exp": self.exp,
+                    "equipped": self.equipped,
+                    "baceac": self.baceac,
+                    "currentac": self.currentac,
+                    "hunger": self.hunger,
+                    "thirst": self.thirst,
+                    "position": self.position,
+                    "aid": self.aid,
+                    "knownpeople": self.knownpeople,
+                    "prompt": self.prompt,
+                    "alias": self.alias}
+
         if self.contents:
-            jsonable["contents"] = {k: v.toJSON() for k,v in self.contents.items()}
+            jsonable["contents"] = {k: v.toJSON() for k, v in self.contents.items()}
 
         return jsonable
-        
 
-    def addKnown(self, idnum=None, name=None):
+    def add_known(self, idnum=None, name=None):
         if idnum is None or name is None:
             comm.wiznet("You must provide id and name arguments.  addKnown:livingthing.py")
         else:
@@ -226,9 +212,7 @@ class LivingThing(atomic.Atomic):
 
         return self.knownpeople[idnum] if idnum in self.knownpeople else ''
 
-
-   # def write(self, msg):
-        if self.snooped_by:
-            for each_person in self.snooped_by:
-                each_person.write(msg)
-         
+    # def write(self, msg):
+    #     if self.snooped_by:
+    #         for each_person in self.snooped_by:
+    #             each_person.write(msg)
