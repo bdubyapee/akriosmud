@@ -8,20 +8,15 @@
 
 from collections import namedtuple
 import json
-import os
-import time
 import uuid
 
-import area
 import atomic
 import olc
-import room
 import event
 import races
 
 
 WRITE_NEW_FILE_VERSION = False
-
 
 
 PrimaryType = namedtuple("PrimaryType", "name")
@@ -48,7 +43,6 @@ primary_types = {"weapon": PrimaryType("weapon"),
                  "generic": PrimaryType("generic")}
 
 
-
 WeaponType = namedtuple("WeaponType", "name dicenum diceside crit handed")
 
 weapon_types = {"short sword": WeaponType('short sword', 1, 4, 2, 1),
@@ -66,7 +60,6 @@ armor_types = {"leather helmet": ArmorType('leather helmet', 1, 1, 1, 1),
 FoodType = namedtuple("FoodType", "name")
 
 food_types = {"bread": FoodType("bread")}
-
 
 
 LiquidType = namedtuple("LiquidType", "name")
@@ -244,9 +237,8 @@ class Object(atomic.Atomic, olc.Editable):
         else:
             return
 
-        new_obj = Object(self.area, self.toJSON(), load_type="instance")
+        new_obj = Object(self.area, self.to_json(), load_type="instance")
         new_obj.aid = str(uuid.uuid4())
-
 
         if target_location is not None and reset_data.target_loc_is == "room":
             new_obj.move(target_location)
