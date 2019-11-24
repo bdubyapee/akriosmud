@@ -9,7 +9,7 @@
 import os
 
 # Directory Configuration values
-homeDir = "../"
+homeDir = "/home/bwp/programming/muds/akrios/"
 dataDir = os.path.join(homeDir, "data")
 logDir = os.path.join(dataDir, "log")
 helpDir = os.path.join(dataDir, "help")
