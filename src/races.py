@@ -149,7 +149,7 @@ class oneRace(olc.Editable):
             for eachkey, eachvalue in race_file_dict.items():
                 setattr(self, eachkey, eachvalue)
 
-    def toJSON(self):
+    def to_json(self):
         if self.json_version == 1:
             jsonable = {'json_version' : self.json_version,
                         'json_class_name' : self.json_class_name,

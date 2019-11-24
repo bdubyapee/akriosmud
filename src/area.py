@@ -115,7 +115,7 @@ class OneArea(olc.Editable):
                 return eachobj
         return False
 
-    def toJSON(self):
+    def to_json(self):
         if self.json_version == 1:
             jsonable = {"json_version": self.json_version,
                         "json_class_name": self.json_class_name,
@@ -143,7 +143,7 @@ class OneArea(olc.Editable):
                     theexit = eacharea.roomlist[eachroom].exits[eachexit]
                     filename = os.path.join(eacharea.folder_path, f"exits/{eachroom}-{eachexit}.json")
                     with open(filename, 'w') as thefile:
-                        thefile.write(theexit.toJSON())
+                        thefile.write(theexit.to_json())
 
         # Write new JSON formatted Rooms for the area.
         for eacharea in arealist:
@@ -154,17 +154,17 @@ class OneArea(olc.Editable):
                 theroom = eacharea.room_by_vnum(eachroom)
                 filename = os.path.join(eacharea.folder_path, f"rooms/{eachroom}.json")
                 with open(filename, 'w') as thefile:
-                    thefile.write(theroom.toJSON())
+                    thefile.write(theroom.to_json())
 
         # Write new JSON formatted Mobiles for the area.
         for eacharea in arealist:
             mobiles_path = os.path.join(eacharea.folder_path, "mobiles")
             if not os.path.exists(mobiles_path):
                 os.makedirs(mobiles_path)
-            for mobile_vnum, mobile in eacharea.mobilelist_by_vnum_index.items():
+            for mobile_vnum, mobile_ in eacharea.mobilelist_by_vnum_index.items():
                 filename = os.path.join(eacharea.folder_path, f"mobiles/{mobile_vnum}.json")
                 with open(filename, 'w') as thefile:
-                    thefile.write(mobile.toJSON())
+                    thefile.write(mobile_.to_json())
 
         # Write new JSON formatted Objects for the area.
         for eacharea in arealist:
@@ -174,7 +174,7 @@ class OneArea(olc.Editable):
             for object_vnum, object_ in eacharea.objectlist_by_vnum_index.items():
                 filename = os.path.join(eacharea.folder_path, f"objects/{object_vnum}.json")
                 with open(filename, 'w') as thefile:
-                    thefile.write(object_.toJSON())
+                    thefile.write(object_.to_json())
 
         # Write new JSON formatted reset information for the area.
         for eacharea in arealist:
@@ -186,13 +186,13 @@ class OneArea(olc.Editable):
                 os.makedirs(resets_path)
             filename = os.path.join(eacharea.folder_path, f"resets/resets.json")
             with open(filename, 'w') as thefile:
-                thefile.write(eacharea.resetlist.toJSON())
+                thefile.write(eacharea.resetlist.to_json())
 
         # Write new JSON formatted Area header for the area.
         for eacharea in arealist:
             filename = os.path.join(eacharea.folder_path, f"{eacharea.name}.json")
             with open(filename, 'w') as thefile:
-                thefile.write(eacharea.toJSON())
+                thefile.write(eacharea.to_json())
 
     def load(self):
         with open(self.area_path, 'r') as thefile:
@@ -256,4 +256,3 @@ class OneArea(olc.Editable):
                f"{{BLocation Y{{x: {self.locationy}\n"
                f"{{BVnum Low{{x: {self.vnumlow}\n"
                f"{{BVnum High{{x: {self.vnumhigh}\n")
-

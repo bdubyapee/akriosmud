@@ -10,13 +10,11 @@ from collections import namedtuple
 import json
 import uuid
 
-import mobile
-import objects
 import olc
 import event
 
 
-# Define some named tuples for varios reset values.
+# Define some named tuples for various reset values.
 
 ResetType = namedtuple("ResetType", "name")
 
@@ -35,7 +33,7 @@ class BaseReset(object):
         self.target_type = None
         self.target_loc_vnum = 0
 
-    def basetoJSON(self):
+    def base_to_json(self):
         jsonable = {"reset_vnum": self.reset_vnum,
                     "target_vnum": self.target_vnum,
                     "target_max_amount": self.target_max_amount,
@@ -52,8 +50,8 @@ class MobileReset(BaseReset):
         if data is not None:
             self.load(data)
 
-    def toJSON(self):
-        jsonable = self.basetoJSON()
+    def to_json(self):
+        jsonable = self.base_to_json()
 
         return json.dumps(jsonable, sort_keys=True, indent=4)
 
@@ -92,8 +90,8 @@ class ObjectReset(BaseReset):
         if data is not None:
             self.load(data)
 
-    def toJSON(self):
-        jsonable = self.basetoJSON()
+    def to_json(self):
+        jsonable = self.base_to_json()
         jsonable["target_loc_is"] = self.target_loc_is
         jsonable["target_mobile_wear"] = self.target_mobile_wear
 
@@ -156,19 +154,19 @@ class Reset(olc.Editable):
         if data is not None:
             self.load(data)
 
-    def toJSON(self):
+    def to_json(self):
         if self.json_version == 1:
 
-            mob_list = {int(k): v.toJSON() for k,v in self.mobile_list.items()}
-            obj_list = {int(k): v.toJSON() for k,v in self.object_list.items()}
-            shp_list = {int(k): v.toJSON() for k,v in self.shop_list.items()}
+            mob_list = {int(k): v.toJSON() for k, v in self.mobile_list.items()}
+            obj_list = {int(k): v.toJSON() for k, v in self.object_list.items()}
+            shp_list = {int(k): v.toJSON() for k, v in self.shop_list.items()}
 
-            jsonable = {"json_version" : self.json_version,
-                        "json_class_name" : self.json_class_name,
-                        "aid" : self.aid,
-                        "mobile_list" : mob_list or {},
-                        "object_list" : obj_list or {},
-                        "shop_list" : shp_list or {}}
+            jsonable = {"json_version": self.json_version,
+                        "json_class_name": self.json_class_name,
+                        "aid": self.aid,
+                        "mobile_list": mob_list or {},
+                        "object_list": obj_list or {},
+                        "shop_list": shp_list or {}}
 
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
@@ -176,9 +174,9 @@ class Reset(olc.Editable):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
 
-        self.mobile_list = {int(k): MobileReset(self.area, v) for k,v in self.mobile_list.items()}
-        self.object_list = {int(k): ObjectReset(self.area, v) for k,v in self.object_list.items()}
-        self.shop_list = {int(k): ShopReset(self.area, v) for k,v in self.shop_list.items()}
+        self.mobile_list = {int(k): MobileReset(self.area, v) for k, v in self.mobile_list.items()}
+        self.object_list = {int(k): ObjectReset(self.area, v) for k, v in self.object_list.items()}
+        # self.shop_list = {int(k): ShopReset(self.area, v) for k, v in self.shop_list.items()}
 
         if self.mobile_list:
             for each_reset in self.mobile_list.values():
@@ -192,4 +190,3 @@ class Reset(olc.Editable):
     def display(self):
         return(f"{{BArea{{x: {self.area.name}\n"
                f"{{BAid{{x: {self.aid}\n")
-

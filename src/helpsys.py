@@ -54,7 +54,7 @@ class OneHelp(olc.Editable):
         if os.path.exists(path):
             self.load()
 
-    def toJSON(self):
+    def to_json(self):
         if self.json_version == 1:
             jsonable = {"json_version": self.json_version,
                         "json_class_name": self.json_class_name,
@@ -75,7 +75,7 @@ class OneHelp(olc.Editable):
 
     def save(self):
         with open(f"{self.path}", "w") as thefile:
-            thefile.write(self.toJSON())
+            thefile.write(self.to_json())
 
     def display(self):
         return (f"{{BCreator{{x: {self.creator}\n"
@@ -119,5 +119,3 @@ def get_help(key, server=False):
             return "We do not appear to have a help file for that topic. "\
                    "We have however logged the attempt and will look into creating "\
                    "a help file for that topic as soon as possible.\n\r"
-
-

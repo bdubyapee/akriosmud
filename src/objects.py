@@ -190,7 +190,7 @@ class Object(atomic.Atomic, olc.Editable):
             self.populate_instance()
             return
             
-    def toJSON(self):
+    def to_json(self):
         if self.json_version == 1:
             jsonable = {"json_version": self.json_version,
                         "json_class_name": self.json_class_name,

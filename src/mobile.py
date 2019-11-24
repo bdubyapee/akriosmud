@@ -67,7 +67,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         else:
             self.populate_real()
 
-    def toJSON(self):
+    def to_json(self):
         if self.json_version == 1:
             jsonable = self.to_json_base()
             mobile_json = {"json_version": self.json_version,

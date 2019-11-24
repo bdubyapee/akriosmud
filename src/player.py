@@ -6,16 +6,12 @@
 # 
 # By: Jubelo
 
-from collections import namedtuple
-import importlib
 import json
 import os
-import time
 
 import area
 import livingthing
 import objects
-import room
 import event
 import races
 
@@ -42,7 +38,7 @@ class Player(livingthing.LivingThing):
         self.lasthost = ''
         self.lasttime = ''
         self.oocflags = {'afk': False,
-                         'viewOLCdetails' : False,
+                         'viewOLCdetails': False,
                          'coding': False}
         self.oocflags_stored = {'newbie': 'true',
                                 'mmchat': 'true',
@@ -62,7 +58,7 @@ class Player(livingthing.LivingThing):
 
             if self.contents:
                 self.contents = {k: objects.Object(None, v, load_type="inventory")
-                                 for k,v in self.contents.items()} 
+                                 for k, v in self.contents.items()}
 
             self.race = races.racebyname(self.race)
 
@@ -72,7 +68,7 @@ class Player(livingthing.LivingThing):
             self.location = area.room_by_vnum_global(self.location)
             self.move(self.location)
 
-    def toJSON(self):
+    def to_json(self):
         if self.json_version == 1:
             jsonable = self.to_json_base()
             player_json = {"json_version": self.json_version,
@@ -90,7 +86,7 @@ class Player(livingthing.LivingThing):
     def save(self):
         if self.json_version == 1:
             with open(f"{self.filename}", "w") as thefile:
-                thefile.write(self.toJSON())
+                thefile.write(self.to_json())
 
     @property
     def is_building(self):
@@ -99,4 +95,3 @@ class Player(livingthing.LivingThing):
     @property
     def is_editing(self):
         return True if hasattr(self, "editing") else False
-
