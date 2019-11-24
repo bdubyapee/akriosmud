@@ -184,7 +184,7 @@ class Server(asyncore.dispatcher):
         self.events = event.Queue(self, "server")      
         self.create_socket(AF_INET6, SOCK_STREAM)
         self.set_reuse_addr()
-        self.bind(("", 4000))
+        self.bind(("",5678))
         self.listen(5)
         
         

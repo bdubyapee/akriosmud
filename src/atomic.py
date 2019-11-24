@@ -23,7 +23,6 @@ class Atomic(object):
     def __init__(self):
         super().__init__()
         self.alias = {}
-        self.building = False
         self.capability = []
         self.location = None
         self.last_input = 0
