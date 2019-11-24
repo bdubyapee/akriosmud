@@ -17,6 +17,7 @@ requirements = {'capability': ['builder'],
                 'truth_checks':  ['is_standing', 'args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def dig(caller, args, **kwargs):
     helpstring = "Please see {Whelp dig{x for instructions."
@@ -40,19 +41,18 @@ def dig(caller, args, **kwargs):
             revexitdata = {"direction": exits.oppositedirection[args[0]],
                            "destination": caller.location.vnum}
 
-            newexitdataJSON = json.dumps(newexitdata, sort_keys=True, indent=4)
-            revexitdataJSON = json.dumps(revexitdata, sort_keys=True, indent=4)
+            new_exit_data_json = json.dumps(newexitdata, sort_keys=True, indent=4)
+            rev_exit_data_json = json.dumps(revexitdata, sort_keys=True, indent=4)
 
             myarea = caller.location.area
             if targetvnum < myarea.vnumlow or targetvnum > myarea.vnumhigh:
                 caller.write("That vnum is not in this areas range!")
                 return
             else:
-                newroom = room.oneRoom(caller.location.area, vnum=targetvnum)
+                newroom = room.Room(caller.location.area, vnum=targetvnum)
                 newroom.area.roomlist[targetvnum] = newroom
-                exits.Exit(targetvnum, None, revexitdataJSON)
-                exits.Exit(caller.location.vnum, None, newexitdataJSON)
+                exits.Exit(targetvnum, None, rev_exit_data_json)
+                exits.Exit(caller.location.vnum, None, new_exit_data_json)
                 caller.write("")
     else:
         caller.write(helpstring)
-

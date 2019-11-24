@@ -18,6 +18,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 
+
 @Command(**requirements)
 def drop(caller, args, **kwargs):
 
@@ -33,8 +34,6 @@ def drop(caller, args, **kwargs):
                 equipped_items_matched[object_.aid] = object_
             else:
                 inventory_items_matched[object_.aid] = object_
-            #target = object_
-            #break
         for eachkw in object_.keywords:
             thekey = eachkw.lower()
             if thekey.startswith(args):
@@ -42,15 +41,11 @@ def drop(caller, args, **kwargs):
                     equipped_items_matched[object_.aid] = object_
                 else:
                     inventory_items_matched[object_.aid] = object_
-                #target = object_
-                #break
 
-    #if target is None:
     if not equipped_items_matched and not inventory_items_matched:
         caller.write(f"You don't seem to have a {args}.")
         return
 
-    #if target.aid in caller.equipped.values():
     if not inventory_items_matched and equipped_items_matched:
         caller.write(f"You need to remove '{args}' before dropping it.")
         return

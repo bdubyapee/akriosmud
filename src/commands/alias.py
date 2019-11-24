@@ -20,6 +20,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def alias(caller, args, **kwarg):
     args = args.split()
@@ -41,4 +42,3 @@ def alias(caller, args, **kwarg):
     else:
         caller.alias[args[0]] = ' '.join(args[1:])
         caller.write(f"Alias {args[0]} successfully created.")
-

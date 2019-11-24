@@ -17,6 +17,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def arealist(caller, args, **kwargs):
     
@@ -29,9 +30,8 @@ def arealist(caller, args, **kwargs):
         vnum_string = ""
         if see_vnums:
             vnum_string = f"{{W[{{B{eacharea.vnumlow:<6} - {eacharea.vnumhigh:>6}{{W]{{x  "
-        name = eacharea.name.capitalize()
+        name_ = eacharea.name.capitalize()
         diff = eacharea.difficulty.capitalize()
 
-        caller.write(f"{vnum_string}{{W[ {{B{diff:<8}{{W ]{{x {name}")
+        caller.write(f"{vnum_string}{{W[ {{B{diff:<8}{{W ]{{x {name_}")
     caller.write("")
-

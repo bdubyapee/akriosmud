@@ -17,6 +17,7 @@ requirements = {'capability': ['builder'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def areastats(caller, args, **kwargs):
     caller.write(caller.location.area.display())

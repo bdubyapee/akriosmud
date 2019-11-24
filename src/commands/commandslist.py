@@ -3,7 +3,7 @@
 #
 # Capability: player
 #
-# Command Description: Listing of currently avaiable commands filtered by capabilities.
+# Command Description: Listing of currently available commands filtered by capabilities.
 #
 # By: Jubelo
 
@@ -16,6 +16,7 @@ requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp commandlist{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}
+
 
 @Command(**requirements)
 def commandslist(caller, args, **kwargs):

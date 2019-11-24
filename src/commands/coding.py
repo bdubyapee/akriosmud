@@ -18,9 +18,10 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def coding(caller, args, **kwargs):
-    if caller.oocflags['coding'] == False:
+    if caller.oocflags['coding'] is False:
         caller.oocflags['coding'] = True
         caller.write("You have been placed in coding mode.")
     else:

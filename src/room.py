@@ -58,14 +58,14 @@ property_values = {"very poor": PropertyValue("very poor"),
                    "very rich": PropertyValue("very rich")}
 
 
-class OneRoom(olc.Editable):
+class Room(olc.Editable):
     CLASS_NAME = "__OneRoom__"
     FILE_VERSION = 1
 
     def __init__(self, area, data=None, vnum=None):
         super().__init__()
-        self.json_version = OneRoom.FILE_VERSION
-        self.json_class_name = OneRoom.CLASS_NAME
+        self.json_version = Room.FILE_VERSION
+        self.json_class_name = Room.CLASS_NAME
         self.capability = ['room']
         self.area = area
         self.builder = None

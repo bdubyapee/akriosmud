@@ -17,6 +17,7 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  ['is_standing'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def areaedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp areaedit{x for instructions."
@@ -31,9 +32,9 @@ def areaedit(caller, args, **kwargs):
         if args[0] == 'done':
             caller.building.save()
             caller.building.builder = None
-            del(caller.building)
+            del caller.building
             caller.prompt = caller.oldprompt
-            del(caller.oldprompt)
+            del caller.oldprompt
         elif args[0] == 'new':
             caller.write("You are already editing an area.")
         elif args[0] == 'populate':
@@ -44,7 +45,7 @@ def areaedit(caller, args, **kwargs):
                 caller.write("That room already exists.  Please edit it directly.")
                 return
             else:
-                newroom = room.oneRoom(caller.building, vnum=myvnum)
+                newroom = room.Room(caller.building, vnum=myvnum)
                 newroom.area.roomlist[myvnum] = newroom
                 caller.write(f"First new room {newroom.vnum} has been created.")
         elif args[0] in caller.building.commands:
@@ -60,7 +61,7 @@ def areaedit(caller, args, **kwargs):
                 caller.write("That area exists!")
                 return
             header_path = os.path.join(path, f"{' '.join(args[1:])}.json")
-            newarea = area.oneArea(path, header_path)
+            newarea = area.Area(path, header_path)
             caller.building = newarea
             area.arealist.append(newarea)
             caller.building.builder = caller

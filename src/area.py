@@ -45,7 +45,7 @@ difficulty = {"all": Difficulty("all"),
 def init():
     for each_area_directory in glob.glob(os.path.join(world.areaDir, '*')):
         thefile = glob.glob(os.path.join(each_area_directory, '*.json'))
-        OneArea(each_area_directory, thefile[0])
+        Area(each_area_directory, thefile[0])
 
 
 def room_by_vnum_global(vnum):
@@ -54,15 +54,15 @@ def room_by_vnum_global(vnum):
             return eacharea.roomlist[vnum]
 
 
-class OneArea(olc.Editable):
+class Area(olc.Editable):
     CLASS_NAME = "__OneArea__"
     FILE_VERSION = 1
 
     def __init__(self, fpath, path):
         super().__init__()
 
-        self.json_version = OneArea.FILE_VERSION
-        self.json_class_name = OneArea.CLASS_NAME
+        self.json_version = Area.FILE_VERSION
+        self.json_class_name = Area.CLASS_NAME
         self.folder_path = fpath
         self.area_path = path
         self.name = ''
@@ -208,7 +208,7 @@ class OneArea(olc.Editable):
         filenames = glob.glob(roomfilepath)
         for eachfile in filenames:
             with open(eachfile, 'r') as thefile:
-                room.OneRoom(self, thefile.read())
+                room.Room(self, thefile.read())
  
         # Load each Exit and attach it to a room
         exitfilepath = os.path.join(self.folder_path, f"exits/*.json")
