@@ -717,7 +717,7 @@ class GrapevineSocket(WebSocket):
             if self.debug:
                 print(f"Grapevine In: {self.inbound_frame_buffer[-1]}")
                 print("")
-        finally:
+        except:
             pass
 
     def handle_write(self):
