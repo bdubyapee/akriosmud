@@ -12,13 +12,11 @@ import glob
 import time
 import json
 
-import comm
 import olc
 import world
 
 
-
-WRITE_NEW_FILE_VERSION = False
+WRITE_NEW_FILE_VERSION = True
 
 
 # Define some named tuples for various Help file values
@@ -30,15 +28,15 @@ sections = {"player": Section("player"),
             "deity": Section("deity")}
 
 
-class oneHelp(olc.Editable):
-    CLASS_NAME = "__oneHelp__"
+class OneHelp(olc.Editable):
+    CLASS_NAME = "__OneHelp__"
     FILE_VERSION = 1
 
     def __init__(self, path):
         super().__init__()
         self.path = path
-        self.json_version = oneHelp.FILE_VERSION
-        self.json_class_name = oneHelp.CLASS_NAME
+        self.json_version = OneHelp.FILE_VERSION
+        self.json_class_name = OneHelp.CLASS_NAME
         self.builder = None
         self.creator = ""
         self.viewable = ""
@@ -58,15 +56,15 @@ class oneHelp(olc.Editable):
 
     def toJSON(self):
         if self.json_version == 1:
-            jsonable = {"json_version" : self.json_version,
-                        "json_class_name" : self.json_class_name,
-                        "creator" : self.creator,
-                        "viewable" : self.viewable,
-                        "keywords" : self.keywords,
-                        "topics" : self.topics,
-                        "section" : self.section,
-                        "description" : self.description}
-        return json.dumps(jsonable, sort_keys=True, indent=4)
+            jsonable = {"json_version": self.json_version,
+                        "json_class_name": self.json_class_name,
+                        "creator": self.creator,
+                        "viewable": self.viewable,
+                        "keywords": self.keywords,
+                        "topics": self.topics,
+                        "section": self.section,
+                        "description": self.description}
+            return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def load(self):
         if self.path.endswith("json"):
@@ -96,7 +94,7 @@ helpfiles = {}
 def init():
     allhelps = glob.glob(os.path.join(world.helpDir, "*.json"))
     for singlehelp in allhelps:
-        thehelp = oneHelp(singlehelp)
+        thehelp = OneHelp(singlehelp)
         for keyword in thehelp.keywords:
             helpfiles[keyword] = thehelp
         if WRITE_NEW_FILE_VERSION:
