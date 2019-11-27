@@ -20,7 +20,7 @@ requirements = {'capability': ['player', 'mobile'],
 
 
 @Command(**requirements)
-def open(caller, args, **kwargs):
+def open_(caller, args, **kwargs):
     if args in caller.location.exits:
         exit_ = caller.location.exits[args]
         if exit_.destination in caller.location.area.roomlist:
