@@ -18,14 +18,15 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 
+
 @Command(**requirements)
 def remove(caller, args, **kwargs):
-    '''
+    """
         Expecting:
                     "helmet"
                     "bracelet from left wrist"
                     "diamond sword"
-    '''
+    """
 
     target = None
     args = args.lower()

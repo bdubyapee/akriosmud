@@ -17,6 +17,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def longdescription(caller, args, **kwargs):
     formatter = textwrap.TextWrapper(width=76)

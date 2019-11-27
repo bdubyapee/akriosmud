@@ -19,23 +19,22 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def stand(caller, args, **kwargs):
-    if hasattr(caller, "position"):
-        if caller.position == "standing":
-            caller.write("You are already standing")
-            return
-        elif caller.position == "sitting":
-            caller.position = "standing"
-            caller.write("You stand up.")
-            message = f"{caller.disp_name} stands up."
-            comm.message_to_room(caller.location, caller, message)
-            return
-        elif caller.position == "sleeping":
-            caller.position = "standing"
-            caller.write("You awaken and stand up.")
-            message = f"{caller.disp_name} stands up."
-            comm.message_to_room(caller.location, caller, message)
-            caller.interp("look")
-            return
-
+    if caller.position == "standing":
+        caller.write("You are already standing")
+        return
+    elif caller.position == "sitting":
+        caller.position = "standing"
+        caller.write("You stand up.")
+        message = f"{caller.disp_name} stands up."
+        comm.message_to_room(caller.location, caller, message)
+        return
+    elif caller.position == "sleeping":
+        caller.position = "standing"
+        caller.write("You awaken and stand up.")
+        message = f"{caller.disp_name} stands up."
+        comm.message_to_room(caller.location, caller, message)
+        caller.interp("look")
+        return

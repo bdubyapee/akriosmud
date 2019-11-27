@@ -18,6 +18,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def help(caller, args, **kwargs):
     key = args.lower()
@@ -31,7 +32,7 @@ def help(caller, args, **kwargs):
         filename = os.path.join(world.logDir, 'missinghelp')
         with open(filename, 'a') as thefile:
             thefile.write(f'{time.asctime()}> {key}\n')
-        caller.write('We do not appear to have a help file for that topic.  We have however logged'\
+        caller.write('We do not appear to have a help file for that topic.  We have however logged'
                      ' the attempt and will look into creating a help file for that topic.')
     else:
         header = f"{{rHelp Files by Topic{{x"
@@ -75,5 +76,3 @@ def help(caller, args, **kwargs):
                     output = f"{output}{the_keywords[i+l]:20}"
                 caller.write(output)
         caller.write("\n\r\n\r{WUsage{x: help <argument>\n\r")
-
-

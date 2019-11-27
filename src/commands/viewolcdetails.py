@@ -17,13 +17,12 @@ requirements = {'capability': ['builder'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def viewolcdetails(caller, args, **kwargs):
-    if caller.oocflags['viewOLCdetails'] == True:
+    if caller.oocflags['viewOLCdetails'] is True:
         caller.oocflags['viewOLCdetails'] = False
         caller.write("You will no longer see OLC details.")
     else:
         caller.oocflags['viewOLCdetails'] = True
         caller.write("You will now see OLC details.")
-
-

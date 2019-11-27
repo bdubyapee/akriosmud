@@ -17,8 +17,8 @@ requirements = {'capability': ['player'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def title(caller, args, **kwargs):
     caller.title = args[:50]
     caller.write('{xYour title has been set.')
-

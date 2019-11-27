@@ -18,6 +18,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'false_checks': [],
                 'target': 'target_all_player_game_post'}
 
+
 @Command(**requirements)
 def quote(caller, args, **kwargs):
     if caller.is_player and caller.oocflags_stored['quote'] == 'false':
@@ -31,11 +32,9 @@ def quote(caller, args, **kwargs):
         if person.oocflags_stored['quote'] == 'false':
             continue
         if person == caller:
-            name = "You"
+            name_ = "You"
             plural = ''
         else:
-            name = caller.disp_name
+            name_ = '\n\r' + caller.disp_name
             plural = 's'
-            name = '\n\r' + name
-        person.write(f"{{y{name} Quote{plural}: '{args_[:300]}'{{x")
-
+        person.write(f"{{y{name_} Quote{plural}: '{args_[:300]}'{{x")

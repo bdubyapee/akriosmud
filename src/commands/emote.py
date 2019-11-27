@@ -19,6 +19,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'false_checks': ['is_sleeping'],
                 'target': 'target_all_player_room_post'}
 
+
 @Command(**requirements)
 def emote(caller, args, **kwargs):
     target_list = kwargs['target']
@@ -29,9 +30,5 @@ def emote(caller, args, **kwargs):
             prefix = ''
         else:
             prefix = '\n\r'
-            
-        name = caller.disp_name
-        name = prefix + name
-        person.write(f"\n\r{{g{name} {args_[:70]}{{x")
 
-
+        person.write(f"\n\r{{g{prefix}{caller.disp_name} {args_[:70]}{{x")

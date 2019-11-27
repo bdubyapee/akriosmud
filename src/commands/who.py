@@ -19,6 +19,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def who(caller, args, **kwargs):
     
@@ -45,13 +46,15 @@ def who(caller, args, **kwargs):
             extra1 = '{W[{REditing{W]{x'
         else:
             extra1 = ''
-        if person.oocflags['afk'] == True:
+        if person.oocflags['afk'] is True:
             extra2 = '{W[{RAFK{W]{x'
-        elif person.oocflags['coding'] == True:
+        elif person.oocflags['coding'] is True:
             extra2 = '{W[{RCoding{W]{x'
         else:
             extra2 = ''
-        caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(), person.disp_name, person.title, extra2, extra1))
+        caller.write("{{W[{{R{0:7} {{B{1:>6}{{W]{{x {2} {3}{4}{5}".format(extra0, person.gender.capitalize(),
+                                                                          person.disp_name, person.title, extra2,
+                                                                          extra1))
 
     caller.write("\n\r")
 

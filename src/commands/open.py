@@ -18,21 +18,22 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  ['args_required'],
                 'false_checks': ['is_sleeping']}
 
+
 @Command(**requirements)
 def open(caller, args, **kwargs):
     if args in caller.location.exits:
-        exit = caller.location.exits[args]
-        if exit.destination in caller.location.area.roomlist:
+        exit_ = caller.location.exits[args]
+        if exit_.destination in caller.location.area.roomlist:
             # Does the exit have a door and is it closed?
-            if exit.hasdoor == 'true':
-                if exit.dooropen == 'true':
+            if exit_.hasdoor == 'true':
+                if exit_.dooropen == 'true':
                     caller.write("The door in that direction is already open.")
                     return
-                if exit.locked == 'true' or exit.magiclocked == 'true':
+                if exit_.locked == 'true' or exit_.magiclocked == 'true':
                     caller.write("It won't open!")
                     return
-                exit.dooropen = 'true'
-                caller.write(f"You open the {exit.keywords[0]}.")
+                exit_.dooropen = 'true'
+                caller.write(f"You open the {exit_.keywords[0]}.")
                 return
             else:
                 caller.write("There is no door in that direction")

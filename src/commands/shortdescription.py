@@ -17,9 +17,9 @@ requirements = {'capability': ['player'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def shortdescription(caller, args, **kwargs):
     caller.short_description = args[:78]
     
     caller.write('{xYour short description has been set.')
-

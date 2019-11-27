@@ -19,16 +19,15 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def sleep(caller, args, **kwargs):
-    if hasattr(caller, "position"):
-        if caller.position == "sleeping":
-            caller.write("You are already sleeping.")
-            return
-        elif caller.position == "standing" or caller.position == "sitting":
-            caller.position = "sleeping"
-            caller.write("You lay down and go to sleep.")
-            message = f"{caller.disp_name} lays down to sleep."
-            comm.message_to_room(caller.location, caller, message)
-            return
-
+    if caller.position == "sleeping":
+        caller.write("You are already sleeping.")
+        return
+    elif caller.position == "standing" or caller.position == "sitting":
+        caller.position = "sleeping"
+        caller.write("You lay down and go to sleep.")
+        message = f"{caller.disp_name} lays down to sleep."
+        comm.message_to_room(caller.location, caller, message)
+        return

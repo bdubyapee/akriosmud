@@ -18,6 +18,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 
+
 @Command(**requirements)
 def wield(caller, args, **kwargs):
 

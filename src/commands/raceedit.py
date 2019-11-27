@@ -17,6 +17,7 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def raceedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp raceedit{x for instructions."
@@ -35,14 +36,14 @@ def raceedit(caller, args, **kwargs):
         if len(args) != 0:
             if args[0].lower() in caller.editing.commands:
                 done = caller.editing.commands[args[0].lower()](' '.join(args[1:]))
-                if done == True:
+                if done is True:
                     caller.building.description = caller.editing.lines
                     caller.editing.lines = None
-                    del(caller.editing)
-                    del(caller.editing_obj_name)
+                    del caller.editing
+                    del caller.editing_obj_name
                     return
                 else:
-                    if done == False:
+                    if done is False:
                         return
                     else:
                         caller.write(done)
@@ -55,12 +56,11 @@ def raceedit(caller, args, **kwargs):
     if caller.is_building:
         if args[0] == 'done':
             caller.building.save()
-            #caller.building.load()
             races.racesdict[caller.building.name] = caller.building
             caller.building.builder = None
-            del(caller.building)
+            del caller.building
             caller.prompt = caller.oldprompt
-            del(caller.oldprompt)
+            del caller.oldprompt
         elif args[0] == 'new':
             caller.write("You are already editing a race entry.")
             return
@@ -74,7 +74,7 @@ def raceedit(caller, args, **kwargs):
                 caller.write(helpstring)
                 return
             else:
-                caller.building = races.oneRace(world.raceDir + f"/{args[1]}")
+                caller.building = races.OneRace(world.raceDir + f"/{args[1]}")
                 caller.building.builder = caller
                 caller.write(f"Editing {{W{args[1]}{{x")
                 caller.oldprompt = caller.prompt

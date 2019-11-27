@@ -17,6 +17,7 @@ requirements = {'capability': ['builder'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def roomedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp roomedit{x for instructions."
@@ -26,23 +27,20 @@ def roomedit(caller, args, **kwargs):
         if caller.is_building and not caller.is_editing:
             caller.write(caller.building.display())
             return
-        #elif not caller.is_building:
-        #    caller.write(helpstring)
-        #    return
 
     if caller.is_building and caller.is_editing:
         done = False
         if len(args) != 0:
             if args[0].lower() in caller.editing.commands:
                 done = caller.editing.commands[args[0].lower()](' '.join(args[1:]))
-                if done == True:
+                if done is True:
                     caller.building.description = caller.editing.lines
                     caller.editing.lines = None
-                    del(caller.editing)
-                    del(caller.editing_obj_name)
+                    del caller.editing
+                    del caller.editing_obj_name
                     return
                 else:
-                    if done == False:
+                    if done is False:
                         return
                     else:
                         caller.write(done)
@@ -56,9 +54,9 @@ def roomedit(caller, args, **kwargs):
         if args[0] == 'done':
             caller.building.area.save()
             caller.building.builder = None
-            del(caller.building)
+            del caller.building
             caller.prompt = caller.oldprompt
-            del(caller.oldprompt)
+            del caller.oldprompt
         elif args[0] == 'new':
             caller.write("You are already editing a room.")
             return
@@ -100,7 +98,7 @@ def roomedit(caller, args, **kwargs):
                     caller.write("That room already exists.  Please edit it directly.")
                     return
                 else:
-                    newroom = room.oneRoom(caller.location.area, vnum=myvnum)
+                    newroom = room.Room(caller.location.area, vnum=myvnum)
                     caller.building = newroom
                     newroom.area.roomlist[myvnum] = newroom
                     caller.building.builder = caller
@@ -134,4 +132,3 @@ def roomedit(caller, args, **kwargs):
             caller.write(caller.building.display())
         else:
             caller.write(helpstring)
-

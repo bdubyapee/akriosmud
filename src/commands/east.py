@@ -10,10 +10,9 @@
 from commands import *
 
 name = "east"
-versin = 1
+version = 1
+
 
 @Command(capability=["player", "mobile", "object"])
-def east(caller, args):
+def east(caller, args, **kwargs):
     Command.commandhash['move'](caller, 'east')
-
-

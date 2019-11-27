@@ -18,9 +18,8 @@ requirements = {'capability': ['player'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def save(caller, args, **kwargs):
     caller.save()
-    caller.write("Saved.  Your character is also autosaved every 5 minutes.")
-
-
+    caller.write("Saved.  Your character is also automatically saved every 5 minutes.")

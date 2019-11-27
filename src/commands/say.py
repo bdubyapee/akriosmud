@@ -19,6 +19,7 @@ requirements = {'capability': ['player', 'mobile', 'object'],
                 'false_checks': ['is_sleeping'],
                 'target': 'target_all_things_room_post'}
 
+
 @Command(**requirements)
 def say(caller, args, **kwargs):
     target_list = kwargs['target']
@@ -28,5 +29,4 @@ def say(caller, args, **kwargs):
 
     for person in target_list:
         if person != caller:
-           person.write(f"\n\r\n\r{{c{caller.disp_name} says, '{message[:300]}'{{x.")
-
+            person.write(f"\n\r\n\r{{c{caller.disp_name} says, '{message[:300]}'{{x.")

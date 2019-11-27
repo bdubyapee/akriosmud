@@ -19,6 +19,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def inventory(caller, args, **kwarg):
 
@@ -29,12 +30,12 @@ def inventory(caller, args, **kwarg):
         caller.write("You are carrying nothing.")
         return
 
-    inventory = 0
+    inventory_ = 0
 
     for aid, object_ in caller.contents.items():
         if aid not in caller.equipped.values():
             caller.write(f"{object_.disp_name:45}")
-            inventory += 1
+            inventory_ += 1
 
-    if inventory == 0:
+    if inventory_ == 0:
         caller.write("You are carrying nothing.")

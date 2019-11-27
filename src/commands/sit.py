@@ -19,6 +19,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def sit(caller, args, **kwargs):
     if hasattr(caller, "position"):
@@ -38,4 +39,3 @@ def sit(caller, args, **kwargs):
             comm.message_to_room(caller.location, caller, message)
             caller.interp("look")
             return
-

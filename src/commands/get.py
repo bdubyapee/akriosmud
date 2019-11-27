@@ -19,6 +19,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'false_checks': ['is_sleeping'],
                 'target': 'target_single_thing_room_nopost'}
 
+
 @Command(**requirements)
 def get(caller, args, **kwargs):
 
@@ -38,4 +39,3 @@ def get(caller, args, **kwargs):
 
     caller.write(f"You pick up a {target.disp_name}") 
     comm.message_to_room(caller.location, caller, f"{caller.disp_name} picks up a {target.disp_name}")
-

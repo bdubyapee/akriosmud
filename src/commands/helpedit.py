@@ -17,6 +17,7 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def helpedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp helpedit{x for instructions."
@@ -35,14 +36,14 @@ def helpedit(caller, args, **kwargs):
         if len(args) != 0:
             if args[0].lower() in caller.editing.commands:
                 done = caller.editing.commands[args[0].lower()](' '.join(args[1:]))
-                if done == True:
+                if done is True:
                     caller.building.description = caller.editing.lines
                     caller.editing.lines = None
-                    del(caller.editing)
-                    del(caller.editing_obj_name)
+                    del caller.editing
+                    del caller.editing_obj_name
                     return
                 else:
-                    if done == False:
+                    if done is False:
                         return
                     else:
                         caller.write(done)
@@ -58,9 +59,9 @@ def helpedit(caller, args, **kwargs):
             caller.building.load()
             helpsys.helpfiles[caller.building.keywords[0]] = caller.building
             caller.building.builder = None
-            del(caller.building)
+            del caller.building
             caller.prompt = caller.oldprompt
-            del(caller.oldprompt)
+            del caller.oldprompt
         elif args[0] == 'new':
             caller.write("You are already editing a help entry.")
             return
@@ -80,7 +81,7 @@ def helpedit(caller, args, **kwargs):
                 caller.write(helpstring)
                 return
             else:
-                caller.building = helpsys.oneHelp(f"{world.helpDir}/{args[1]}.json")
+                caller.building = helpsys.OneHelp(f"{world.helpDir}/{args[1]}.json")
                 caller.building.builder = caller
                 caller.write(caller.building.display())
                 caller.write(f"Editing {{W{args[0]}{{x help entry.")

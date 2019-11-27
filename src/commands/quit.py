@@ -18,6 +18,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def quit(caller, args, **kwargs):
     if caller.is_building or caller.is_editing: 
@@ -44,12 +45,12 @@ def quit(caller, args, **kwargs):
         reason = ""
 
     comm.wiznet(f"{reason}{caller.name} logging out of Akrios.")
-    del(caller)
+    del caller
 
     conn.sock = testsock
     conn.sock.owner = conn
     conn.main_menu()
-    # Linkdeath/timout will force a quit.  Test for that below so we remove
+    # Linkdeath/timeout will force a quit.  Test for that below so we remove
     # them completely from the game and don't leave them stuck at the menu.
     if args == "force":
         conn.main_menu_get_option('l')

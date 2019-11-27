@@ -19,6 +19,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def equipped(caller, args, **kwarg):
 
@@ -26,7 +27,6 @@ def equipped(caller, args, **kwarg):
     caller.write("")
 
     for each_loc, each_aid in caller.equipped.items():
-        eq_name = ''
         if caller.equipped[each_loc] is None:
             eq_name = "nothing"
         else:

@@ -17,6 +17,7 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def goto(caller, args, **kwargs):
     args = args.split()
@@ -41,5 +42,3 @@ def goto(caller, args, **kwargs):
         except:
             pass
         caller.interp("look")
-        
-

@@ -20,6 +20,7 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def grestart(caller, args, **kwargs):
     comm.wiznet("Initiating restart simulation from Grapevine.")
@@ -34,4 +35,4 @@ def grestart(caller, args, **kwargs):
 
     grapevine.gsocket.inbound_frame_buffer.append(jsonified)
     
-    comm.wiznet("Created fake restart JSON payload and appended to socket inbuffer") 
+    comm.wiznet("Created fake restart JSON payload and appended to socket in buffer")

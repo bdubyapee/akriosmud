@@ -18,11 +18,13 @@ requirements = {'capability': ['admin'],
                 'false_checks': [],
                 'target': 'target_single_player_game_post'}
 
+
 @Command(**requirements)
 def promote(caller, args, **kwargs):
     target = kwargs['target']
     args_ = kwargs['post']
-    
+    status = ''
+
     if args_ not in ['admin', 'builder', 'deity']:
         caller.write("That is not a valid promotion option.")
         return
@@ -39,7 +41,9 @@ def promote(caller, args, **kwargs):
         target.capability.append('deity')
         target.write("You've been promoted to Deity status!")
         status = 'deity'
+
     target.save()
+
     caller.write(f"You have promoted {target.name} to {status} status!")
 
 

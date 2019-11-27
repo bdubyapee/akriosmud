@@ -19,6 +19,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def mmtell(caller, args, **kwargs):
     if caller.oocflags_stored['mmchat'] == 'false':
@@ -40,6 +41,5 @@ def mmtell(caller, args, **kwargs):
 
     grapevine.gsocket.msg_gen_player_tells(caller.disp_name, game, target, message)
 
-    
     caller.write(f"{{GYou MultiMUD tell {{y{target}@{game}{{x: '{{G{message}{{x'")
 

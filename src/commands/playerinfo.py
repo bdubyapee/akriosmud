@@ -17,13 +17,10 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def playerinfo(caller, args):
     for person in player.playerlist:
-        name = person.disp_name
-        host = person.sock.host
-        fileno = person.sock.socket.fileno()
-
-        caller.write(f"Player: {name:15} Host: {host:15} {{R{fileno}{{x")
-
-
+        caller.write(f"Player: {person.disp_name:15} "
+                     f"Host: {person.sock.host:15} "
+                     f"{{R{person.sock.socket.fileno}{{x")

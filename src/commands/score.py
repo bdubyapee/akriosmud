@@ -1,5 +1,5 @@
 #! usr/bin/env python3
-# Project: Akriso
+# Project: Akrios
 # Filename: commands/score.py
 #
 # Capability: player
@@ -17,6 +17,7 @@ requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp score{x for help with this command.",
                 'truth_checks':  [],
                 'false_checks': []}
+
 
 @Command(**requirements)
 def score(caller, args, **kwargs):
@@ -44,5 +45,3 @@ def score(caller, args, **kwargs):
     caller.write("{{BAC Piercing{{x: {0:>2}/{1:<2}           {{BWisdom{{x: {2:>2}/{3:<2}     {{BConstitution{{x: {4:>2}/{5:<2}".format(caller.currentac['piercing'], caller.baceac['piercing'], caller.current_stat['wisdom'], caller.maximum_stat['wisdom'], caller.current_stat['constitution'], caller.maximum_stat['constitution']))
     caller.write(" {{BAC Lashing{{x: {0:>2}/{1:<2}             {{BLuck{{x: {2:>2}/{3:<2}         {{BCharisma{{x: {4:>2}/{5:<2}".format(caller.currentac['lashing'], caller.baceac['lashing'], caller.current_stat['luck'], caller.maximum_stat['luck'], caller.current_stat['charisma'], caller.maximum_stat['charisma']))
     caller.write("")
-
-

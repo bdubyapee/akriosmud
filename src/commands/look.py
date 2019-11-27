@@ -18,12 +18,13 @@ requirements = {'capability': ['player'],
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 
+
 @Command(**requirements)
 def look(caller, args, **kwargs):
     if caller.location != 0 and len(args) <= 0:
-        if caller.is_player and caller.oocflags['viewOLCdetails'] == True:
+        if caller.is_player and caller.oocflags['viewOLCdetails'] is True:
             namepretext = f"{{W[{{xVNUM: {{B{caller.location.vnum}{{W]{{x "
-            name = f"{namepretext}{{B{caller.location.name}{{x"
+            name_ = f"{namepretext}{{B{caller.location.name}{{x"
             theexits = []
             for key in caller.location.exits:
                 destination = caller.location.exits[key].destination
@@ -31,7 +32,7 @@ def look(caller, args, **kwargs):
                 theexits.append(f"{{C{key} {{W[{{xVNUM: {{B{destination}{{W] [{{G{size}{{W]{{x ")
             theexits = ', '.join(theexits)
         else:
-            name = f"{{B{caller.location.name}{{x"
+            name_ = f"{{B{caller.location.name}{{x"
             theexits = ', '.join(caller.location.exits)
 
         desc = f"   {caller.location.description}"
@@ -40,7 +41,7 @@ def look(caller, args, **kwargs):
         if theexits == '':
             theexits = 'none'
 
-        caller.write(f"\n\r{name}")
+        caller.write(f"\n\r{name_}")
         caller.write(f"{desc}\n")
         caller.write(f"{{Y[{{GExits: {{B{theexits}{{Y]{{x")
         for thing in things:
@@ -76,7 +77,7 @@ def look(caller, args, **kwargs):
                     if args in thing.keywords:
                         lookingat = thing
                         notfound = False
-        if notfound == False:
+        if notfound is False:
             if not lookingat.long_description:
                 caller.write("They don't appear to have a description set yet.")
             else:
@@ -85,9 +86,7 @@ def look(caller, args, **kwargs):
             if lookingat.is_player or lookingat.is_mobile:
                 caller.write("They are wearing:")
 
-
                 for each_loc, each_aid in lookingat.equipped.items():
-                    eq_name = ''
                     if lookingat.equipped[each_loc] is None:
                         eq_name = "nothing"
                     else:
@@ -98,14 +97,13 @@ def look(caller, args, **kwargs):
                         preface = ""
                     if 'hand' in each_loc:
                         preface = "held in "
-                    if each_loc in ["neck", "waiste"]:
+                    if each_loc in ["neck", "waist"]:
                         preface = "worn around "
                     each_loc = f"{preface}{each_loc}"
 
                     caller.write(f"  <{each_loc:22}>   {eq_name:40}")
             caller.write("")
             return
-
 
         caller.write("You don't see anything like that.")
     else:

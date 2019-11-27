@@ -19,6 +19,7 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def toggle(caller, args):
     if args == 'newbie':
@@ -72,33 +73,31 @@ def toggle(caller, args):
                 grapevine.gsocket.debug = True
                 caller.write("\n\r{Wgdebug Grapevine Network Debug has been enabled.{x")
 
-
     if caller.oocflags_stored['newbie'] == 'true':
-        newbie = "Enabled"
+        newbie_ = "Enabled"
     else:
-        newbie = "Disabled"
+        newbie_ = "Disabled"
 
     if caller.oocflags_stored['mmchat'] == 'true':
-        mmchat = "Enabled"
+        mmchat_ = "Enabled"
     else:
-        mmchat = "Disabled"
+        mmchat_ = "Disabled"
 
     if caller.oocflags_stored['ooc'] == 'true':
-        ooc = "Enabled"
+        ooc_ = "Enabled"
     else:
-        ooc = "Disabled"
+        ooc_ = "Disabled"
 
     if caller.oocflags_stored['quote'] == 'true':
-        quote = "Enabled"
+        quote_ = "Enabled"
     else:
-        quote = "Disabled"
+        quote_ = "Disabled"
 
     caller.write("\n\rCurrently available settings to toggle:")
-    caller.write(f"    {{Wnewbie{{x : {{R{newbie}{{x")
-    caller.write(f"    {{Wmmchat{{x : {{R{mmchat}{{x")
-    caller.write(f"    {{Wooc{{x    : {{R{ooc}{{x")
-    caller.write(f"    {{Wquote{{x  : {{R{quote}{{x")
+    caller.write(f"    {{Wnewbie{{x : {{R{newbie_}{{x")
+    caller.write(f"    {{Wmmchat{{x : {{R{mmchat_}{{x")
+    caller.write(f"    {{Wooc{{x    : {{R{ooc_}{{x")
+    caller.write(f"    {{Wquote{{x  : {{R{quote_}{{x")
     caller.write(f"")
     if caller.is_admin:
         caller.write(f"    {{Wgdebug{{x : {{R{grapevine.gsocket.debug}{{x")
-

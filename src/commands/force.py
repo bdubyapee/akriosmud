@@ -17,6 +17,7 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def force(caller, args, **kwargs):
     args = args.split()

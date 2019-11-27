@@ -19,32 +19,33 @@ requirements = {'capability': ['player', 'mobile', 'object'],
                 'truth_checks':  [],
                 'false_checks': ['is_sitting', 'is_sleeping']}
 
+
 @Command(**requirements)
-def move(caller, args):
+def move(caller, args, **kwargs):
     if args in caller.location.exits:
-        exit = caller.location.exits[args]
-        if exit.destination in caller.location.area.roomlist:
+        exit_ = caller.location.exits[args]
+        if exit_.destination in caller.location.area.roomlist:
             # Does the exit have a door and is it closed?
-            if exit.hasdoor == 'true' and exit.dooropen == 'false':
+            if exit_.hasdoor == 'true' and exit_.dooropen == 'false':
                 caller.write("The door in that direction is closed.")
                 return
             # Are we too tall to fit in that exit?
             heightnow = caller.height['feet'] * 12 + caller.height['inches']
-            if exits.exit_sizes[exit.size].height < heightnow:
+            if exits.exit_sizes[exit_.size].height < heightnow:
                 caller.write("You will not fit!")
                 return
 
             # We have passed all validity checks to move.  Housekeeping and move the thing.
             if caller.is_player and caller.is_building:
                 Command.commandhash['roomedit'](caller, 'done')
-                wasBuilding = True
+                was_building = True
             else:
-                wasBuilding = False
-            newroom = caller.location.area.room_by_vnum(exit.destination)
+                was_building = False
+            newroom = caller.location.area.room_by_vnum(exit_.destination)
             caller.move(newroom, caller.location, args)
             caller.interp("look")
-            if wasBuilding:
-                Command.commandhash['roomedit'](caller, str(exit.destination))            
+            if was_building:
+                Command.commandhash['roomedit'](caller, str(exit_.destination))
         else:
             caller.write("That exit appears to be broken!")
     else:

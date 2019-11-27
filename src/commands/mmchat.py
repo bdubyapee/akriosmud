@@ -19,6 +19,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def mmchat(caller, args, **kwargs):
     if caller.oocflags_stored['mmchat'] == 'false':

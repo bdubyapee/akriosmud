@@ -17,6 +17,7 @@ requirements = {'capability': ['player'],
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def prompt(caller, args, **kwargs):
     caller.prompt = args[:50]

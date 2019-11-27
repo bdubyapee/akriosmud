@@ -17,6 +17,7 @@ requirements = {'capability': ['builder'],
                 'truth_checks':  ['is_standing'],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def exitedit(caller, args, **kwargs):
     helpstring = "Please see {Whelp exitedit{x for instructions."
@@ -34,9 +35,9 @@ def exitedit(caller, args, **kwargs):
         if args[0] == 'done':
             caller.building.room.area.save()
             caller.building.builder = None
-            del(caller.building)
+            del caller.building
             caller.prompt = caller.oldprompt
-            del(caller.oldprompt)
+            del caller.oldprompt
         elif args[0] == 'new':
             caller.write("You are already editing an exit.")
             return
@@ -67,8 +68,8 @@ def exitedit(caller, args, **kwargs):
                     caller.write("That exit already exists.")
                     return
                 else:
-                    #defaultexitdata = "false 0 0 false 0 0 0 none huge false true none"
-                    #newexitdata = f"{direction} {myvnum} {defaultexitdata}"
+                    # defaultexitdata = "false 0 0 false 0 0 0 none huge false true none"
+                    # newexitdata = f"{direction} {myvnum} {defaultexitdata}"
                     newexit = exits.Exit(caller.location, direction)
                     caller.building = newexit
                     caller.location.exits[direction] = newexit
@@ -92,4 +93,3 @@ def exitedit(caller, args, **kwargs):
             caller.write(caller.building.display())
         else:
             caller.write(helpstring)
-

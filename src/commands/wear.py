@@ -18,13 +18,14 @@ requirements = {'capability': ['player', 'mobile'],
                 'truth_checks':  [],
                 'false_checks': ['is_sleeping']}
 
+
 @Command(**requirements)
 def wear(caller, args, **kwargs):
-    '''
+    """
         Expecting:
                     "helmet on head"
                     "bracelet on left wrist"
-    '''
+    """
 
     target = None
     location = None
@@ -65,7 +66,7 @@ def wear(caller, args, **kwargs):
         caller.write(f"You are already wearing something in that location.")
         return
 
-    if location not in object_.allowable_wear_loc:
+    if location not in target.allowable_wear_loc:
         caller.write(f"You cannot wear a {args} there!")
         return
 
@@ -76,4 +77,3 @@ def wear(caller, args, **kwargs):
     else:
         caller.write(f"You wear a {target.disp_name} on your {location}.")
         comm.message_to_room(caller.location, caller, f"{caller.disp_name} wears a {target.disp_name}.")
-

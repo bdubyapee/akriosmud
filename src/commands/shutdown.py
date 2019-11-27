@@ -20,6 +20,7 @@ requirements = {'capability': ['admin'],
                 'truth_checks':  [],
                 'false_checks': []}
 
+
 @Command(**requirements)
 def shutdown(caller, args, **kwargs):
     for each_player in player.playerlist:
