@@ -63,17 +63,26 @@ def who(caller, args, **kwargs):
         return
 
     caller.write("{BPlayers in other Realms on the Grapevine network{x:")
-    caller.write("")
+    caller.write("{Whelp <gamename>{x to see players on other games.")
 
-    for eachgame in grapevine.gsocket.other_games_players:
-        # Fix this so we can direct 'who sindome' as an option XXX
-        if eachgame == 'sindome' or eachgame == 'Sindome':
-            continue
-        if len(grapevine.gsocket.other_games_players[eachgame]) == 1:
-            the_player = grapevine.gsocket.other_games_players[eachgame][0].capitalize()
-            caller.write(f"     {the_player} {{R@{{x {eachgame.capitalize()}")
-        elif len(grapevine.gsocket.other_games_players[eachgame]) > 1:
-            for eachplayer in grapevine.gsocket.other_games_players[eachgame]:
-                caller.write(f"     {eachplayer} {{R@{{x {eachgame.capitalize()}")
+    if len(args) <= 0:
+        game_data = [f"{{R{k}{{x: {{W{len(v)}{{x" for k, v in grapevine.gsocket.other_games_players.values()]
+        game_data.sort()
+        numcols = 5
+        while (len(game_data) % numcols) > 0:
+            game_data.append(' ')
+        for i in range(0, len(game_data), numcols):
+            output = ''
+            for l in range(0, numcols):
+                output = f"{output}{game_data[i + l]:20}"
+            caller.write(output)
 
-
+    if len(args) > 0:
+        if args in grapevine.gsocket.other_games_players:
+            if len(grapevine.gsocket.other_games_players[args]) >= 1:
+                caller.write("Players connected to {args.capitalize()}:")
+                for eachplayer in grapevine.gsocket.other_games_players[args]:
+                    caller.write(f"     {eachplayer} {{R@{{x {args.capitalize()}")
+        else:
+            caller.write(f"{args.capitalize()} is not connected to Grapevine.")
+            return
