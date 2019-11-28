@@ -76,7 +76,7 @@ def who(caller, args, **kwargs):
             for l in range(0, numcols):
                 output = f"{output}{game_data[i + l]:30}"
             caller.write(output)
-        caller.write("\n\r{Wwho <gamename>{x to see players on other games.")
+        caller.write("\n\r{Wwho <game>{x to see players on other games.")
 
     if len(args) > 0:
         game_name = args.capitalize()
