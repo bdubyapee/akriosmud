@@ -76,7 +76,7 @@ def who(caller, args, **kwargs):
             for l in range(0, numcols):
                 output = f"{output}{game_data[i + l]:30}"
             caller.write(output)
-        caller.write("{Wwho <gamename>{x to see players on other games.")
+        caller.write("\n\r{Wwho <gamename>{x to see players on other games.")
 
     if len(args) > 0:
         game_name = args.capitalize()
@@ -85,6 +85,7 @@ def who(caller, args, **kwargs):
                 caller.write(f"Players connected to {game_name}:")
                 for eachplayer in grapevine.gsocket.other_games_players[game_name]:
                     caller.write(f"     {eachplayer} {{R@{{x {game_name}")
+                caller.write("")
         else:
             caller.write(f"{game_name} is not connected to Grapevine.")
             return
