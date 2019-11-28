@@ -65,7 +65,7 @@ def who(caller, args, **kwargs):
     caller.write("{BPlayers in other Realms on the Grapevine network{x:")
     caller.write("{Whelp <gamename>{x to see players on other games.")
 
-    if len(args) <= 0:
+    if len(args) <= 0 and grapevine.gsocket.other_games_players:
         game_data = [f"{{R{k}{{x: {{W{len(v)}{{x" for k, v in grapevine.gsocket.other_games_players.values()]
         game_data.sort()
         numcols = 5
@@ -78,7 +78,7 @@ def who(caller, args, **kwargs):
             caller.write(output)
 
     if len(args) > 0:
-        if args in grapevine.gsocket.other_games_players:
+        if args.lower() in grapevine.gsocket.other_games_players:
             if len(grapevine.gsocket.other_games_players[args]) >= 1:
                 caller.write("Players connected to {args.capitalize()}:")
                 for eachplayer in grapevine.gsocket.other_games_players[args]:
