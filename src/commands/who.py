@@ -66,7 +66,7 @@ def who(caller, args, **kwargs):
     caller.write("{Wwho <gamename>{x to see players on other games.")
 
     if len(args) <= 0 and grapevine.gsocket.other_games_players:
-        game_data = [f"{{R{k}{{x: {{W{len(v) or 0}{{x" for k, v in grapevine.gsocket.other_games_players.items()]
+        game_data = [f"{{R{k}{{x: {{W{len(v) or 0}{{x  " for k, v in grapevine.gsocket.other_games_players.items()]
         game_data.sort()
         numcols = 5
         while (len(game_data) % numcols) > 0:
@@ -74,7 +74,7 @@ def who(caller, args, **kwargs):
         for i in range(0, len(game_data), numcols):
             output = ''
             for l in range(0, numcols):
-                output = f"{output}{game_data[i + l]:20}"
+                output = f"{output}{game_data[i + l]:25}"
             caller.write(output)
 
     if len(args) > 0:
