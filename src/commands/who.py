@@ -64,6 +64,7 @@ def who(caller, args, **kwargs):
 
     caller.write("{BPlayers in other Realms on the Grapevine network{x:")
     caller.write("{Wwho <gamename>{x to see players on other games.")
+    caller.write("")
 
     if len(args) <= 0 and grapevine.gsocket.other_games_players:
         game_data = [f"{{R{k}{{x: {{W{len(v) or 0}{{x  " for k, v in grapevine.gsocket.other_games_players.items()]
