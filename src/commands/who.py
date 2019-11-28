@@ -81,7 +81,7 @@ def who(caller, args, **kwargs):
     if len(args) > 0:
         if args.capitalize() in grapevine.gsocket.other_games_players:
             if len(grapevine.gsocket.other_games_players[args]) >= 1:
-                caller.write("Players connected to {args.capitalize()}:")
+                caller.write(f"Players connected to {args.capitalize()}:")
                 for eachplayer in grapevine.gsocket.other_games_players[args]:
                     caller.write(f"     {eachplayer} {{R@{{x {args.capitalize()}")
         else:
