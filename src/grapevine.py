@@ -193,10 +193,12 @@ class GrapevineReceivedMessage(object):
                 channel = orig_req["payload"]["channel"]
                 self.gsock.subscribed[channel] = False
                 if self.gsock.debug:
-                    print(f"Failed to subscribe to channel {channel}")
+                    comm.wiznet(f"Grapevine failed to subscribe to channel {channel}")
             elif self.is_event_status("success"):
                 channel = orig_req["payload"]["channel"]
                 self.gsock.subscribed[channel] = True
+                if self.gsock.debug:
+                    comm.wiznet(f"Grapevine successfully subscribed to channel {channel}")
 
     def received_chan_unsub(self, sent_refs):
         """
@@ -209,6 +211,8 @@ class GrapevineReceivedMessage(object):
             orig_req = sent_refs.pop(self.ref)
             channel = orig_req["payload"]["channel"]
             self.gsock.subscribed[channel] = False
+            if self.gsock.debug:
+                comm.wiznet(f"Grapevine unsubscribed from channel {channel}")
 
     def received_player_logout(self, sent_refs):
         """
@@ -423,9 +427,9 @@ class GrapevineSocket(WebSocket):
 
         # Populate the channels attribute if you want to subscribe to a specific
         # channel or channels during authentication.
-        self.channels = []
-        self.version = "0.1.9"
-        self.user_agent = "AkriosMUD v0.4.4"
+        self.channels = ['gossip']
+        self.version = "0.2.1"
+        self.user_agent = "AkriosMUD v0.4.5"
 
         self.state = {"connected": False,
                       "authenticated": False}
@@ -434,7 +438,7 @@ class GrapevineSocket(WebSocket):
         for each_channel in self.channels:
             self.subscribed[each_channel] = False
 
-            # This event initialization is specific to AkriosMUD. This would be a good
+        # This event initialization is specific to AkriosMUD. This would be a good
         # spot to initialize in your event system if required.  
         # Otherwise comment/delete this line.
         # XXX

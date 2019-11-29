@@ -282,7 +282,7 @@ def event_grapevine_receive_message(event_):
             # foreign game player.
             if rcvd_msg.event == "tells/send":
                 caller, target, game, error_msg = ret_value
-                message = (f"\n\r{{GMultiMUD Tell to {{y{target}@{game}{{G "
+                message = (f"\n\r{{GGrapevine Tell to {{y{target}@{game}{{G "
                            f"returned an Error{{x: {{R{error_msg}{{x")
                 for eachplayer in player.playerlist:
                     if eachplayer.disp_name == caller:
@@ -292,7 +292,7 @@ def event_grapevine_receive_message(event_):
 
             if rcvd_msg.event == "tells/receive":
                 sender, target, game, sent, message = ret_value
-                message = (f"\n\r{{GMultiMUD Tell from {{y{sender}@{game}{{x: "
+                message = (f"\n\r{{GGrapevine Tell from {{y{sender}@{game}{{x: "
                            f"{{G{message}{{x.\n\rReceived at : {sent}.")
                 for eachplayer in player.playerlist:
                     if eachplayer.disp_name == target.capitalize():
@@ -311,23 +311,23 @@ def event_grapevine_receive_message(event_):
             message = ""
             if rcvd_msg.event == "games/connect":
                 game = ret_value.capitalize()
-                message = f"\n\r{{GMultiMUD Status Update: {game} connected to network{{x"
+                message = f"\n\r{{GGrapevine Status Update: {game} connected to network{{x"
             if rcvd_msg.event == "games/disconnect":
                 game = ret_value.capitalize()
-                message = f"\n\r{{GMultiMUD Status Update: {game} disconnected from network{{x"
+                message = f"\n\r{{GGrapevine Status Update: {game} disconnected from network{{x"
             if rcvd_msg.event == "channels/broadcast":
                 name, game, message = ret_value
                 if name is None or game is None:
                     comm.wiznet("Received channels/broadcast with None type")
                     return
-                message = (f"\n\r{{GMultiMUD Chat{{x:{{y{name.capitalize()}"
+                message = (f"\n\r{{GGrapevine Chat{{x:{{y{name.capitalize()}"
                            f"@{game.capitalize()}{{x:{{G{message}{{x")
             if rcvd_msg.is_other_game_player_update():
                 name, inout, game = ret_value
                 if name is None or game is None:
                     comm.wiznet("Received other game player update")
                     return
-                message = (f"\n\r{{GMultiMUD Chat{{x: {{y{name.capitalize()}{{G "
+                message = (f"\n\r{{GGrapevine Chat{{x: {{y{name.capitalize()}{{G "
                            f"has {inout} {{Y{game.capitalize()}{{x.")
 
             if message != "":

@@ -39,7 +39,8 @@ class Player(livingthing.LivingThing):
         self.lasttime = ''
         self.oocflags = {'afk': False,
                          'viewOLCdetails': False,
-                         'coding': False}
+                         'coding': False,
+                         'grapevine_channels': ['gossip']}
         self.oocflags_stored = {'newbie': 'true',
                                 'grapevine': 'true',
                                 'ooc': 'true',

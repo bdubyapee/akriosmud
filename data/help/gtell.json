@@ -1,0 +1,12 @@
+{
+    "creator": "jubelo",
+    "description": "{RHelp Topic{W: gtell {x\n\n{Wgtell{x <player>@<game> <argument>\n     This will send the tell <argument> directly to <player> @ <game>.\n\ngtell is used to communicate over the grapevine.haus MultiMUD chat network.\n\nYou can toggle this feature off and on by using the {Wtoggle{x command.\n",
+    "json_class_name": "__Help__",
+    "json_version": 1,
+    "keywords": [
+        "gtell"
+    ],
+    "section": "player",
+    "topics": "channels",
+    "viewable": "true"
+}
