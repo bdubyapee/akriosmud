@@ -20,7 +20,7 @@ requirements = {'capability': ['player'],
 
 
 @Command(**requirements)
-def help_(caller, args, **kwargs):
+def help(caller, args, **kwargs):
     key = args.lower()
     if key != '':
         key = key.split()
