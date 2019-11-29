@@ -15,7 +15,7 @@ version = 1
 
 requirements = {'capability': ['player'],
                 'generic_fail': "See {WHelp gsubscribe{x for help with this command.",
-                'truth_checks':  ['args_required'],
+                'truth_checks':  [],
                 'false_checks': []}
 
 
