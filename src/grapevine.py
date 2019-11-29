@@ -110,7 +110,7 @@ class GrapevineReceivedMessage(object):
                           "channels/send": (self.received_message_confirm, gsock.sent_refs),
                           "achievements/sync": (self.received_achievements_sync, gsock.sent_refs),
                           "achievements/create": (self.received_achievements_create, gsock.sent_refs),
-                          "achievements/update": (self.received_achievements_update, gsock.sent_refs)
+                          "achievements/update": (self.received_achievements_update, gsock.sent_refs),
                           "achievements/delete": (self.received_achievements_delete, gsock.sent_refs)}
 
         self.restart_downtime = 0
