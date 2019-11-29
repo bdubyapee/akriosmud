@@ -62,10 +62,9 @@ def who(caller, args, **kwargs):
         caller.write("{BGrapevine network disabled.{x:")
         return
 
-    caller.write("{BOther realms on the Grapevine network{x:")
-    caller.write("")
-
     if len(args) <= 0 and grapevine.gsocket.other_games_players:
+        caller.write("{BOther realms on the Grapevine network{x:")
+        caller.write("")
         game_data = [f"{{R{k}{{x: {{W{len(v) or 0}{{x  " for k, v in grapevine.gsocket.other_games_players.items()]
         game_data.sort()
         numcols = 3
