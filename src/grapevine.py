@@ -421,7 +421,7 @@ class GrapevineReceivedMessage(object):
         Grapevine 1.0.0
         """
         if hasattr(self, "payload"):
-            return self.payload['name'], self.payload['game'], self.payload['message']
+            return self.payload['name'], self.payload['game'], self.payload['message'], self.payload['channel']
 
     def received_achievements_sync(self, sent_refs):
         """
@@ -487,6 +487,7 @@ class GrapevineReceivedMessage(object):
                 if self.payload['key'] in self.achievements:
                     self.achievements.pop(self.payload['key'])
                     return
+
 
 class GrapevineSocket(WebSocket):
     def __init__(self):
@@ -866,7 +867,7 @@ class GrapevineSocket(WebSocket):
                    "partial_progress": partial,
                    "total_progress": total}
 
-        msg = {"events": "achievements/create",
+        msg = {"events": "achievements/update",
                "ref": ref,
                "payload": payload}
 
@@ -887,7 +888,7 @@ class GrapevineSocket(WebSocket):
 
         payload = {"key": key}
 
-        msg = {"events": "achievements/key",
+        msg = {"events": "achievements/delete",
                "ref": ref,
                "payload": payload}
 

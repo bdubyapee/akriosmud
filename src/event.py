@@ -309,31 +309,43 @@ def event_grapevine_receive_message(event_):
 
             # Received Grapevine Info that goes to all players goes here.
             message = ""
+            channel = ""
+            is_status_msg = False
+
             if rcvd_msg.event == "games/connect":
                 game = ret_value.capitalize()
                 message = f"\n\r{{GGrapevine Status Update: {game} connected to network{{x"
+                is_status_msg = True
             if rcvd_msg.event == "games/disconnect":
                 game = ret_value.capitalize()
                 message = f"\n\r{{GGrapevine Status Update: {game} disconnected from network{{x"
+                is_status_msg = True
             if rcvd_msg.event == "channels/broadcast":
-                name, game, message = ret_value
+                name, game, message, channel = ret_value
                 if name is None or game is None:
                     comm.wiznet("Received channels/broadcast with None type")
                     return
-                message = (f"\n\r{{GGrapevine Chat{{x:{{y{name.capitalize()}"
+                message = (f"\n\r{{GGrapevine {{B{channel}{{x Chat{{x:{{y{name.capitalize()}"
                            f"@{game.capitalize()}{{x:{{G{message}{{x")
             if rcvd_msg.is_other_game_player_update():
                 name, inout, game = ret_value
                 if name is None or game is None:
                     comm.wiznet("Received other game player update")
                     return
-                message = (f"\n\r{{GGrapevine Chat{{x: {{y{name.capitalize()}{{G "
+                message = (f"\n\r{{GGrapevine Status Update{{x: {{y{name.capitalize()}{{G "
                            f"has {inout} {{Y{game.capitalize()}{{x.")
+                is_status = True
 
             if message != "":
-                for eachplayer in player.playerlist:
-                    if eachplayer.oocflags_stored['grapevine'] == 'true':
+                grape_enabled = [players for players in player.playerlist
+                                 if players.oocflags_stored['grapevine'] == 'true']
+                if is_status_msg:
+                    for eachplayer in grape_enabled:
                         eachplayer.write(message)
+                else:
+                    for eachplayer in grape_enabled:
+                        if channel in eachplayer.oocflags['grapevine_channels']:
+                            eachplayer.write(message)
                 return
 
         if hasattr(rcvd_msg, "event") and rcvd_msg.event == "restart":
