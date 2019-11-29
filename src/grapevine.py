@@ -20,6 +20,7 @@
 #       Game connect and disconnect messages.
 #       Sending and receiving game status requests.
 #       Game Status (all connected games, and single game)
+#       Achievements (Sync, Creation, update, deletion)
 #
 #
 # Example usage would be to import this module into your main game server.  During server startup
