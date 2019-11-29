@@ -41,10 +41,10 @@ def gchat(caller, args, **kwargs):
         comm.wiznet(f"Error writing to Grapevine network. {caller.disp_name} : {msg}")
         return
     
-    caller.write(f"{{GYou Grapevine {{B{channel}{{x chat{{x: '{{G{msg}{{x'")
+    caller.write(f"{{GYou Grapevine {{B{channel}{{G chat{{x: '{{G{msg}{{x'")
 
     for eachplayer in player.playerlist:
         if eachplayer.oocflags_stored['grapevine'] == 'true' and eachplayer.aid != caller.aid:
-            eachplayer.write(f"\n\r{{G{caller.disp_name} Grapevine {{B{channel}{{x chats{{x: '{{G{msg}{{x'")
+            eachplayer.write(f"\n\r{{G{caller.disp_name} Grapevine {{B{channel}{{G chats{{x: '{{G{msg}{{x'")
 
 
