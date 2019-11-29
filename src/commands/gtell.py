@@ -21,7 +21,7 @@ requirements = {'capability': ['player'],
 
 
 @Command(**requirements)
-def mmtell(caller, args, **kwargs):
+def gtell(caller, args, **kwargs):
     if caller.oocflags_stored['grapevine'] == 'false':
         caller.write("You have that command self disabled with the 'toggle' command.")
         return
