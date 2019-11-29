@@ -55,3 +55,5 @@ def gsubscribe(caller, args='', **kwargs):
         else:
             caller.oocflags['grapevine_channels'].append(channel)
             caller.write(f"Subscribing you to {channel}")
+    else:
+        caller.write("Akrios is not subscribed to that Grapevine channel.  Ask Jubelo to subscribe.")

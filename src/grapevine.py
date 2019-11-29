@@ -513,9 +513,9 @@ class GrapevineSocket(WebSocket):
         self.state = {"connected": False,
                       "authenticated": False}
 
-        self.subscribed = {}
-        for each_channel in self.channels:
-            self.subscribed[each_channel] = False
+        self.subscribed = {'gossip': True,
+                           'testing': True,
+                           'moo': True}
 
         event.init_events_grapevine(self)
 
