@@ -26,7 +26,7 @@ def gchat(caller, args, **kwargs):
         caller.write("You have Grapevine disabled with the 'toggle' command.")
         return
 
-    channel, msg = aregs.split()
+    channel, msg = args.split()
     channel = channel.lower()
 
     if channel not in grapevine.gsocket.subscribed:

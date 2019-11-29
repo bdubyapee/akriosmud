@@ -506,16 +506,14 @@ class GrapevineSocket(WebSocket):
 
         # Populate the channels attribute if you want to subscribe to a specific
         # channel or channels during authentication.
-        self.channels = ['gossip', 'testing', 'moo']
+        self.channels = ['gossip']
         self.version = "2.3.0"
         self.user_agent = "AkriosMUD v0.4.5"
 
         self.state = {"connected": False,
                       "authenticated": False}
 
-        self.subscribed = {'gossip': True,
-                           'testing': True,
-                           'moo': True}
+        self.subscribed = {'gossip': True}
 
         event.init_events_grapevine(self)
 
