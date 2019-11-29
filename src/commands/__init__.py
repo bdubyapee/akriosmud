@@ -344,6 +344,8 @@ from . import drop
 from . import east
 from . import emote
 from . import equipped
+from . import gchat
+from . import gtell
 from . import get
 from . import goto
 from . import help
@@ -351,8 +353,6 @@ from . import hold
 from . import inventory
 from . import longdescription
 from . import look
-from . import mmchat
-from . import mmtell
 from . import move
 from . import north
 from . import northeast

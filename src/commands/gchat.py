@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # Project: Akrios
-# Filename: commands/mmchat.py
+# Filename: commands/gchat.py
 #
 # Capability: player
 #
@@ -11,18 +11,18 @@
 
 from commands import *
 
-name = "mmchat"
+name = "gchat"
 version = 1
 
 requirements = {'capability': ['player'],
-                'generic_fail': "See {WHelp mmchat{x for help with this command.",
+                'generic_fail': "See {WHelp gchat{x for help with this command.",
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
 
 @Command(**requirements)
 def mmchat(caller, args, **kwargs):
-    if caller.oocflags_stored['mmchat'] == 'false':
+    if caller.oocflags_stored['grapevine'] == 'false':
         caller.write("You have that command self disabled with the 'toggle' command.")
         return
 
@@ -33,10 +33,10 @@ def mmchat(caller, args, **kwargs):
         comm.wiznet(f"Error writing to grapevine.haus network. {caller.disp_name} : {args}")
         return
     
-    caller.write(f"{{GYou MultiMUD Chat{{x: '{{G{args}{{x'")
+    caller.write(f"{{GYou Grapevine chat{{x: '{{G{args}{{x'")
 
     for eachplayer in player.playerlist:
-        if eachplayer.oocflags_stored['mmchat'] == 'true' and eachplayer.aid != caller.aid:
-            eachplayer.write(f"\n\r{{G{caller.disp_name} MultiMUD Chats{{x: '{{G{args}{{x'")
+        if eachplayer.oocflags_stored['grapevine'] == 'true' and eachplayer.aid != caller.aid:
+            eachplayer.write(f"\n\r{{G{caller.disp_name} Grapevine chats{{x: '{{G{args}{{x'")
 
 

@@ -40,13 +40,13 @@ def toggle(caller, args):
             newevent.totalpasses = newevent.passes
             caller.events.add(newevent)
 
-    if args == 'mmchat':
-        if caller.oocflags_stored['mmchat'] == 'true':
-            caller.oocflags_stored['mmchat'] = 'false'
-            caller.write("\n\r{WMultiMUD Chat disabled.{x")
+    if args == 'grapevine':
+        if caller.oocflags_stored['grapevine'] == 'true':
+            caller.oocflags_stored['grapevine'] = 'false'
+            caller.write("\n\r{WGrapevine System disabled.{x")
         else:
-            caller.oocflags_stored['mmchat'] = 'true'
-            caller.write("\n\r{WMultiMUD Chat enabled.{x")
+            caller.oocflags_stored['grapevine'] = 'true'
+            caller.write("\n\r{WGrapevine System enabled.{x")
 
     if args == 'ooc':
         if caller.oocflags_stored['ooc'] == 'true':
@@ -78,10 +78,10 @@ def toggle(caller, args):
     else:
         newbie_ = "Disabled"
 
-    if caller.oocflags_stored['mmchat'] == 'true':
-        mmchat_ = "Enabled"
+    if caller.oocflags_stored['grapevine'] == 'true':
+        grapevine_ = "Enabled"
     else:
-        mmchat_ = "Disabled"
+        grapevine_ = "Disabled"
 
     if caller.oocflags_stored['ooc'] == 'true':
         ooc_ = "Enabled"
@@ -95,7 +95,7 @@ def toggle(caller, args):
 
     caller.write("\n\rCurrently available settings to toggle:")
     caller.write(f"    {{Wnewbie{{x : {{R{newbie_}{{x")
-    caller.write(f"    {{Wmmchat{{x : {{R{mmchat_}{{x")
+    caller.write(f"    {{Wgrapevine{{x : {{R{grapevine_}{{x")
     caller.write(f"    {{Wooc{{x    : {{R{ooc_}{{x")
     caller.write(f"    {{Wquote{{x  : {{R{quote_}{{x")
     caller.write(f"")

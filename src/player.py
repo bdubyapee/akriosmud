@@ -41,7 +41,7 @@ class Player(livingthing.LivingThing):
                          'viewOLCdetails': False,
                          'coding': False}
         self.oocflags_stored = {'newbie': 'true',
-                                'mmchat': 'true',
+                                'grapevine': 'true',
                                 'ooc': 'true',
                                 'quote': 'true'}
         self.events = event.Queue(self, "player")

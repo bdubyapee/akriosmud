@@ -286,7 +286,7 @@ def event_grapevine_receive_message(event_):
                            f"returned an Error{{x: {{R{error_msg}{{x")
                 for eachplayer in player.playerlist:
                     if eachplayer.disp_name == caller:
-                        if eachplayer.oocflags_stored['mmchat'] == 'true':
+                        if eachplayer.oocflags_stored['grapevine'] == 'true':
                             eachplayer.write(message)
                             return
 
@@ -296,7 +296,7 @@ def event_grapevine_receive_message(event_):
                            f"{{G{message}{{x.\n\rReceived at : {sent}.")
                 for eachplayer in player.playerlist:
                     if eachplayer.disp_name == target.capitalize():
-                        if eachplayer.oocflags_stored['mmchat'] == 'true':
+                        if eachplayer.oocflags_stored['grapevine'] == 'true':
                             eachplayer.write(message)
                             return
 
@@ -332,7 +332,7 @@ def event_grapevine_receive_message(event_):
 
             if message != "":
                 for eachplayer in player.playerlist:
-                    if eachplayer.oocflags_stored['mmchat'] == 'true':
+                    if eachplayer.oocflags_stored['grapevine'] == 'true':
                         eachplayer.write(message)
                 return
 
@@ -481,8 +481,8 @@ def event_player_newbie_notify(event_):
             "Type 'beep Jubelo' to send a beep to Jubelo if you need help!",
             "Type 'say <message>' to say something to other players in the same room.",
             "Type 'look' to look at the room you are in",
-            "Akrios is connected to grapevine.haus for MultiMUD Chat!\n\rType"
-            " 'toggle mmchat' to disable or 'mmchat <message>' to speak to other players!"]
+            "Akrios is connected to grapevine.haus for Grapevine Chat!\n\rType"
+            " 'toggle grapevine' to disable or 'gchat <message>' to speak to other players!"]
         
     event_.owner.write(f"\n\r{{P[NEWBIE TIP]{{x: {random.choice(tips)}")
 

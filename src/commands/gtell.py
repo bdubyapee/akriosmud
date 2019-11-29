@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # Project: Akrios
-# Filename: commands/mmtell.py
+# Filename: commands/gtell.py
 #
 # Capability: player
 #
@@ -11,18 +11,18 @@
 
 from commands import *
 
-name = "mmtell"
+name = "gtell"
 version = 1
 
 requirements = {'capability': ['player'],
-                'generic_fail': "See {WHelp mmtell{x for help with this command.",
+                'generic_fail': "See {WHelp gtell{x for help with this command.",
                 'truth_checks':  ['args_required'],
                 'false_checks': []}
 
 
 @Command(**requirements)
 def mmtell(caller, args, **kwargs):
-    if caller.oocflags_stored['mmchat'] == 'false':
+    if caller.oocflags_stored['grapevine'] == 'false':
         caller.write("You have that command self disabled with the 'toggle' command.")
         return
 
@@ -30,7 +30,7 @@ def mmtell(caller, args, **kwargs):
     if '@' in target:
         target, game = target.split('@')
     else:
-        caller.write("Command format is 'mmtell player@game <message>'.")
+        caller.write("Command format is 'gtell player@game <message>'.")
         return
 
     message = ' '.join(args.split()[1:])
@@ -41,5 +41,5 @@ def mmtell(caller, args, **kwargs):
 
     grapevine.gsocket.msg_gen_player_tells(caller.disp_name, game, target, message)
 
-    caller.write(f"{{GYou MultiMUD tell {{y{target}@{game}{{x: '{{G{message}{{x'")
+    caller.write(f"{{GYou Grapevine tell {{y{target}@{game}{{x: '{{G{message}{{x'")
 
