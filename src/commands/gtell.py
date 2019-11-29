@@ -36,7 +36,7 @@ def mmtell(caller, args, **kwargs):
     message = ' '.join(args.split()[1:])
 
     if game.lower() in ['akrios', 'akriosmud']:
-        caller.write("Just use in game channels to talk to players on Akrios.")
+        caller.write("Just use in-game channels to talk to players on Akrios.")
         return
 
     grapevine.gsocket.msg_gen_player_tells(caller.disp_name, game, target, message)

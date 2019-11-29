@@ -29,8 +29,8 @@ def mmchat(caller, args, **kwargs):
     try:
         grapevine.gsocket.msg_gen_message_channel_send(caller, "grapevine",  args) 
     except:
-        caller.write(f"{{WError chatting to grapevine.haus Network, try again later{{x")
-        comm.wiznet(f"Error writing to grapevine.haus network. {caller.disp_name} : {args}")
+        caller.write(f"{{WError chatting to Grapevine Network, try again later{{x")
+        comm.wiznet(f"Error writing to Grapevine network. {caller.disp_name} : {args}")
         return
     
     caller.write(f"{{GYou Grapevine chat{{x: '{{G{args}{{x'")
