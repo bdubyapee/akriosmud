@@ -1,7 +1,7 @@
 {
     "creator": "belial",
     "description": "{RHelp Topic{W: Sirian{x\n\nSirian is the God of Chaos. Sirian is crazy. His plans and schemes make\nlittle sense most of the time, but usually create a lot of havoc and\ndestruction. He thrives on unpredictability and insanity. Noone is sure what\nhis final goal is, but most think it is to destroy the world. He is despised\nby Aludra, Nephium, and Caerdik, so he returns the sentiment. His followers\nseem to be a mass of lunatics, noone is sure if there is a heirarchy within\nhis sect or if it's just a bunch or destructive crazies running around like\nchickens with their heads cut off. Sirian's followers gain many destructive\nspells, making them even more dangerous than they would be without.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "sirian"

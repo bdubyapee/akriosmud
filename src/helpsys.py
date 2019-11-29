@@ -28,15 +28,15 @@ sections = {"player": Section("player"),
             "deity": Section("deity")}
 
 
-class OneHelp(olc.Editable):
-    CLASS_NAME = "__OneHelp__"
+class Help(olc.Editable):
+    CLASS_NAME = "__Help__"
     FILE_VERSION = 1
 
     def __init__(self, path):
         super().__init__()
         self.path = path
-        self.json_version = OneHelp.FILE_VERSION
-        self.json_class_name = OneHelp.CLASS_NAME
+        self.json_version = Help.FILE_VERSION
+        self.json_class_name = Help.CLASS_NAME
         self.builder = None
         self.creator = ""
         self.viewable = ""
@@ -94,7 +94,7 @@ helpfiles = {}
 def init():
     allhelps = glob.glob(os.path.join(world.helpDir, "*.json"))
     for singlehelp in allhelps:
-        thehelp = OneHelp(singlehelp)
+        thehelp = Help(singlehelp)
         for keyword in thehelp.keywords:
             helpfiles[keyword] = thehelp
         if WRITE_NEW_FILE_VERSION:

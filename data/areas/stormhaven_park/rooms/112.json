@@ -2,7 +2,7 @@
     "description": "Tall grass and low branches stretch out into the trail almost concealing the\npath altogether. This obviously is not used by the majority of people\nvisiting the park, but seems to be used more by the wildlife that lives\nhere. Bushes and weeds try to block the way further into the trees on either\nside of the small trail. The path seems to continue off to the south but\nleads out to a small clearing to the north.",
     "extradescriptions": {},
     "flags": [],
-    "json_class_name": "__oneRoom__",
+    "json_class_name": "__Room__",
     "json_version": 1,
     "name": "a small trail",
     "propertyvalue": "",

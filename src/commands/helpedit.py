@@ -81,7 +81,7 @@ def helpedit(caller, args, **kwargs):
                 caller.write(helpstring)
                 return
             else:
-                caller.building = helpsys.OneHelp(f"{world.helpDir}/{args[1]}.json")
+                caller.building = helpsys.Help(f"{world.helpDir}/{args[1]}.json")
                 caller.building.builder = caller
                 caller.write(caller.building.display())
                 caller.write(f"Editing {{W{args[0]}{{x help entry.")

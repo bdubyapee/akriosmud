@@ -1,7 +1,7 @@
 {
     "creator": "belial",
     "description": "{RHelp Topic{W: channels / say / ooc / quote / emote{x\n\n{Wsay / ooc / quote / emote{x <argument>\n     This will print the <argument> on the specified channel.\n\nSays and emotes can only be seen by other players in the same room.\nSays are something your character communicates verbally. Emotes are\nactions your character does physically.\n\nOocs and quotes are global channels and can be heard by all players\ncurrently on the MUD that have the channels turned on.\n\nYou can toggle a channel off and on by using the toggle command.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "say",

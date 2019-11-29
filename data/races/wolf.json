@@ -58,7 +58,7 @@
     "heightfeet": 3,
     "heightinches": 0,
     "intelligence": 40,
-    "json_class_name": "__oneRace__",
+    "json_class_name": "__Race__",
     "json_version": 1,
     "luck": 50,
     "name": "wolf",

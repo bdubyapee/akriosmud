@@ -1,7 +1,7 @@
 {
     "creator": "jubelo",
     "description": "\n{RHelp Topic{W: tell{x\n\n{Wtell <player> <message>{x\n\nThis allows you to send a private message to another player logged into the game.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "tell"

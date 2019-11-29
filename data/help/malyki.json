@@ -1,7 +1,7 @@
 {
     "creator": "belial",
     "description": "{RHelp Topic{W: Malyki{x\n\nMalyki is the God of War. He enjoys warfare, not killing but the art and\nstratedgy of it. He likes it so much that he is constantly trying to start a\nwar just so he can revel in it. Malyki believes in the rules of warfare, and\neven though he creates much destruction he does it in a orderly way. Aludra\nand Selucia usually team up against him because they find his past time a\nsenseless waste of time. Malyki on the other hand does not seem to like or\ndislike either of them and is only irritated by their constant interferance\nwith his plans. Caerdik on the other hand he just doesn't like. There is no\nreason for his hatred of Caerdik, he just doesn't like him. Nephium is known\nto work with Malyki on occasion when Nephium deems the world to be too\noverpopulated. Most of Malyki's followers are soldiers and specialize in\ncombat spells, both offensive and defensive.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "malyki"

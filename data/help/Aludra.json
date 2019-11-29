@@ -1,7 +1,7 @@
 {
     "creator": "belial",
     "description": "{RHelp Topic{W: Aludra{x\n\nAludra is the Goddess of Life. She works closely with Nephium to make sure\nthat the circle of life is continuous. Her worshippers specialties are\nresurrection and healing spells, with a variety of protection spells.\nAludra's followers are your run of the mill cleric types. She does not\ndetest death as she realizes this is a necessity for life, but she would\nprefer to see a life saved rather than lost. She is rather good natured and\nslow to anger, she does however detest Sirian. She also thinks Admanthos an\nabomination of life because of his mystical and thus unnatural existance.\nShe is known to get along well with Selucia.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "aludra"

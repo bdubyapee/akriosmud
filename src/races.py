@@ -43,15 +43,15 @@ start_locationlist = {'drowhome': 101, 'stormhaven': 101, 'whitestone keep': 101
 special_skillslist = ['drow', 'elven', 'high elven', 'common']
 
 
-class OneRace(olc.Editable):
-    CLASS_NAME = "__oneRace__"
+class Race(olc.Editable):
+    CLASS_NAME = "__Race__"
     FILE_VERSION = 1
 
     def __init__(self, path):
         super().__init__()
         self.path = path
-        self.json_version = OneRace.FILE_VERSION
-        self.json_class_name = OneRace.CLASS_NAME
+        self.json_version = Race.FILE_VERSION
+        self.json_class_name = Race.CLASS_NAME
         self.builder = None
         self.name = ''
         self.description = ''
@@ -233,7 +233,7 @@ racesdict = {}
 def init():
     racepaths = glob.glob(os.path.join(world.raceDir, '*.json'))
     for racepath in racepaths:
-        therace = OneRace(racepath)
+        therace = Race(racepath)
         addtolist(therace)
         if WRITE_NEW_FILE_VERSION:
             therace.save()

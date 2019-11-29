@@ -1,7 +1,7 @@
 {
     "creator": "jubelo",
     "description": "{RHelp Topic{W: Areaedit{x here / new (area name) / reload\n\n{Wareaedit here:{x\n     This will start editing the area you are currently in.\n\n{Wareaedit new (area name):{x\n     This begins editing the new area named (area name).\n     \n{Wareaedit reload:{x\n     This saves and reloads the area you are in.\n\n{WAvailable options while editing an area:{x\n     {Bname{W:{x Sets the name of this area.\n     {Bauthor{W:{x Sets name of the builder for this area.\n     {Bplane{W:{x Sets the plane this area resides in.\n     {Bhometown{W:{x Sets this area as a hometown for a particular race\n     {Bdifficulty{W:{x Sets the listed difficulty for the area.\n     {Balignment{W:{x Sets the alignment for this area, if there is one.\n     {Blocationx{W:{x Sets the x location for the wilderness map.\n     {Blocationy{W:{x Sets the y location for the wilderness map.\n     {Bvnumlow{W:{x Sets the low vnum for the area.  {W({RBE CAREFUL!{W){x\n     {Bvnumhigh{W: {x Sets the high vnum for this area. {W({RBE CAREFUL!{W){x\n     \n{WSpecial Notes:{x\n     {RYou must 'populate' when in the editor as soon as the other options{x\n     {Rare configured!  This creates the first room in the area as a{x\n     {Rplace holder.  You can then type 'done' to finish the area creation.{x",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "areaedit"

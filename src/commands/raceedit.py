@@ -74,7 +74,7 @@ def raceedit(caller, args, **kwargs):
                 caller.write(helpstring)
                 return
             else:
-                caller.building = races.OneRace(world.raceDir + f"/{args[1]}")
+                caller.building = races.Race(world.raceDir + f"/{args[1]}")
                 caller.building.builder = caller
                 caller.write(f"Editing {{W{args[1]}{{x")
                 caller.oldprompt = caller.prompt

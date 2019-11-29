@@ -1,7 +1,7 @@
 {
     "creator": "Jubelo",
     "description": "\n{RHelp Topic{W:{x mental\n\nThe {Bmental{x discipline deals with mental abilities of the mind.\nPsionics is the major lump of skills for this group, although a few\nother skills like meditation will be part of this discipline as well.\nAnyone wishing to create a powerful psionic type will ned this discipline.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "mental"

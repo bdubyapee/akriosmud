@@ -57,7 +57,7 @@
     "heightfeet": 7,
     "heightinches": 0,
     "intelligence": 50,
-    "json_class_name": "__oneRace__",
+    "json_class_name": "__Race__",
     "json_version": 1,
     "luck": 55,
     "name": "horse",

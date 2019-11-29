@@ -1,7 +1,7 @@
 {
     "creator": "jubelo",
     "description": "{RHelp Topic{W: whisper <player> <message>{x\n\n{Wwhisper{x allows you to send a private message to a player\nlocated in the same room as you. Unlike the {Wtell{x command\nwhich allows you to send a message to a player anywhere in the game.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "whisper"

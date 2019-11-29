@@ -3,7 +3,7 @@
     "author": "jubelo",
     "difficulty": "all",
     "hometown": "all",
-    "json_class_name": "__OneArea__",
+    "json_class_name": "__Area__",
     "json_version": 1,
     "locationx": 50,
     "locationy": 50,

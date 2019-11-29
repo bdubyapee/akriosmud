@@ -55,7 +55,7 @@ def room_by_vnum_global(vnum):
 
 
 class Area(olc.Editable):
-    CLASS_NAME = "__OneArea__"
+    CLASS_NAME = "__Area__"
     FILE_VERSION = 1
 
     def __init__(self, fpath, path):

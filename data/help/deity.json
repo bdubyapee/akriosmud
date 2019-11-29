@@ -1,7 +1,7 @@
 {
     "creator": "belial",
     "description": "{RHelp Topic{W: Deity, Deities{x\n\nThere are nine seperate deities in the world of Akrios. Each one\nrepresenting a different alignment and sphere of influence. The deities are\nas follows:\n\n{CCaerdik, God of Order - Lawful Good{x\n{DNephium, God of Death - Lawful Neutral{x\n{RMalyki, God of War - Lawful Evil{x\n{WAludra, Goddess of Life - Neutral Good{x\n{yTharian, God of Balance - True Neutral{x\n{BAdmanthos, God of Magic - Neutral Evil{x\n{GSelucia, Goddess of Nature - Chaotic Good{x\n{bMyst, Goddess of Mischief - Chaotic Neutral{x\n{rSirian, God of Chaos - Chaotic Evil{x\n\nSee their helpfiles for more info.",
-    "json_class_name": "__oneHelp__",
+    "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
         "deity",

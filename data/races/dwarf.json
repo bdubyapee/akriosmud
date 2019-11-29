@@ -62,7 +62,7 @@
     "heightfeet": 5,
     "heightinches": 5,
     "intelligence": 45,
-    "json_class_name": "__oneRace__",
+    "json_class_name": "__Race__",
     "json_version": 1,
     "luck": 55,
     "name": "dwarf",
