@@ -26,8 +26,13 @@ def gsubscribe(caller, args='', **kwargs):
         return
 
     if args == '':
-        caller.write(f"Akrios subscribed to: {grapevine.gsocket.subscribed}.")
-        caller.write(f"You are subscribed to: {caller.oocflags['grapevine_channels']}.")
+        akrios_subscribed = []
+        for chan, subbed in grapevine.gsocket.subscribed.items():
+            if subbed:
+                akrios_subscribed.append(chan)
+
+        caller.write(f"Akrios subscribed to: {', '.join(akrios_subscribed)}.")
+        caller.write(f"You are subscribed to: {', '.join(caller.oocflags['grapevine_channels'])}.")
         return
 
     if ' ' in args:
