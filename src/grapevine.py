@@ -81,10 +81,10 @@ class GrapevineReceivedMessage(object):
     def __init__(self, message, gsock):
         super().__init__()
         self.payload = {}
+
         # Short hand to convert JSON data to instance attributes.
         # Not secure at all.  If you're worried about it feel free to modify
         # to your needs.
-
         for eachkey, eachvalue in json.loads(message).items():
             setattr(self, eachkey, eachvalue)
 

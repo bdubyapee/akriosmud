@@ -32,7 +32,6 @@ class Player(livingthing.LivingThing):
         self.filename = path
         self.json_version = Player.FILE_VERSION
         self.json_class_name = Player.CLASS_NAME
-        self.logpath = ''
         self.capability = ['player']
         self.password = ''
         self.lasthost = ''

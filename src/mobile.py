@@ -27,7 +27,6 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         super().__init__()
         self.json_version = Mobile.FILE_VERSION
         self.json_class_name = Mobile.CLASS_NAME
-        self.logpath = ''
         self.capability = ['mobile']
         self.vnum = 0
         self.keywords = []

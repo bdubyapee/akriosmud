@@ -7,6 +7,7 @@
 # By: Jubelo
 
 import bcrypt
+import logging
 import os
 import time
 import json
@@ -23,6 +24,8 @@ import world
 import player
 import livingthing
 
+
+log = logging.getLogger(__name__)
 
 badwords = []
 
@@ -118,6 +121,7 @@ class Login(object):
             self.sock.dispatch(f"You last logged in on {self.lasttime}")
             self.sock.dispatch(f"From this host: {self.lasthost}")
             self.sock.dispatch("")
+            log.info(f"{self.name.capitalize()} logged into main menu. Last login {self.lasttime} from {self.lasthost}")
             self.lasttime = time.ctime()
             self.lasthost = self.sock.host.strip()
             self.main_menu()
@@ -180,12 +184,14 @@ class Login(object):
             self.main_menu()
         elif inp == 'l':
             self.sock.dispatch('Thanks for playing.  We hope to see you again soon.')
+            log.info(f"{self.sock.host} disconnecting from Akrios.")
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
             self.sock.handle_close()
             self.clear()
             del self
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')
+            log.info(f"Character {self.name} deleted by {self.sock.host}")
             comm.wiznet(f"Character {self.name} deleted by {self.sock.host}")
             os.remove(f"{world.playerDir}/{self.name}.json")
             self.sock.handle_close()
@@ -213,18 +219,19 @@ class Login(object):
             player.playerlist_by_aid[newobject.aid] = newobject
             event.init_events_player(newobject)
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
-            comm.log(newobject.logpath, f"Logging in from: {newobject.sock.host}")
+            log.info(f"{newobject.name.capitalize()} logging in from: {newobject.sock.host}")
             if newobject.position == "sleeping":
                 newobject.write("You are sleeping.")
             else:
                 newobject.interp("look")
             if grapevine.LIVE:
+                log.debug(f"Sending player login to Grapevine : {newobject.name}")
                 grapevine.gsocket.msg_gen_player_login(newobject.name)
             newobject.lasttime = time.ctime()
             newobject.lasthost = newobject.sock.host
         else:
             self.sock.dispatch("There seems to be a problem loading your file!  Notify Jubelo.")
-            comm.wiznet(f"{path} does not exist! Notify Jubelo!")
+            log.error(f"{path} does not exist!")
             self.main_menu()
             self.interp = self.main_menu_get_option
                         
@@ -374,10 +381,10 @@ class Login(object):
             newplayer.alias['page'] = 'beep'
             newplayer.alias['u'] = 'up'
             newplayer.alias['d'] = 'down'
-            newplayer.alias['gossip'] = 'mmchat'
             newplayer.interp('look')
             newplayer.save()
             event.init_events_player(newplayer)
+            log.info(f"{newplayer.name} @ {newplayer.sock.host} is a new character entering Akrios.")
             comm.wiznet(f"{newplayer.name} is a new character entering Akrios.")
             del self
         else:

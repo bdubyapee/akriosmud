@@ -7,7 +7,7 @@
 # By: Jubelo
 
 import asyncore
-import os
+import logging
 from socket import AF_INET6, SOCK_STREAM
 import string
 from telnetlib import IAC, DO, WONT, WILL, theNULL, ECHO, SGA
@@ -22,8 +22,8 @@ import comm
 import login
 import races
 import event
-import world
 
+log = logging.getLogger(__name__)
 
 # This is outside the scope of the rest of this module so we have a good
 # reference time to base our total startup time.  Used only in the server
@@ -70,14 +70,14 @@ class ConnSocket(asyncore.dispatcher):
     def do_echo_telnet(self):
         try:
             self.send(DOECHOTELNET)
-        except:
-            pass
+        except Exception as err:
+            log.error(f"do_echo_telnet : {err}")
 
     def dont_echo_telnet(self):
         try:
             self.send(DONTECHOTELNET)
-        except:
-            pass      
+        except Exception as err:
+            log.error(f"dont_echo_telnet : {err}")
         
     def writable(self):
         return True if self.outbuf else False
@@ -94,7 +94,7 @@ class ConnSocket(asyncore.dispatcher):
             to_log = (f"Error parsing input:\n\r",
                       f"Host: {self.host}\n\r",
                       f"Error: {err}\n\r")
-            comm.log(world.serverlog, f"{to_log}")
+            log.error(to_log)
             return
         # Here we check if there has just been an enter pressed.
         if text == "\r\n":
@@ -118,7 +118,7 @@ class ConnSocket(asyncore.dispatcher):
             indata = self.recv(4096)
         except Exception as err:
             self.handle_close()
-            comm.log(world.serverlog, f"Error in handle_read:server.py : {err}")
+            log.error(f"handle_read : {err}")
 
         # Clients usually send the Suppress-Go-Ahead on connection.  This
         # tests for the suggestion, and sends the "Go ahead and suppress it"
@@ -152,7 +152,7 @@ class ConnSocket(asyncore.dispatcher):
                 self.send(output.encode("utf8"))
         except Exception as err:
             self.handle_close()
-            comm.log(world.serverlog, f"Error in handle_write:server.py - {err}")
+            log.error(f"handle_write : {err}")
 
     def handle_close(self):
         if self in connlist:
@@ -180,7 +180,7 @@ class Server(asyncore.dispatcher):
     
     def __init__(self):
         super().__init__()
-        self.logpath = os.path.join(world.logDir, "server")
+        log.info("Instantiating Akrios on port: 5678")
         self.events = event.Queue(self, "server")      
         self.create_socket(AF_INET6, SOCK_STREAM)
         self.set_reuse_addr()
@@ -194,13 +194,14 @@ class Server(asyncore.dispatcher):
         event.init_events_server(self)
 
         if grapevine.LIVE:
+            log.debug("grapevine.LIVE : Creating Grapevine Socket.")
             grapevine.gsocket = grapevine.GrapevineSocket()
 
             grapevine_connected = grapevine.gsocket.gsocket_connect()
             if not grapevine_connected:
-                print("Could not connect to grapevine on startup.")
+                log.warning("Could not connect to grapevine on startup.")
 
-        print(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
+        log.debug(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
 
     @staticmethod
     def run():
@@ -221,7 +222,7 @@ class Server(asyncore.dispatcher):
             # Restart Mud, reload file descriptors and load players.
             # XXX Implement this at some point.
             pass
-        print("System shutdown successful.")
+        log.info("System shutdown successful.")
         sys.exit()
 
     def handle_accept(self):
@@ -232,5 +233,6 @@ class Server(asyncore.dispatcher):
         newconn.sock.owner = newconn
         connlist.append(sock)
         newconn.greeting()
+        log.info(f"Accepting connection from: {newconn.sock.host}")
         comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
         return sock
