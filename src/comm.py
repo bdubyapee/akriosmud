@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 def wiznet(msg=""):
     msg = f"\n\r\n\r{{YWiznet: {msg.capitalize()[0]}{msg[1:]}{{x"
-    log.info(msg)
+    log.info(msg.lstrip())
     for person in player.playerlist:
         if person.is_admin:
             person.write(msg)
