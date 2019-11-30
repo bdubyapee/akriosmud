@@ -71,9 +71,11 @@ def toggle(caller, args):
         if args == 'log debug':
             if logging.getLevelName(logging.root.getEffectiveLevel()) == "INFO":
                 logging.root.setLevel("DEBUG")
+                log.warning(f"{caller.name.capitalize()} Changed log level to DEBUG")
                 caller.write("\n\r{WSystem level debug has been enabled.{x")
             else:
                 logging.root.setLevel("INFO")
+                log.warning(f"{caller.name.capitalize()} Changed log level to INFO")
                 caller.write("\n\r{WSystem level debug has been disabled.{x")
 
     if caller.oocflags_stored['newbie'] == 'true':
