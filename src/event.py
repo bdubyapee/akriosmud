@@ -158,8 +158,8 @@ def init_events_grapevine(grapevine_):
     grapevine_.events.add(event)
 
 
-def init_events_area(area):
-    log.debug(f"Initializing events_area: {area}")
+def init_events_area(area_):
+    log.debug(f"Initializing events_area: {area_}")
 
 
 def init_events_room(room):
@@ -171,7 +171,7 @@ def init_events_reset(reset):
 
 
 def init_events_exit(exit_):
-    log.debug(f"Initializing events_exit: {exit}")
+    log.debug(f"Initializing events_exit: {exit_}")
 
 
 def init_events_mobile(mobile):
@@ -179,6 +179,7 @@ def init_events_mobile(mobile):
 
 
 def init_events_player(player_):
+    log.debug(f"Initializing events_player: {player_}")
     # Begin with events _all_ players will have.
 
     # First is the autosave for players every 5 minutes
