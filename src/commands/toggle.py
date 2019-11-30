@@ -10,6 +10,9 @@
 # By: Jubelo
 
 from commands import *
+import logging
+
+log = logging.getLogger(__name__)
 
 name = "toggle"
 version = 1
@@ -65,13 +68,13 @@ def toggle(caller, args):
             caller.write("\n\r{WQuote Channel enabled.{x")
 
     if caller.is_admin:
-        if args == 'gdebug':
-            if grapevine.gsocket.debug:
-                grapevine.gsocket.debug = False
-                caller.write("\n\r{Wgdebug Grapevine Network Debug has been disabled.{x")
+        if args == 'log debug':
+            if logging.getLevelName(log.getEffectiveLevel()) == "INFO":
+                log.setLevel("DEBUG")
+                caller.write("\n\r{WSystem level debug has been disabled.{x")
             else:
-                grapevine.gsocket.debug = True
-                caller.write("\n\r{Wgdebug Grapevine Network Debug has been enabled.{x")
+                log.setLevel("INFO")
+                caller.write("\n\r{WSystem level debug has been enabled.{x")
 
     if caller.oocflags_stored['newbie'] == 'true':
         newbie_ = "Enabled"
