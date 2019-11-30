@@ -96,6 +96,5 @@ class Mobile(livingthing.LivingThing, olc.Editable):
 
         new_mob.move(newroom)
 
-    @staticmethod
-    def write(args):
+    def write(self, args):
         log.debug(f"Received mobile[{self.vnum}] command write of: {args}")
