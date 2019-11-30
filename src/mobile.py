@@ -6,15 +6,16 @@
 # 
 # By: Jubelo
 
+import logging
 import json
 import uuid
 
-import comm
 import livingthing
 import olc
 import event
 import races
 
+log = logging.getLogger(__name__)
 
 WRITE_NEW_FILE_VERSION = False
 
@@ -50,6 +51,8 @@ class Mobile(livingthing.LivingThing, olc.Editable):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
 
+        log.debug(f"Loading mobile: {self.vnum}")
+
         self.location = None
         self.race = races.racebyname(self.race)
         
@@ -81,7 +84,7 @@ class Mobile(livingthing.LivingThing, olc.Editable):
             at this time, that it is a room object and we place it there.
         """
         if location is None:
-            comm.wiznet(f"Cannot load Mobile to None Location.")
+            log.error(f"Cannot load Mobile to None Location.")
             return
         elif type(location) is int and location in self.area.roomlist:
             newroom = self.area.room_by_vnum(location)
@@ -95,4 +98,4 @@ class Mobile(livingthing.LivingThing, olc.Editable):
 
     @staticmethod
     def write(args):
-        print(f"Received mobile command write of: {args}")
+        log.debug(f"Received mobile[{self.vnum}] command write of: {args}")

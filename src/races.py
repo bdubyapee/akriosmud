@@ -6,12 +6,15 @@
 # 
 # By: Jubelo
 
-import os
 import glob
+import logging
+import os
 import json
 
 import olc
 import world
+
+log = logging.getLogger(__name__)
 
 WRITE_NEW_FILE_VERSION = False
 
@@ -144,6 +147,7 @@ class Race(olc.Editable):
             race_file_dict = json.loads(thefile.read())
             for eachkey, eachvalue in race_file_dict.items():
                 setattr(self, eachkey, eachvalue)
+        log.debug(f"Loading race: {self.name}")
 
     def to_json(self):
         if self.json_version == 1:
@@ -231,6 +235,7 @@ racesdict = {}
 
 
 def init():
+    log.info("Initializing races")
     racepaths = glob.glob(os.path.join(world.raceDir, '*.json'))
     for racepath in racepaths:
         therace = Race(racepath)

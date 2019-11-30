@@ -8,6 +8,7 @@
 # By: Jubelo
 
 # Imports here
+import logging
 import time
 
 import area
@@ -17,6 +18,8 @@ import exits
 import helpsys
 import races
 import room
+
+log = logging.getLogger(__name__)
 
 
 class Atomic(object):
@@ -103,7 +106,7 @@ class Atomic(object):
         rev_direction = "the ether"
 
         if tospot is None:
-            comm.wiznet("Received None value in move:livingthing.py")
+            log.warning("Received None value in move method")
             return
 
         mover = self.disp_name

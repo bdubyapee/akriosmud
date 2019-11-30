@@ -7,11 +7,11 @@
 # By: Jubelo
 
 from collections import namedtuple
+import logging
 import os
 import json
 import glob
 
-import comm
 import event
 import exits
 import mobile
@@ -21,6 +21,7 @@ import reset
 import room
 import world
 
+log = logging.getLogger(__name__)
 
 arealist = []
 
@@ -43,6 +44,7 @@ difficulty = {"all": Difficulty("all"),
 
 
 def init():
+    log.info("Executing init()")
     for each_area_directory in glob.glob(os.path.join(world.areaDir, '*')):
         thefile = glob.glob(os.path.join(each_area_directory, '*.json'))
         Area(each_area_directory, thefile[0])
@@ -196,14 +198,17 @@ class Area(olc.Editable):
                 thefile.write(eacharea.to_json())
 
     def load(self):
+        log.info(f"Loading area: {self.area_path}")
         with open(self.area_path, 'r') as thefile:
             data = thefile.read()
         
         # Load Header Data into this Area
+        log.info(f"Loading area Header: {self.area_path}")
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
 
         # Load each Room into this Area
+        log.info(f"{self.name} : Loading area Rooms")
         roomfilepath = os.path.join(self.folder_path, f"rooms/*.json")
         filenames = glob.glob(roomfilepath)
         for eachfile in filenames:
@@ -211,6 +216,7 @@ class Area(olc.Editable):
                 room.Room(self, thefile.read())
  
         # Load each Exit and attach it to a room
+        log.info(f"{self.name} : Loading area Exits")
         exitfilepath = os.path.join(self.folder_path, f"exits/*.json")
         filenames = glob.glob(exitfilepath)
         for eachfile in filenames:
@@ -219,11 +225,12 @@ class Area(olc.Editable):
                 roomvnum = fullpath.split('/')[-1:][0]
                 attached_room = self.room_by_vnum(int(roomvnum))
                 if attached_room is None:
-                    comm.log(world.serverlog, f"room_by_vnum_global failed in exit load: {roomvnum}")
+                    log.warning(f"room_by_vnum_global failed in exit load: {roomvnum}")
                 else:
                     exits.Exit(attached_room, direction_fn, thefile.read())
 
         # Load each Mobile in to the Indexes.
+        log.info(f"{self.name} : Loading area Mobiles")
         mobilefilepath = os.path.join(self.folder_path, f"mobiles/*.json")
         filenames = glob.glob(mobilefilepath)
         for eachfile in filenames:
@@ -231,6 +238,7 @@ class Area(olc.Editable):
                 mobile.Mobile(self, thefile.read())
 
         # Load each Object in to the Indexes.
+        log.info(f"{self.name} : Loading area Objects")
         objectfilepath = os.path.join(self.folder_path, f"objects/*.json")
         filenames = glob.glob(objectfilepath)
         for eachfile in filenames:
@@ -238,12 +246,14 @@ class Area(olc.Editable):
                 objects.Object(self, thefile.read(), load_type="index")
 
         # Load the resets for this area.
+        log.info(f"{self.name} : Loading area Resets")
         resetfilepath = os.path.join(self.folder_path, f"resets/resets.json")
         if os.path.exists(resetfilepath):
             with open(resetfilepath, 'r') as thefile:
                 reset.Reset(self, thefile.read())
 
         # Add this area to the area list.
+        log.info(f"{self.name} : Appending to arealist.")
         arealist.append(self)
 
     def display(self):

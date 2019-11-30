@@ -6,6 +6,7 @@
 # 
 # By: Jubelo
 
+import logging
 import random
 import time
 import uuid
@@ -15,6 +16,8 @@ import comm
 import grapevine
 import player
 import server
+
+log = logging.getLogger(__name__)
 
 PULSE_PER_SECOND = 8
 PULSE_PER_MINUTE = 60 * PULSE_PER_SECOND
@@ -118,14 +121,15 @@ def heartbeat():
 # init below.
 
 def init_events_socket(socket):
-    pass
+    log.debug(f"Initializing events_socket: {socket}")
 
 
 def init_events_server(server):
-    pass
+    log.debug(f"Initializing events_server: {server}")
 
 
 def init_events_grapevine(grapevine_):
+    log.debug("Initializing events_grapevine")
     event = Event()
     event.owner = grapevine_
     event.ownertype = "grapevine"
@@ -155,80 +159,80 @@ def init_events_grapevine(grapevine_):
 
 
 def init_events_area(area):
-    pass
+    log.debug(f"Initializing events_area: {area}")
 
 
 def init_events_room(room):
-    pass
+    log.debug(f"Initializing events_room: {room}")
 
 
 def init_events_reset(reset):
-    pass
+    log.debug(f"Initializing events_reset: {reset}")
 
 
 def init_events_exit(exit_):
-    pass
+    log.debug(f"Initializing events_exit: {exit}")
 
 
 def init_events_mobile(mobile):
-    pass
+    log.debug(f"Initializing events_mobile: {mobile}")
 
 
-def init_events_player(player):
+def init_events_player(player_):
     # Begin with events _all_ players will have.
 
     # First is the autosave for players every 5 minutes
     event = Event()
-    event.owner = player
+    event.owner = player_
     event.ownertype = "player"
     event.eventtype = "autosave"
     event.func = event_player_autosave
     event.passes = 5 * PULSE_PER_MINUTE
     event.totalpasses = event.passes
-    player.events.add(event)
+    player_.events.add(event)
 
     # Check for player idle time here once per minute.
     event = Event()
-    event.owner = player
+    event.owner = player_
     event.ownertype = "player"
     event.eventtype = "idle check"
     event.func = event_player_idle_check
     event.passes = 1 * PULSE_PER_MINUTE
     event.totalpasses = event.passes
-    player.events.add(event)
+    player_.events.add(event)
 
     # Player dependant events go below here.
 
     # If player is a newbie, or has the flag enabled send them newbie tips.
-    if player.oocflags_stored['newbie'] == 'true':
+    if player_.oocflags_stored['newbie'] == 'true':
         event = Event()
-        event.owner = player
+        event.owner = player_
         event.ownertype = "player"
         event.eventtype = "newbie tips"
         event.func = event_player_newbie_notify
         event.passes = 45 * PULSE_PER_SECOND
         event.totalpasses = event.passes
-        player.events.add(event)
-        if player.sock is None:
+        player_.events.add(event)
+        if player_.sock is None:
             return
-        player.sock.dispatch("\n\r{P[NEWBIE TIP]{x: You will receive Newbie Tips periodically "
-                             "until disabled.\n\r              Use the 'toggle newbie' command "
-                             "to enable/disable")
+        player_.sock.dispatch("\n\r{P[NEWBIE TIP]{x: You will receive Newbie Tips periodically "
+                              "until disabled.\n\r              Use the 'toggle newbie' command "
+                              "to enable/disable")
 
     # Admin characters will receive a system status update.
-    if player.is_admin:
+    if player_.is_admin:
         event = Event()
-        event.owner = player
+        event.owner = player_
         event.ownertype = "admin"
         event.eventtype = "system status"
         event.func = event_admin_system_status
         event.passes = 5 * PULSE_PER_MINUTE
         event.totalpasses = event.passes
-        player.events.add(event)
+        player_.events.add(event)
 
 
 def init_events_object(object_):
-    pass
+    log.debug(f"Initializing events_object: {object_}")
 
 
 # Below are the actual events.
@@ -334,7 +338,7 @@ def event_grapevine_receive_message(event_):
                     return
                 message = (f"\n\r{{GGrapevine Status Update{{x: {{y{name.capitalize()}{{G "
                            f"has {inout} {{Y{game.capitalize()}{{x.")
-                is_status = True
+                is_status_msg = True
 
             if message != "":
                 grape_enabled = [players for players in player.playerlist
@@ -460,6 +464,7 @@ def event_player_idle_check(event_):
         return
 
     if idle_time >= 10 * 60:
+        log.info(f"AFK forced log out {event_.owner.name.capitalize()}")
         event_.owner.write("\n\r{WYou have been idle for over 10 minutes.  Logging you out.{x")
         event_.owner.interp('quit force')
         return

@@ -194,14 +194,14 @@ class Server(asyncore.dispatcher):
         event.init_events_server(self)
 
         if grapevine.LIVE:
-            log.debug("grapevine.LIVE : Creating Grapevine Socket.")
+            log.info("grapevine.LIVE : Creating Grapevine Socket.")
             grapevine.gsocket = grapevine.GrapevineSocket()
 
             grapevine_connected = grapevine.gsocket.gsocket_connect()
             if not grapevine_connected:
                 log.warning("Could not connect to grapevine on startup.")
 
-        log.debug(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
+        log.info(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
 
     @staticmethod
     def run():
@@ -233,6 +233,5 @@ class Server(asyncore.dispatcher):
         newconn.sock.owner = newconn
         connlist.append(sock)
         newconn.greeting()
-        log.info(f"Accepting connection from: {newconn.sock.host}")
         comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
         return sock

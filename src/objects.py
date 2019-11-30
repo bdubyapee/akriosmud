@@ -7,15 +7,16 @@
 # By: Jubelo
 
 from collections import namedtuple
+import logging
 import json
 import uuid
 
 import atomic
-import comm
 import olc
 import event
 import races
 
+log = logging.getLogger(__name__)
 
 WRITE_NEW_FILE_VERSION = False
 
@@ -175,7 +176,7 @@ class Object(atomic.Atomic, olc.Editable):
     def load(self, data, load_type):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
-
+        log.debug(f"Loading object [{load_type}]: {self.vnum}")
         if load_type == "index":
             self.populate_index()
             return
@@ -222,12 +223,14 @@ class Object(atomic.Atomic, olc.Editable):
             data to contain the appropriate location information and any details.
         """
         if reset_data is None:
-            comm.wiznet(f"Cannot load Object to None Location.")
+            log.error(f"Cannot load Object with reset data of None.")
             return
 
         location = reset_data.target_loc_vnum
         target_location = None
 
+        log.debug(f"Creating object[{self.vnum}] instance. "
+                  f"Target {reset_data.target_loc_is}[{reset_data.target_loc_vnum}]")
         if reset_data.target_loc_is == "mobile":
             target_location = self.area.mobile_inst_by_vnum(location)
             if not target_location:
@@ -255,4 +258,4 @@ class Object(atomic.Atomic, olc.Editable):
 
     @staticmethod
     def write(args):
-        print(f"Received object command write of: {args}")
+        log.debug(f"Received object[{self.vnum}] command write of: {args}")

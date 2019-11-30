@@ -191,7 +191,6 @@ class Login(object):
             del self
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')
-            log.info(f"Character {self.name} deleted by {self.sock.host}")
             comm.wiznet(f"Character {self.name} deleted by {self.sock.host}")
             os.remove(f"{world.playerDir}/{self.name}.json")
             self.sock.handle_close()
@@ -213,13 +212,12 @@ class Login(object):
             newobject.write("")
             newobject.write(helpsys.get_help("motd", server=True))
             newobject.write("")
-            comm.wiznet(f"{newobject.name.capitalize()} logging into Akrios.")
+            comm.wiznet(f"{newobject.name.capitalize()} logging in from {newobject.sock.host}.")
             player.playerlist.append(newobject)
             player.playerlist_by_name[newobject.name] = newobject
             player.playerlist_by_aid[newobject.aid] = newobject
             event.init_events_player(newobject)
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
-            log.info(f"{newobject.name.capitalize()} logging in from: {newobject.sock.host}")
             if newobject.position == "sleeping":
                 newobject.write("You are sleeping.")
             else:
@@ -384,8 +382,7 @@ class Login(object):
             newplayer.interp('look')
             newplayer.save()
             event.init_events_player(newplayer)
-            log.info(f"{newplayer.name} @ {newplayer.sock.host} is a new character entering Akrios.")
-            comm.wiznet(f"{newplayer.name} is a new character entering Akrios.")
+            comm.wiznet(f"{newplayer.name} @ {newplayer.sock.host} is a new character entering Akrios.")
             del self
         else:
             self.roll_stats()

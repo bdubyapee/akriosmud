@@ -7,12 +7,14 @@
 # By: Jubelo
 
 from collections import namedtuple
+import logging
 import json
 import uuid
 
 import olc
 import event
 
+log = logging.getLogger(__name__)
 
 # Define some named tuples for various reset values.
 
@@ -65,16 +67,16 @@ class MobileReset(BaseReset):
 
     def execute(self):
         if self.target_vnum not in self.area.mobilelist_by_vnum_index:
-            print(f"Unable to find mobile vnum {self.target_vnum}")
+            log.error(f"Unable to find mobile vnum {self.target_vnum}")
             return
 
         if self.target_loc_vnum not in self.area.roomlist:
-            print(f"Mobile Unable to find room vnum {self.target_loc_vnum}")
-            print(f"target_loc_vnum type = {type(self.target_loc_vnum)}")
-            print(f"roomlist = {self.area.roomlist}")
+            log.error(f"Mobile Unable to find room vnum {self.target_loc_vnum}")
+            log.error(f"target_loc_vnum type = {type(self.target_loc_vnum)}")
+            log.error(f"roomlist = {self.area.roomlist}")
             return
 
-        # Count current mobiles of this vnum, if at or exceeding max then bail out. 
+        # ADD: Count current mobiles of this vnum, if at or exceeding max then bail out.
 
         loc = self.target_loc_vnum
         self.area.mobilelist_by_vnum_index[self.target_vnum].create_instance(location=loc)
@@ -112,22 +114,22 @@ class ObjectReset(BaseReset):
 
     def execute(self):
         if self.target_vnum not in self.area.objectlist_by_vnum_index:
-            print(f"Unable to find object vnum {self.target_vnum}")
+            log.error(f"Unable to find object vnum {self.target_vnum}")
             return
 
         if self.target_loc_is == 'room' and self.target_loc_vnum not in self.area.roomlist:
-            print(f"Object Unable to find room vnum {self.target_loc_vnum}")
-            print(f"target_loc_vnum type = {type(self.target_loc_vnum)}")
-            print(f"roomlist = {self.area.roomlist}")
+            log.error(f"Object Unable to find room vnum {self.target_loc_vnum}")
+            log.error(f"target_loc_vnum type = {type(self.target_loc_vnum)}")
+            log.error(f"roomlist = {self.area.roomlist}")
             return
 
         mli = self.area.mobilelist_by_vnum_index
 
         if self.target_loc_is == 'mobile' and self.target_loc_vnum not in mli:
-            print(f"Unable to find mobile vnum {self.target_loc_vnum}")
+            log.error(f"Unable to find mobile vnum {self.target_loc_vnum}")
             return
 
-        # Count current objects of this vnum, if at or exceeding max then bail out. 
+        # ADD: Count current objects of this vnum, if at or exceeding max then bail out.
 
         self.area.objectlist_by_vnum_index[self.target_vnum].create_instance(self)
 
@@ -173,6 +175,8 @@ class Reset(olc.Editable):
     def load(self, data):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
+
+        log.debug(f"Loading reset {self.aid} in {self.area.name}")
 
         self.mobile_list = {int(k): MobileReset(self.area, v) for k, v in self.mobile_list.items()}
         self.object_list = {int(k): ObjectReset(self.area, v) for k, v in self.object_list.items()}

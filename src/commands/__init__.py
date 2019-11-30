@@ -9,6 +9,7 @@
 
 
 from functools import wraps
+import logging
 import json
 import os
 import sys
@@ -33,6 +34,8 @@ import comm
 import server
 import player
 import world
+
+log = logging.getLogger(__name__)
 
 
 # Basic truthfullness tests for command pre-parsing.
@@ -307,7 +310,8 @@ class Command(object):
                           f"Args: {args_}\n\r"
                           f"KwArgs: {kwargs_}\n\r"
                           f"Error: {err}")
-                comm.log(world.serverlog, f"\n\r{to_log}")
+                log.error(f"\n\r{to_log}")
+                comm.wiznet(f"Command execution error: {to_log}")
                 caller.write("Something terrible has happened. Sorry!")
                 return
 

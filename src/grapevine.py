@@ -26,9 +26,7 @@
 # Example usage would be to import this module into your main game server.  During server startup
 # assign grapevine.gsocket to grapevine.GrapevineSocket().  After instance init is when you need
 # to connect via grapevine.gsocket.gsocket_connect().  PLEASE PUT YOUR CLIENT ID AND CLIENT SECRET
-# into the appropriate instance attributes of GrapevineSocket below.  Please note the instance
-# attribute in GrapevineSocket of debug, set to True if you would like to print to stdout various
-# things that happen to help with debugging.
+# into the appropriate instance attributes of GrapevineSocket below.
 #
 # You will need to periodically call the gsocket.handle_read() and gsocket.handle_write() as
 # required by your configuration.   Please see the examples in the repo of how this might look
@@ -64,6 +62,7 @@
 
 import datetime
 import json
+import logging
 import socket
 import time
 import uuid
@@ -73,6 +72,8 @@ import comm
 import event
 from keys import LIVE, CLIENT_ID, SECRET_KEY
 import player
+
+log = logging.getLogger(__name__)
 
 gsocket = None
 
@@ -85,6 +86,7 @@ class GrapevineReceivedMessage(object):
         # Short hand to convert JSON data to instance attributes.
         # Not secure at all.  If you're worried about it feel free to modify
         # to your needs.
+        log.debug(f"Received message from Grapevine: {message}")
         for eachkey, eachvalue in json.loads(message).items():
             setattr(self, eachkey, eachvalue)
 
@@ -193,13 +195,11 @@ class GrapevineReceivedMessage(object):
             if self.is_event_status("failure"):
                 channel = orig_req["payload"]["channel"]
                 self.gsock.subscribed[channel] = False
-                if self.gsock.debug:
-                    comm.wiznet(f"Grapevine failed to subscribe to channel {channel}")
+                comm.wiznet(f"Grapevine failed to subscribe to channel {channel}")
             elif self.is_event_status("success"):
                 channel = orig_req["payload"]["channel"]
                 self.gsock.subscribed[channel] = True
-                if self.gsock.debug:
-                    comm.wiznet(f"Grapevine successfully subscribed to channel {channel}")
+                comm.wiznet(f"Grapevine successfully subscribed to channel {channel}")
 
     def received_chan_unsub(self, sent_refs):
         """
@@ -212,8 +212,7 @@ class GrapevineReceivedMessage(object):
             orig_req = sent_refs.pop(self.ref)
             channel = orig_req["payload"]["channel"]
             self.gsock.subscribed[channel] = False
-            if self.gsock.debug:
-                comm.wiznet(f"Grapevine unsubscribed from channel {channel}")
+            comm.wiznet(f"Grapevine unsubscribed from channel {channel}")
 
     def received_player_logout(self, sent_refs):
         """
@@ -331,6 +330,7 @@ class GrapevineReceivedMessage(object):
             sent = self.payload['sent_at']
             message = self.payload['message']
 
+            log.info(f"Grapevine received tell: {sender}@{game} told {target} '{message}'")
             return sender, target, game, sent, message
 
     def received_games_status(self, sent_refs):
@@ -421,7 +421,13 @@ class GrapevineReceivedMessage(object):
         Grapevine 1.0.0
         """
         if hasattr(self, "payload"):
-            return self.payload['name'], self.payload['game'], self.payload['message'], self.payload['channel']
+            name = self.payload['name']
+            game = self.payload['game']
+            message = self.payload['message']
+            channel = self.payload['channel']
+
+            log.info(f"Grapevine received message: {name}@{game} on {channel} said '{message}'")
+            return name, game, message, channel
 
     def received_achievements_sync(self, sent_refs):
         """
@@ -454,7 +460,7 @@ class GrapevineReceivedMessage(object):
                     self.achievements['key'] = self.payload
                     return
             elif self.status == "failure":
-               return self.payload['errors']
+                return self.payload['errors']
 
     def received_achievements_update(self, sent_refs):
         """
@@ -471,7 +477,7 @@ class GrapevineReceivedMessage(object):
                     self.achievements['key'] = self.payload
                     return
             elif self.status == "failure":
-               return self.payload['errors']
+                return self.payload['errors']
 
     def received_achievements_delete(self, sent_refs):
         """
@@ -492,8 +498,6 @@ class GrapevineReceivedMessage(object):
 class GrapevineSocket(WebSocket):
     def __init__(self):
         super().__init__(sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),))
-
-        self.debug = False
 
         self.inbound_frame_buffer = []
         self.outbound_frame_buffer = []
@@ -532,7 +536,8 @@ class GrapevineSocket(WebSocket):
             result = self.connect("wss://grapevine.haus/socket")
             comm.wiznet("gsocket_connect: Attempting connection to Grapevine.")
             comm.wiznet(f"gsocket_connect result: {result}")
-        except ConnectionError or ConnectionRefusedError or ConnectionAbortedError:
+        except ConnectionError or ConnectionRefusedError or ConnectionAbortedError as err:
+            log.error(f"Exception raised in gsocket_connect: {err}")
             return False
         # We need to set the below on the socket as websocket.WebSocket is
         # blocking by default.  :(
@@ -707,6 +712,8 @@ class GrapevineSocket(WebSocket):
                "ref": ref,
                "payload": payload}
 
+        log.info(f"Grapevine message: {caller.disp_name} on {channel} said '{message}'")
+
         self.sent_refs[ref] = msg
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
@@ -777,7 +784,7 @@ class GrapevineSocket(WebSocket):
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_player_tells(self, caller_name, game, target, msg):
+    def msg_gen_player_tells(self, caller_name, game, target, message):
         """
         Send a tell message to a player on the Grapevine network.
 
@@ -792,17 +799,19 @@ class GrapevineSocket(WebSocket):
                    "to_game": game,
                    "to_name": target,
                    "sent_at": time_now,
-                   "message": msg[:290]}
+                   "message": message[:290]}
 
         msg = {"event": "tells/send",
                "ref": ref,
                "payload": payload}
 
+        log.info(f"Grapevine tell: {caller_name} to {target}@{game} said '{message}'")
+
         self.sent_refs[ref] = msg
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_achievements_sync(self, game):
+    def msg_gen_achievements_sync(self):
         """
         Request the list of achievements for our game.
 
@@ -901,11 +910,9 @@ class GrapevineSocket(WebSocket):
         """
         try:
             self.inbound_frame_buffer.append(self.recv())
-            if self.debug:
-                print(f"Grapevine In: {self.inbound_frame_buffer[-1]}")
-                print("")
-        except:
-            pass
+            log.debug(f"Grapevine In: {self.inbound_frame_buffer[-1]}")
+        except Exception as err:
+            log.debug(f"Exception raised in handle_read: {err}")
 
     def handle_write(self):
         """
@@ -915,16 +922,12 @@ class GrapevineSocket(WebSocket):
             outdata = self.outbound_frame_buffer.pop(0)
             if outdata is not None:
                 self.send(outdata)
-                if self.debug:
-                    print(f"Grapevine Out: {outdata}")
-                    print("")
-        except:
-            if self.debug:
-                print(f"Error sending data frame to Grapevine")
+                log.debug(f"Grapevine Out: {outdata}")
+        except Exception as err:
+            log.debug(f"Error sending data frame to Grapevine: {err}")
 
     def receive_message(self):
         try:
             return GrapevineReceivedMessage(self.read_in(), self)
-        except:
-            if self.debug:
-                print("Error receiving message from Grapevine.")
+        except Exception as err:
+            log.debug(f"Error receiving message from Grapevine: {err}")

@@ -8,10 +8,12 @@
 
 from collections import namedtuple
 import json
+import logging
 
 import olc
 import event
 
+log = logging.getLogger(__name__)
 
 # Define some tuples here for standard directions.
 directions = ('north', 'south', 'east', 'west', 'northwest', 'northeast',
@@ -121,6 +123,7 @@ class Exit(olc.Editable):
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def load(self, data):
+        log.debug(f"Loading exit({self.direction}) in room: {self.room}[{self.room.vnum}]")
         for eachkey, eachvalue in json.loads(data).items():
             if eachkey != "room":
                 setattr(self, eachkey, eachvalue)

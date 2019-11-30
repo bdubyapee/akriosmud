@@ -7,17 +7,17 @@
 # By: Jubelo
 
 from collections import namedtuple
-import os
 import glob
-import time
+import logging
 import json
+import os
 
 import olc
 import world
 
+log = logging.getLogger(__name__)
 
 WRITE_NEW_FILE_VERSION = False
-
 
 # Define some named tuples for various Help file values
 Section = namedtuple("Section", "name")
@@ -67,6 +67,7 @@ class Help(olc.Editable):
             return json.dumps(jsonable, sort_keys=True, indent=4)
 
     def load(self):
+        log.debug(f"Loading help file: {self.path}")
         if self.path.endswith("json"):
             with open(self.path, "r") as thefile:
                 help_file_dict = json.loads(thefile.read())
@@ -92,6 +93,7 @@ helpfiles = {}
 
 
 def init():
+    log.info("Initializing all help files.")
     allhelps = glob.glob(os.path.join(world.helpDir, "*.json"))
     for singlehelp in allhelps:
         thehelp = Help(singlehelp)
@@ -113,9 +115,7 @@ def get_help(key, server=False):
             if helpfiles[key].viewable.lower() == "true" or server:
                 return helpfiles[key].description
         else:
-            filename = os.path.join(world.logDir, "missinghelp")
-            with open(filename, "a+") as thefile:
-                thefile.write(f"{time.asctime()}> {key}\n")
+            log.warning(f"MISSING HELP FILE: {key}")
             return "We do not appear to have a help file for that topic. "\
                    "We have however logged the attempt and will look into creating "\
                    "a help file for that topic as soon as possible.\n\r"

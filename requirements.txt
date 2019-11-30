@@ -1,3 +1,2 @@
 bcrypt
 websocket-client
-pytz

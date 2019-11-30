@@ -6,7 +6,10 @@
 # 
 # By: Jubelo
 
+import logging
 import textwrap
+
+log = logging.getLogger(__name__)
 
 
 class Editable(object):
@@ -24,14 +27,14 @@ class Editable(object):
                     "description": doDescription}
         
         if args is None or command is None:
-            raise SyntaxError("Error occured in doAttrib:olc.py")
+            log.error("args and command cannot be None")
         
         commtype, commset = self.commands[command]
         
         try:
             commlist[commtype](self, command, args, commset)
-        except:
-            raise SyntaxError("A command failed.  doAttrib.olc.py")
+        except Exception as err:
+            log.error(f"A command failed: {command} {args} error returned: {err}")
 
 
 def doString(theobject=None, thestring=None, value=None, inset=None):

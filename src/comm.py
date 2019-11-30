@@ -6,16 +6,16 @@
 # 
 # By: Jubelo
 
-import pytz
-import datetime
+import logging
 
 import player
-import world
+
+log = logging.getLogger(__name__)
 
 
 def wiznet(msg=""):
     msg = f"\n\r\n\r{{YWiznet: {msg.capitalize()[0]}{msg[1:]}{{x"
-    log(world.serverlog, msg)
+    log.info(msg)
     for person in player.playerlist:
         if person.is_admin:
             person.write(msg)
@@ -47,13 +47,3 @@ def message_to_area(area, sender, message=""):
 
     for each_player in area.playerlist:
         each_player.write(message)
-
-
-def log(tofile=None, msg=""):
-    if tofile is None:
-        wiznet(f"Trying to log to no file in comm.py: {msg}")
-    else:
-        with open(tofile, "a") as tofile:
-            utc_now = pytz.utc.localize(datetime.datetime.utcnow())
-            mst_now = utc_now.astimezone(pytz.timezone("America/Denver"))
-            tofile.write(f"\n\r{mst_now.isoformat()} : {msg.strip()}")

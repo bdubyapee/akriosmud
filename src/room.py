@@ -7,11 +7,13 @@
 # By: Jubelo
 
 from collections import namedtuple
+import logging
 import json
 
 import olc
 import event
 
+log = logging.getLogger(__name__)
 
 # Define some named tuples for various room values.
 
@@ -59,7 +61,7 @@ property_values = {"very poor": PropertyValue("very poor"),
 
 
 class Room(olc.Editable):
-    CLASS_NAME = "__OneRoom__"
+    CLASS_NAME = "__Room__"
     FILE_VERSION = 1
 
     def __init__(self, area, data=None, vnum=None):
@@ -110,6 +112,8 @@ class Room(olc.Editable):
     def load(self, data):
         for eachkey, eachvalue in json.loads(data).items():
             setattr(self, eachkey, eachvalue)
+
+        log.debug(f"Loading room {self.vnum} in area {self.area.name}")
 
         self.area.roomlist[self.vnum] = self
 

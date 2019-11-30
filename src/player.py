@@ -6,6 +6,7 @@
 # 
 # By: Jubelo
 
+import logging
 import json
 import os
 
@@ -15,6 +16,7 @@ import objects
 import event
 import races
 
+log = logging.getLogger(__name__)
 
 WRITE_NEW_FILE_VERSION = False
 
@@ -55,6 +57,8 @@ class Player(livingthing.LivingThing):
                 player_file_dict = json.loads(thefile.read())
                 for eachkey, eachvalue in player_file_dict.items():
                     setattr(self, eachkey, eachvalue)
+
+            log.debug(f"Loading player: {self.name}")
 
             if self.contents:
                 self.contents = {k: objects.Object(None, v, load_type="inventory")

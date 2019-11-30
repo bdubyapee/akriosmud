@@ -9,9 +9,11 @@
 
 # Imports here
 from collections import namedtuple
+import logging
 
 import atomic
-import comm
+
+log = logging.getLogger(__name__)
 
 # Define named tuples for living things.
 
@@ -201,13 +203,13 @@ class LivingThing(atomic.Atomic):
 
     def add_known(self, idnum=None, name=None):
         if idnum is None or name is None:
-            comm.wiznet("You must provide id and name arguments.  addKnown:livingthing.py")
+            log.warning("You must provide id and name arguments to add_known")
         else:
             self.knownpeople[idnum] = name
 
     def get_known(self, idnum=None):
         if idnum is None:
-            comm.wiznet("You must provide an ID to lookup. get_known:livingthing.py")
+            log.warning("You must provide an idnum to get_known")
             return
 
         return self.knownpeople[idnum] if idnum in self.knownpeople else ''

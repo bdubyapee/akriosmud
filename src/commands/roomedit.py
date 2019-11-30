@@ -88,8 +88,8 @@ def roomedit(caller, args, **kwargs):
                 myarea = caller.location.area
                 try:
                     myvnum = int(args[1])
-                except:
-                    caller.write("Vnum argument must be an integer")
+                except Exception as err:
+                    caller.write(f"Vnum argument must be an integer, not: {err}")
                     return
                 if myvnum < myarea.vnumrange[0] or myvnum > myarea.vnumrange[1]:
                     caller.write("That vnum is not in this areas range!")
@@ -112,8 +112,8 @@ def roomedit(caller, args, **kwargs):
         elif args[0] == 'delete':
             try:
                 myvnum = int(args[1])
-            except:
-                caller.write("Vnum argument must be an integer")
+            except Exception as err:
+                caller.write(f"Vnum argument must be an integer, not: {err}")
                 return
             if myvnum in caller.location.area.roomlist:
                 newroom = area.room_by_vnum_global(1)
