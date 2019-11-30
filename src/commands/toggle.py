@@ -69,15 +69,11 @@ def toggle(caller, args):
 
     if caller.is_admin:
         if args == 'log debug':
-            if logging.getLevelName(log.getEffectiveLevel()) == "INFO":
-                logging.basicConfig(filename=world.serverlog, filemode='w',
-                                    format='%(asctime)s: %(name)s - %(levelname)s - %(message)s',
-                                    level=logging.DEBUG)
+            if logging.getLevelName(logging.root.getEffectiveLevel()) == "INFO":
+                logging.root.setLevel("DEBUG")
                 caller.write("\n\r{WSystem level debug has been enabled.{x")
             else:
-                logging.basicConfig(filename=world.serverlog, filemode='w',
-                                    format='%(asctime)s: %(name)s - %(levelname)s - %(message)s',
-                                    level=logging.INFO)
+                logging.root.setLevel("INFO")
                 caller.write("\n\r{WSystem level debug has been disabled.{x")
 
     if caller.oocflags_stored['newbie'] == 'true':
