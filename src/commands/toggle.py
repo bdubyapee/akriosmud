@@ -103,4 +103,4 @@ def toggle(caller, args):
     caller.write(f"    {{Wquote{{x  : {{R{quote_}{{x")
     caller.write(f"")
     if caller.is_admin:
-        caller.write(f"    {{Wgdebug{{x : {{R{grapevine.gsocket.debug}{{x")
+        caller.write(f"    {{Wlog debug{{x : {{R{logging.getLevelName(log.getEffectiveLevel())}{{x")
