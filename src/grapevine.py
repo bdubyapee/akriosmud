@@ -96,25 +96,25 @@ class GrapevineReceivedMessage(object):
         self.gsock = gsock
 
         # When we receive a JSON message from grapevine it will always have an event type.
-        self.rcvr_func = {"heartbeat": (self.gsock.msg_gen_heartbeat, None),
-                          "authenticate": (self.received_auth, None),
-                          "restart": (self.received_restart, None),
-                          "channels/broadcast": (self.received_broadcast_message, None),
-                          "channels/subscribe": (self.received_chan_sub, gsock.sent_refs),
-                          "channels/unsubscribe": (self.received_chan_unsub, gsock.sent_refs),
-                          "players/sign-out": (self.received_player_logout, gsock.sent_refs),
-                          "players/sign-in": (self.received_player_login, gsock.sent_refs),
-                          "games/connect": (self.received_games_connected, None),
-                          "games/disconnect": (self.received_games_disconnected, None),
-                          "games/status": (self.received_games_status, gsock.sent_refs),
-                          "players/status": (self.received_player_status, gsock.sent_refs),
-                          "tells/send": (self.received_tells_status, gsock.sent_refs),
-                          "tells/receive": (self.received_tells_message, None),
-                          "channels/send": (self.received_message_confirm, gsock.sent_refs),
-                          "achievements/sync": (self.received_achievements_sync, gsock.sent_refs),
-                          "achievements/create": (self.received_achievements_create, gsock.sent_refs),
-                          "achievements/update": (self.received_achievements_update, gsock.sent_refs),
-                          "achievements/delete": (self.received_achievements_delete, gsock.sent_refs)}
+        self.rcvr_func = {'heartbeat': (self.gsock.msg_gen_heartbeat, None),
+                          'authenticate': (self.received_auth, None),
+                          'restart': (self.received_restart, None),
+                          'channels/broadcast': (self.received_broadcast_message, None),
+                          'channels/subscribe': (self.received_chan_sub, gsock.sent_refs),
+                          'channels/unsubscribe': (self.received_chan_unsub, gsock.sent_refs),
+                          'players/sign-out': (self.received_player_logout, gsock.sent_refs),
+                          'players/sign-in': (self.received_player_login, gsock.sent_refs),
+                          'games/connect': (self.received_games_connected, None),
+                          'games/disconnect': (self.received_games_disconnected, None),
+                          'games/status': (self.received_games_status, gsock.sent_refs),
+                          'players/status': (self.received_player_status, gsock.sent_refs),
+                          'tells/send': (self.received_tells_status, gsock.sent_refs),
+                          'tells/receive': (self.received_tells_message, None),
+                          'channels/send': (self.received_message_confirm, gsock.sent_refs),
+                          'achievements/sync': (self.received_achievements_sync, gsock.sent_refs),
+                          'achievements/create': (self.received_achievements_create, gsock.sent_refs),
+                          'achievements/update': (self.received_achievements_update, gsock.sent_refs),
+                          'achievements/delete': (self.received_achievements_delete, gsock.sent_refs)}
 
         self.restart_downtime = 0
         self.achievements = {}
