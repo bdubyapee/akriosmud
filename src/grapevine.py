@@ -649,16 +649,16 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
         if chan is None or not chan:
-            payload = {"channel": "gossip"}
+            payload = {'channel': 'gossip'}
         else:
-            payload = {"channel": chan}
+            payload = {'channel': chan}
 
-        if payload["channel"] in self.subscribed:
+        if payload['channel'] in self.subscribed:
             return
 
-        msg = {"event": "channels/subscribe",
-               "ref": ref,
-               "payload": payload}
+        msg = {'event': 'channels/subscribe',
+               'ref': ref,
+               'payload': payload}
 
         self.sent_refs[ref] = msg
 
@@ -673,13 +673,13 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
         if not chan:
-            payload = {"channel": "gossip"}
+            payload = {'channel': 'gossip'}
         else:
-            payload = {"channel": chan}
+            payload = {'channel': chan}
 
-        msg = {"event": "channels/unsubscribe",
-               "ref": ref,
-               "payload": payload}
+        msg = {'event': 'channels/unsubscribe',
+               'ref': ref,
+               'payload': payload}
 
         self.sent_refs[ref] = msg
 
@@ -692,10 +692,10 @@ class GrapevineSocket(WebSocket):
         Grapevine 1.0.0
         """
         ref = str(uuid.uuid4())
-        payload = {"name": player_name.capitalize()}
-        msg = {"event": "players/sign-in",
-               "ref": ref,
-               "payload": payload}
+        payload = {'name': player_name.capitalize()}
+        msg = {'event': 'players/sign-in',
+               'ref': ref,
+               'payload': payload}
 
         self.sent_refs[ref] = msg
 
@@ -708,10 +708,10 @@ class GrapevineSocket(WebSocket):
         Grapevine 1.0.0
         """
         ref = str(uuid.uuid4())
-        payload = {"name": player_name.capitalize()}
-        msg = {"event": "players/sign-out",
-               "ref": ref,
-               "payload": payload}
+        payload = {'name': player_name.capitalize()}
+        msg = {'event': 'players/sign-out',
+               'ref': ref,
+               'payload': payload}
 
         self.sent_refs[ref] = msg
 
@@ -728,12 +728,12 @@ class GrapevineSocket(WebSocket):
             return
 
         ref = str(uuid.uuid4())
-        payload = {"channel": channel,
-                   "name": caller.disp_name,
-                   "message": message[:290]}
-        msg = {"event": "channels/send",
-               "ref": ref,
-               "payload": payload}
+        payload = {'channel': channel,
+                   'name': caller.disp_name,
+                   'message': message[:290]}
+        msg = {'event': 'channels/send',
+               'ref': ref,
+               'payload': payload}
 
         log.info(f"Grapevine message: {caller.disp_name} on {channel} said '{message}'")
 
@@ -751,8 +751,8 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        msg = {"events": "games/status",
-               "ref": ref}
+        msg = {'events': 'games/status',
+               'ref': ref}
 
         self.sent_refs[ref] = msg
 
@@ -768,9 +768,9 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        msg = {"events": "games/status",
-               "ref": ref,
-               "payload": {"game": game}}
+        msg = {'events': 'games/status',
+               'ref': ref,
+               'payload': {'game': game}}
 
         self.sent_refs[ref] = msg
 
@@ -784,8 +784,8 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        msg = {"event": "players/status",
-               "ref": ref}
+        msg = {'event': 'players/status',
+               'ref': ref}
 
         self.sent_refs[ref] = msg
 
@@ -799,9 +799,9 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        msg = {"events": "players/status",
-               "ref": ref,
-               "payload": {"game": game}}
+        msg = {'events': 'players/status',
+               'ref': ref,
+               'payload': {'game': game}}
 
         self.sent_refs[ref] = msg
 
@@ -817,16 +817,16 @@ class GrapevineSocket(WebSocket):
         target = target.capitalize()
 
         ref = str(uuid.uuid4())
-        time_now = f"{datetime.datetime.utcnow().replace(microsecond=0).isoformat()}Z"
-        payload = {"from_name": caller_name,
-                   "to_game": game,
-                   "to_name": target,
-                   "sent_at": time_now,
-                   "message": message[:290]}
+        time_now = f'{datetime.datetime.utcnow().replace(microsecond=0).isoformat()}Z'
+        payload = {'from_name': caller_name,
+                   'to_game': game,
+                   'to_name': target,
+                   'sent_at': time_now,
+                   'message': message[:290]}
 
-        msg = {"event": "tells/send",
-               "ref": ref,
-               "payload": payload}
+        msg = {'event': 'tells/send',
+               'ref': ref,
+               'payload': payload}
 
         log.info(f"Grapevine tell: {caller_name} to {target}@{game} said '{message}'")
 
@@ -842,14 +842,14 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        msg = {"events": "achievements/sync",
-               "ref": ref}
+        msg = {'events': 'achievements/sync',
+               'ref': ref}
 
         self.sent_refs[ref] = msg
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_achievements_create(self, title="Generic Title", desc="Generic Description",
+    def msg_gen_achievements_create(self, title='Generic Title', desc='Generic Description',
                                     points=10, display=False, partial=False, total=None):
         """
         Create a new achievement.
@@ -861,22 +861,22 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        payload = {"title": title,
-                   "description": desc,
-                   "points": points,
-                   "display": display,
-                   "partial_progress": partial,
-                   "total_progress": total}
+        payload = {'title': title,
+                   'description': desc,
+                   'points': points,
+                   'display': display,
+                   'partial_progress': partial,
+                   'total_progress': total}
 
-        msg = {"events": "achievements/create",
-               "ref": ref,
-               "payload": payload}
+        msg = {'events': 'achievements/create',
+               'ref': ref,
+               'payload': payload}
 
         self.sent_refs[ref] = msg
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_achievements_update(self, key, title="Generic Title", desc="Generic Description",
+    def msg_gen_achievements_update(self, key, title='Generic Title', desc='Generic Description',
                                     points=0, display=False, partial=False, total=None):
         """
         Update an existing achievement
@@ -889,17 +889,17 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        payload = {"key": key,
-                   "title": title,
-                   "description": desc,
-                   "points": points,
-                   "display": display,
-                   "partial_progress": partial,
-                   "total_progress": total}
+        payload = {'key': key,
+                   'title': title,
+                   'description': desc,
+                   'points': points,
+                   'display': display,
+                   'partial_progress': partial,
+                   'total_progress': total}
 
-        msg = {"events": "achievements/update",
-               "ref": ref,
-               "payload": payload}
+        msg = {'events': 'achievements/update',
+               'ref': ref,
+               'payload': payload}
 
         self.sent_refs[ref] = msg
 
@@ -916,11 +916,11 @@ class GrapevineSocket(WebSocket):
         """
         ref = str(uuid.uuid4())
 
-        payload = {"key": key}
+        payload = {'key': key}
 
-        msg = {"events": "achievements/delete",
-               "ref": ref,
-               "payload": payload}
+        msg = {'events': 'achievements/delete',
+               'ref': ref,
+               'payload': payload}
 
         self.sent_refs[ref] = msg
 
@@ -933,9 +933,9 @@ class GrapevineSocket(WebSocket):
         """
         try:
             self.inbound_frame_buffer.append(self.recv())
-            log.debug(f"Grapevine In: {self.inbound_frame_buffer[-1]}")
+            log.debug(f'Grapevine In: {self.inbound_frame_buffer[-1]}')
         except Exception as err:
-            log.debug(f"Exception raised in handle_read: {err}")
+            log.debug(f'Exception raised in handle_read: {err}')
 
     def handle_write(self):
         """
@@ -945,12 +945,12 @@ class GrapevineSocket(WebSocket):
             outdata = self.outbound_frame_buffer.pop(0)
             if outdata is not None:
                 self.send(outdata)
-                log.debug(f"Grapevine Out: {outdata}")
+                log.debug(f'Grapevine Out: {outdata}')
         except Exception as err:
-            log.debug(f"Error sending data frame to Grapevine: {err}")
+            log.debug(f'Error sending data frame to Grapevine: {err}')
 
     def receive_message(self):
         try:
             return GrapevineReceivedMessage(self.read_in(), self)
         except Exception as err:
-            log.debug(f"Error receiving message from Grapevine: {err}")
+            log.debug(f'Error receiving message from Grapevine: {err}')
