@@ -256,6 +256,5 @@ class Object(atomic.Atomic, olc.Editable):
                     comm_ = f"wear {self.keywords[0]} on {self.default_wear_loc}"
                     target_location.interp(comm_)
 
-    @staticmethod
-    def write(args):
+    def write(self, args):
         log.debug(f"Received object[{self.vnum}] command write of: {args}")

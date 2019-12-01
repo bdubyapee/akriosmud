@@ -197,7 +197,7 @@ class LivingThing(atomic.Atomic):
                     "alias": self.alias}
 
         if self.contents:
-            jsonable["contents"] = {k: v.toJSON() for k, v in self.contents.items()}
+            jsonable["contents"] = {k: v.to_json() for k, v in self.contents.items()}
 
         return jsonable
 

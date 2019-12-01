@@ -159,9 +159,9 @@ class Reset(olc.Editable):
     def to_json(self):
         if self.json_version == 1:
 
-            mob_list = {int(k): v.toJSON() for k, v in self.mobile_list.items()}
-            obj_list = {int(k): v.toJSON() for k, v in self.object_list.items()}
-            shp_list = {int(k): v.toJSON() for k, v in self.shop_list.items()}
+            mob_list = {int(k): v.to_json() for k, v in self.mobile_list.items()}
+            obj_list = {int(k): v.to_json() for k, v in self.object_list.items()}
+            shp_list = {int(k): v.to_json() for k, v in self.shop_list.items()}
 
             jsonable = {"json_version": self.json_version,
                         "json_class_name": self.json_class_name,
