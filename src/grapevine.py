@@ -129,7 +129,6 @@ class GrapevineReceivedMessage(object):
 
             return whatever is returned by the method, or None.
        """
-        # if hasattr(self, "event") and self.event in self.rcvr_func:
         if 'event' in self.message and self.message['event'] in self.rcvr_func:
             exec_func, args = self.rcvr_func[self.message['event']]
             if args is None:
@@ -146,7 +145,6 @@ class GrapevineReceivedMessage(object):
 
             return True/False
         """
-        # if hasattr(self, "event") and hasattr(self, "status"):
         if 'event' in self.message and 'status' in self.message:
             if self.message['status'] == status:
                 return True
@@ -181,7 +179,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        # if hasattr(self, "payload"):
         if 'payload' in self.message:
             self.restart_downtime = int(self.message['payload']['downtime'])
 
@@ -193,7 +190,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        # if hasattr(self, "ref") and self.ref in sent_refs:
         if 'ref' in self.message and self.message['ref'] in sent_refs:
             orig_req = sent_refs.pop(self.message['ref'])
             if self.is_event_status('failure'):
@@ -212,7 +208,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        # if hasattr(self, "ref") and self.ref in sent_refs:
         if 'ref' in self.message and self.message['ref'] in sent_refs:
             orig_req = sent_refs.pop(self.message['ref'])
             channel = orig_req['payload']['channel']
@@ -231,7 +226,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        # if hasattr(self, "ref"):
         if 'ref' in self.message:
             # We are a success message from Grapevine returned from our notification.
             if self.message['ref'] in sent_refs and self.is_event_status('success'):
@@ -261,7 +255,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        # if hasattr(self, "ref"):
         if 'ref' in self.message:
             if self.message['ref'] in sent_refs and self.is_event_status('success'):
                 sent_refs.pop(self.message['ref'])
@@ -286,7 +279,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.1.0
         """
-        # if hasattr(self, "ref") and hasattr(self, "payload"):
         if 'ref' in self.message and 'payload' in self.message:
             # On first receive we pop the ref just so it's gone from the queue
             if self.message['ref'] in sent_refs:
@@ -316,7 +308,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.0.0
         """
-        # if hasattr(self, "ref"):
         if 'ref' in self.message:
             if self.message['ref'] in sent_refs and 'error' in self.message:
                 orig_req = sent_refs.pop(self.message['ref'])
@@ -333,7 +324,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.0.0
         """
-        # if hasattr(self, "ref") and hasattr(self, "payload"):
         if 'ref' in self.message and 'payload' in self.message:
             sender = self.message['payload']['from_name']
             target = self.message['payload']['to_name']
@@ -351,7 +341,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.1.0
         """
-        # if hasattr(self, "ref") and hasattr(self, "payload") and self.is_event_status("success"):
         if 'ref' in self.message and 'payload' in self.message and self.is_event_status("success"):
             sent_refs.pop(self.message['ref'])
             if self.message['ref'] in sent_refs:
@@ -369,7 +358,6 @@ class GrapevineReceivedMessage(object):
                 return (game, display_name, description, homepage, user_agent,
                         user_agent_repo, connections, supports, num_players)
 
-        # if hasattr(self, "ref") and hasattr(self, "error") and self.is_event_status("failure"):
         if 'ref' in self.message and 'error' in self.message and self.is_event_status('failure'):
             orig_req = sent_refs.pop(self.message['ref'])
             if self.message['ref'] in sent_refs:
@@ -383,7 +371,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine : Should be semi version neutral.
         """
-        # if hasattr(self, "ref"):
         if 'ref' in self.message:
             if self.message['ref'] in sent_refs and self.is_event_status('success'):
                 sent_refs.pop(self.message['ref'])
@@ -392,10 +379,8 @@ class GrapevineReceivedMessage(object):
         """
         A helper method to determine if this is a player update from another game.
         """
-        # if hasattr(self, "event"):
         if 'event' in self.message:
             if self.message['event'] == 'players/sign-in' or self.message['event'] == 'players/sign-out':
-                # if hasattr(self, "payload") and 'game' in self.payload:
                 if 'payload' in self.message and 'game' in self.message['payload']:
                     return True
             else:
@@ -408,7 +393,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.2.0
         """
-        # if hasattr(self, "payload"):
         if 'payload' in self.message:
             # Clear what we knew about this game and request an update.
             # Requesting updates from all games at this point, might as well refresh
@@ -425,7 +409,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.2.0
         """
-        # if hasattr(self, "payload"):
         if 'payload' in self.message:
             if self.message['payload']['game'] in self.gsock.other_games_players:
                 self.gsock.other_games_players.pop(self.message['payload']['game'])
@@ -438,7 +421,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        # if hasattr(self, "payload"):
         if 'payload' in self.message:
             name = self.message['payload']['name']
             game = self.message['payload']['game']
@@ -455,7 +437,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        # if hasattr(self, "ref") and hasattr(self, "payload"):
         if 'ref' in self.message and 'payload' in self.message:
             if self.message['ref'] in sent_refs:
                 sent_refs.pop(self.message['ref'])
@@ -472,7 +453,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        # if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
         if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
             if self.message['ref'] in sent_refs:
                 sent_refs.pop(self.message['ref'])
@@ -490,7 +470,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        # if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
         if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
             if self.message['ref'] in sent_refs:
                 sent_refs.pop(self.message['ref'])
@@ -508,7 +487,6 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        # if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
         if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
             if self.message['ref'] in sent_refs:
                 sent_refs.pop(self.message['ref'])
