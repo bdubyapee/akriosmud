@@ -353,7 +353,7 @@ def event_grapevine_receive_message(event_):
                             eachplayer.write(message)
                 return
 
-        if 'event' in rcvd_msg.message and rcvd_msg['event'] == 'restart':
+        if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
             comm.wiznet("Received restart event from Grapevine.")
             restart_fuzz = 15 + rcvd_msg.restart_downtime
  
