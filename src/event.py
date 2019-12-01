@@ -285,7 +285,7 @@ def event_grapevine_receive_message(event_):
         if ret_value:
             # We will receive a "tells/send" if there was an error telling a
             # foreign game player.
-            if rcvd_msg.event == "tells/send":
+            if rcvd_msg.message['event'] == "tells/send":
                 caller, target, game, error_msg = ret_value
                 message = (f"\n\r{{GGrapevine Tell to {{y{target}@{game}{{G "
                            f"returned an Error{{x: {{R{error_msg}{{x")
@@ -295,7 +295,7 @@ def event_grapevine_receive_message(event_):
                             eachplayer.write(message)
                             return
 
-            if rcvd_msg.event == "tells/receive":
+            if rcvd_msg.message['event'] == "tells/receive":
                 sender, target, game, sent, message = ret_value
                 message = (f"\n\r{{GGrapevine Tell from {{y{sender}@{game}{{x: "
                            f"{{G{message}{{x.\n\rReceived at : {sent}.")
@@ -305,7 +305,7 @@ def event_grapevine_receive_message(event_):
                             eachplayer.write(message)
                             return
 
-            if rcvd_msg.event == "games/status":
+            if rcvd_msg.message['event'] == "games/status":
                 if ret_value:
                     # We've received a game status request response from
                     # grapevine.  Do what you will here with the information,
@@ -317,15 +317,15 @@ def event_grapevine_receive_message(event_):
             channel = ""
             is_status_msg = False
 
-            if rcvd_msg.event == "games/connect":
+            if rcvd_msg.message['event'] == "games/connect":
                 game = ret_value.capitalize()
                 message = f"\n\r{{GGrapevine Status Update: {game} connected to network{{x"
                 is_status_msg = True
-            if rcvd_msg.event == "games/disconnect":
+            if rcvd_msg.message['event'] == "games/disconnect":
                 game = ret_value.capitalize()
                 message = f"\n\r{{GGrapevine Status Update: {game} disconnected from network{{x"
                 is_status_msg = True
-            if rcvd_msg.event == "channels/broadcast":
+            if rcvd_msg.message['event'] == "channels/broadcast":
                 name, game, message, channel = ret_value
                 if name is None or game is None:
                     comm.wiznet("Received channels/broadcast with None type")
@@ -353,7 +353,7 @@ def event_grapevine_receive_message(event_):
                             eachplayer.write(message)
                 return
 
-        if hasattr(rcvd_msg, "event") and rcvd_msg.event == "restart":
+        if 'event' in rcvd_msg.message and rcvd_msg['event'] == 'restart':
             comm.wiznet("Received restart event from Grapevine.")
             restart_fuzz = 15 + rcvd_msg.restart_downtime
  
