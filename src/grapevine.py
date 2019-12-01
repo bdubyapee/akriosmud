@@ -79,16 +79,16 @@ gsocket = None
 
 
 class GrapevineReceivedMessage(object):
-    def __init__(self, message, gsock):
+    def __init__(self, message_, gsock):
         super().__init__()
-        self.payload = {}
 
         # Short hand to convert JSON data to instance attributes.
         # Not secure at all.  If you're worried about it feel free to modify
         # to your needs.
-        log.debug(f"Received message from Grapevine: {message}")
-        for eachkey, eachvalue in json.loads(message).items():
-            setattr(self, eachkey, eachvalue)
+        log.debug(f'Received message from Grapevine: {message_}')
+        self.message = json.loads(message_)
+        # for eachkey, eachvalue in json.loads(message).items():
+        #    setattr(self, eachkey, eachvalue)
 
         # Point an instance attribute to the module level grapevine socket.
         # Used for adding to and removing refs as well as keeping the foreign player
@@ -129,8 +129,9 @@ class GrapevineReceivedMessage(object):
 
             return whatever is returned by the method, or None.
        """
-        if hasattr(self, "event") and self.event in self.rcvr_func:
-            exec_func, args = self.rcvr_func[self.event]
+        # if hasattr(self, "event") and self.event in self.rcvr_func:
+        if 'event' in self.message and self.message['event'] in self.rcvr_func:
+            exec_func, args = self.rcvr_func[self.message['event']]
             if args is None:
                 retvalue = exec_func()
             else:
@@ -145,8 +146,9 @@ class GrapevineReceivedMessage(object):
 
             return True/False
         """
-        if hasattr(self, "event") and hasattr(self, "status"):
-            if self.status == status:
+        # if hasattr(self, "event") and hasattr(self, "status"):
+        if 'event' in self.message and 'status' in self.message:
+            if self.message['status'] == status:
                 return True
             else:
                 return False
@@ -161,15 +163,15 @@ class GrapevineReceivedMessage(object):
 
             Grapevine 1.0.0
         """
-        if self.is_event_status("success"):
-            self.gsock.state["authenticated"] = True
-            self.gsock.state["connected"] = True
+        if self.is_event_status('success'):
+            self.gsock.state['authenticated'] = True
+            self.gsock.state['connected'] = True
             self.gsock.msg_gen_chan_subscribe()
-            comm.wiznet("Received authentication success from Grapevine.")
+            comm.wiznet('Received authentication success from Grapevine.')
             self.gsock.msg_gen_player_status_query()
-            comm.wiznet("Sending player status query to all Grapevine games.")
-        elif not self.gsock.state["authenticated"]:
-            comm.wiznet("received_auth: Sending Authentication message to Grapevine.")
+            comm.wiznet('Sending player status query to all Grapevine games.')
+        elif not self.gsock.state['authenticated']:
+            comm.wiznet('received_auth: Sending Authentication message to Grapevine.')
             self.gsock.msg_gen_authenticate()
 
     def received_restart(self):
@@ -179,8 +181,9 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        if hasattr(self, "payload"):
-            self.restart_downtime = int(self.payload["downtime"])
+        # if hasattr(self, "payload"):
+        if 'payload' in self.message:
+            self.restart_downtime = int(self.message['payload']['downtime'])
 
     def received_chan_sub(self, sent_refs):
         """
@@ -190,14 +193,15 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        if hasattr(self, "ref") and self.ref in sent_refs:
-            orig_req = sent_refs.pop(self.ref)
-            if self.is_event_status("failure"):
-                channel = orig_req["payload"]["channel"]
+        # if hasattr(self, "ref") and self.ref in sent_refs:
+        if 'ref' in self.message and self.message['ref'] in sent_refs:
+            orig_req = sent_refs.pop(self.message['ref'])
+            if self.is_event_status('failure'):
+                channel = orig_req['payload']['channel']
                 self.gsock.subscribed[channel] = False
                 comm.wiznet(f"Grapevine failed to subscribe to channel {channel}")
-            elif self.is_event_status("success"):
-                channel = orig_req["payload"]["channel"]
+            elif self.is_event_status('success'):
+                channel = orig_req['payload']['channel']
                 self.gsock.subscribed[channel] = True
                 comm.wiznet(f"Grapevine successfully subscribed to channel {channel}")
 
@@ -208,9 +212,10 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        if hasattr(self, "ref") and self.ref in sent_refs:
-            orig_req = sent_refs.pop(self.ref)
-            channel = orig_req["payload"]["channel"]
+        # if hasattr(self, "ref") and self.ref in sent_refs:
+        if 'ref' in self.message and self.message['ref'] in sent_refs:
+            orig_req = sent_refs.pop(self.message['ref'])
+            channel = orig_req['payload']['channel']
             self.gsock.subscribed[channel] = False
             comm.wiznet(f"Grapevine unsubscribed from channel {channel}")
 
@@ -226,22 +231,23 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        if hasattr(self, "ref"):
+        # if hasattr(self, "ref"):
+        if 'ref' in self.message:
             # We are a success message from Grapevine returned from our notification.
-            if self.ref in sent_refs and self.is_event_status("success"):
-                sent_refs.pop(self.ref)
+            if self.message['ref'] in sent_refs and self.is_event_status('success'):
+                sent_refs.pop(self.message['ref'])
                 return
             # We are receiving a player logout from another game.
-            if "game" in self.payload:
-                game = self.payload["game"].capitalize()
-                player_ = self.payload["name"].capitalize()
+            if 'game' in self.message['payload']:
+                game = self.message['payload']['game'].capitalize()
+                player_ = self.message['payload']['name'].capitalize()
                 if game in self.gsock.other_games_players:
                     if player_ in self.gsock.other_games_players[game]:
                         self.gsock.other_games_players[game].remove(player_)
                     if len(self.gsock.other_games_players[game]) <= 0:
                         self.gsock.other_games_players.pop(game)
 
-                return player_, "signed out of", game
+                return player_, 'signed out of', game
 
     def received_player_login(self, sent_refs):
         """
@@ -255,13 +261,14 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        if hasattr(self, "ref"):
-            if self.ref in sent_refs and self.is_event_status("success"):
-                sent_refs.pop(self.ref)
+        # if hasattr(self, "ref"):
+        if 'ref' in self.message:
+            if self.message['ref'] in sent_refs and self.is_event_status('success'):
+                sent_refs.pop(self.message['ref'])
                 return
-            if "game" in self.payload:
-                game = self.payload["game"].capitalize()
-                player_ = self.payload["name"].capitalize()
+            if 'game' in self.message['payload']:
+                game = self.message['payload']['game'].capitalize()
+                player_ = self.message['payload']['name'].capitalize()
                 if game in self.gsock.other_games_players:
                     if player_ not in self.gsock.other_games_players[game]:
                         self.gsock.other_games_players[game].append(player_)
@@ -269,7 +276,7 @@ class GrapevineReceivedMessage(object):
                     self.gsock.other_games_players[game] = []
                     self.gsock.other_games_players[game].append(player_)
 
-                return player_, "signed into", game
+                return player_, 'signed into', game
 
     def received_player_status(self, sent_refs):
         """
@@ -279,22 +286,24 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.1.0
         """
-        if hasattr(self, "ref") and hasattr(self, "payload"):
+        # if hasattr(self, "ref") and hasattr(self, "payload"):
+        if 'ref' in self.message and 'payload' in self.message:
             # On first receive we pop the ref just so it's gone from the queue
-            if self.ref in sent_refs:
-                sent_refs.pop(self.ref)
-            game = self.payload["game"].capitalize()
+            if self.message['ref'] in sent_refs:
+                sent_refs.pop(self.message['ref'])
 
-            if len(self.payload["players"]) == 1 and self.payload["players"] in ["", None]:
+            game = self.message['payload']['game'].capitalize()
+
+            if len(self.message['payload']['players']) == 1 and self.message['payload']['players'] in ['', None]:
                 self.gsock.other_games_players[game] = []
                 return
-            if len(self.payload["players"]) == 1:
-                player_ = self.payload["players"][0].capitalize()
+            if len(self.message['payload']['players']) == 1:
+                player_ = self.message['payload']['players'][0].capitalize()
                 self.gsock.other_games_players[game] = []
                 self.gsock.other_games_players[game].append(player_)
                 return
-            if len(self.payload["players"]) > 1:
-                player_ = [player_.capitalize() for player_ in self.payload["players"]]
+            if len(self.message['payload']['players']) > 1:
+                player_ = [player_.capitalize() for player_ in self.message['payload']['players']]
                 self.gsock.other_games_players[game] = []
                 self.gsock.other_games_players[game] = player_
                 return
@@ -307,14 +316,15 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.0.0
         """
-        if hasattr(self, "ref"):
-            if self.ref in sent_refs and hasattr(self, "error"):
-                orig_req = sent_refs.pop(self.ref)
-                if self.is_event_status("failure"):
-                    caller = orig_req["payload"]['from_name'].capitalize()
-                    target = orig_req["payload"]['to_name'].capitalize()
-                    game = orig_req["payload"]['to_game'].capitalize()
-                    return caller, target, game, self.error
+        # if hasattr(self, "ref"):
+        if 'ref' in self.message:
+            if self.message['ref'] in sent_refs and 'error' in self.message:
+                orig_req = sent_refs.pop(self.message['ref'])
+                if self.is_event_status('failure'):
+                    caller = orig_req['payload']['from_name'].capitalize()
+                    target = orig_req['payload']['to_name'].capitalize()
+                    game = orig_req['payload']['to_game'].capitalize()
+                    return caller, target, game, self.message['error']
 
     def received_tells_message(self):
         """
@@ -323,12 +333,13 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.0.0
         """
-        if hasattr(self, "ref") and hasattr(self, "payload"):
-            sender = self.payload['from_name']
-            target = self.payload['to_name']
-            game = self.payload['from_game']
-            sent = self.payload['sent_at']
-            message = self.payload['message']
+        # if hasattr(self, "ref") and hasattr(self, "payload"):
+        if 'ref' in self.message and 'payload' in self.message:
+            sender = self.message['payload']['from_name']
+            target = self.message['payload']['to_name']
+            game = self.message['payload']['from_game']
+            sent = self.message['payload']['sent_at']
+            message = self.message['payload']['message']
 
             log.info(f"Grapevine received tell: {sender}@{game} told {target} '{message}'")
             return sender, target, game, sent, message
@@ -340,28 +351,30 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.1.0
         """
-        if hasattr(self, "ref") and hasattr(self, "payload") and self.is_event_status("success"):
-            sent_refs.pop(self.ref)
-            if self.ref in sent_refs:
-                game = self.payload['game']
-                display_name = self.payload['display_name']
-                description = self.payload['description']
-                homepage = self.payload['homepage_url']
-                user_agent = self.payload['user_agent']
-                user_agent_repo = self.payload['user_agent_repo_url']
-                connections = self.payload['connections']
+        # if hasattr(self, "ref") and hasattr(self, "payload") and self.is_event_status("success"):
+        if 'ref' in self.message and 'payload' in self.message and self.is_event_status("success"):
+            sent_refs.pop(self.message['ref'])
+            if self.message['ref'] in sent_refs:
+                game = self.message['payload']['game']
+                display_name = self.message['payload']['display_name']
+                description = self.message['payload']['description']
+                homepage = self.message['payload']['homepage_url']
+                user_agent = self.message['payload']['user_agent']
+                user_agent_repo = self.message['payload']['user_agent_repo_url']
+                connections = self.message['payload']['connections']
 
-                supports = self.payload['supports']
-                num_players = self.payload['players_online_count']
+                supports = self.message['payload']['supports']
+                num_players = self.message['payload']['players_online_count']
 
                 return (game, display_name, description, homepage, user_agent,
                         user_agent_repo, connections, supports, num_players)
 
-        if hasattr(self, "ref") and hasattr(self, "error") and self.is_event_status("failure"):
-            orig_req = sent_refs.pop(self.ref)
-            if self.ref in sent_refs:
-                game = orig_req["payload"]["game"]
-                return game, self.error
+        # if hasattr(self, "ref") and hasattr(self, "error") and self.is_event_status("failure"):
+        if 'ref' in self.message and 'error' in self.message and self.is_event_status('failure'):
+            orig_req = sent_refs.pop(self.message['ref'])
+            if self.message['ref'] in sent_refs:
+                game = orig_req['payload']['game']
+                return game, self.message['error']
 
     def received_message_confirm(self, sent_refs):
         """
@@ -370,17 +383,20 @@ class GrapevineReceivedMessage(object):
 
         Grapevine : Should be semi version neutral.
         """
-        if hasattr(self, "ref"):
-            if self.ref in sent_refs and self.is_event_status("success"):
-                sent_refs.pop(self.ref)
+        # if hasattr(self, "ref"):
+        if 'ref' in self.message:
+            if self.message['ref'] in sent_refs and self.is_event_status('success'):
+                sent_refs.pop(self.message['ref'])
 
     def is_other_game_player_update(self):
         """
         A helper method to determine if this is a player update from another game.
         """
-        if hasattr(self, "event"):
-            if self.event == "players/sign-in" or self.event == "players/sign-out":
-                if hasattr(self, "payload") and 'game' in self.payload:
+        # if hasattr(self, "event"):
+        if 'event' in self.message:
+            if self.message['event'] == 'players/sign-in' or self.message['event'] == 'players/sign-out':
+                # if hasattr(self, "payload") and 'game' in self.payload:
+                if 'payload' in self.message and 'game' in self.message['payload']:
                     return True
             else:
                 return False
@@ -392,14 +408,15 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.2.0
         """
-        if hasattr(self, "payload"):
+        # if hasattr(self, "payload"):
+        if 'payload' in self.message:
             # Clear what we knew about this game and request an update.
             # Requesting updates from all games at this point, might as well refresh
             # as I'm sure some games don't implement all features like player sign-in
             # and sign-outs.
-            self.gsock.other_games_players[self.payload["game"]] = []
+            self.gsock.other_games_players[self.message['payload']['game']] = []
             self.gsock.msg_gen_player_status_query()
-            return self.payload["game"]
+            return self.message['payload']['game']
 
     def received_games_disconnected(self):
         """
@@ -408,10 +425,11 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.2.0
         """
-        if hasattr(self, "payload"):
-            if self.payload["game"] in self.gsock.other_games_players:
-                self.gsock.other_games_players.pop(self.payload["game"])
-            return self.payload["game"]
+        # if hasattr(self, "payload"):
+        if 'payload' in self.message:
+            if self.message['payload']['game'] in self.gsock.other_games_players:
+                self.gsock.other_games_players.pop(self.message['payload']['game'])
+            return self.message['payload']['game']
 
     def received_broadcast_message(self):
         """
@@ -420,11 +438,12 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 1.0.0
         """
-        if hasattr(self, "payload"):
-            name = self.payload['name']
-            game = self.payload['game']
-            message = self.payload['message']
-            channel = self.payload['channel']
+        # if hasattr(self, "payload"):
+        if 'payload' in self.message:
+            name = self.message['payload']['name']
+            game = self.message['payload']['game']
+            message = self.message['payload']['message']
+            channel = self.message['payload']['channel']
 
             log.info(f"Grapevine received message: {name}@{game} on {channel} said '{message}'")
             return name, game, message, channel
@@ -436,11 +455,12 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        if hasattr(self, "ref") and hasattr(self, "payload"):
-            if self.ref in sent_refs:
-                sent_refs.pop(self.ref)
-            self.total_achievements = self.payload['total']
-            all_achievements = self.payload['achievements']
+        # if hasattr(self, "ref") and hasattr(self, "payload"):
+        if 'ref' in self.message and 'payload' in self.message:
+            if self.message['ref'] in sent_refs:
+                sent_refs.pop(self.message['ref'])
+            self.total_achievements = self.message['payload']['total']
+            all_achievements = self.message['payload']['achievements']
 
             for each_achievement in all_achievements:
                 self.achievements[each_achievement['key']] = each_achievement
@@ -452,15 +472,16 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
-            if self.ref in sent_refs:
-                sent_refs.pop(self.ref)
-            if self.status == "success":
-                if self.payload['key'] not in self.achievements:
-                    self.achievements['key'] = self.payload
+        # if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
+        if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
+            if self.message['ref'] in sent_refs:
+                sent_refs.pop(self.message['ref'])
+            if self.message['status'] == 'success':
+                if self.message['payload']['key'] not in self.achievements:
+                    self.achievements['key'] = self.message['payload']
                     return
-            elif self.status == "failure":
-                return self.payload['errors']
+            elif self.message['status'] == 'failure':
+                return self.message['payload']['errors']
 
     def received_achievements_update(self, sent_refs):
         """
@@ -469,15 +490,16 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
-            if self.ref in sent_refs:
-                sent_refs.pop(self.ref)
-            if self.status == "success":
-                if self.payload['key'] not in self.achievements:
-                    self.achievements['key'] = self.payload
+        # if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
+        if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
+            if self.message['ref'] in sent_refs:
+                sent_refs.pop(self.message['ref'])
+            if self.message['status'] == 'success':
+                if self.message['payload']['key'] not in self.achievements:
+                    self.achievements['key'] = self.message['payload']
                     return
-            elif self.status == "failure":
-                return self.payload['errors']
+            elif self.message['status'] == 'failure':
+                return self.message['payload']['errors']
 
     def received_achievements_delete(self, sent_refs):
         """
@@ -486,12 +508,13 @@ class GrapevineReceivedMessage(object):
 
         Grapevine 2.3.0
         """
-        if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
-            if self.ref in sent_refs:
-                sent_refs.pop(self.ref)
-            if self.status == "success":
-                if self.payload['key'] in self.achievements:
-                    self.achievements.pop(self.payload['key'])
+        # if hasattr(self, "ref") and hasattr(self, "payload") and hasattr(self, "status"):
+        if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
+            if self.message['ref'] in sent_refs:
+                sent_refs.pop(self.message['ref'])
+            if self.message['status'] == 'success':
+                if self.message['payload']['key'] in self.achievements:
+                    self.achievements.pop(self.message['payload']['key'])
                     return
 
 
@@ -502,20 +525,20 @@ class GrapevineSocket(WebSocket):
         self.inbound_frame_buffer = []
         self.outbound_frame_buffer = []
 
-        self.events = event.Queue(self, "grapevine")
+        self.events = event.Queue(self, 'grapevine')
 
         self.client_id = CLIENT_ID
         self.client_secret = SECRET_KEY
-        self.supports = ["channels", "games", "players", "tells"]
+        self.supports = ['channels', 'games', 'players', 'tells']
 
         # Populate the channels attribute if you want to subscribe to a specific
         # channel or channels during authentication.
         self.channels = ['gossip']
-        self.version = "2.3.0"
-        self.user_agent = "AkriosMUD v0.4.5"
+        self.version = '2.3.0'
+        self.user_agent = 'AkriosMUD v0.4.5'
 
-        self.state = {"connected": False,
-                      "authenticated": False}
+        self.state = {'connected': False,
+                      'authenticated': False}
 
         self.subscribed = {'gossip': True}
 
@@ -533,24 +556,24 @@ class GrapevineSocket(WebSocket):
 
     def gsocket_connect(self):
         try:
-            result = self.connect("wss://grapevine.haus/socket")
-            comm.wiznet("gsocket_connect: Attempting connection to Grapevine.")
-            comm.wiznet(f"gsocket_connect result: {result}")
+            result = self.connect('wss://grapevine.haus/socket')
+            comm.wiznet('gsocket_connect: Attempting connection to Grapevine.')
+            comm.wiznet(f'gsocket_connect result: {result}')
         except ConnectionError or ConnectionRefusedError or ConnectionAbortedError as err:
-            log.error(f"Exception raised in gsocket_connect: {err}")
+            log.error(f'Exception raised in gsocket_connect: {err}')
             return False
         # We need to set the below on the socket as websocket.WebSocket is
         # blocking by default.  :(
         self.sock.setblocking(0)
         self.msg_gen_authenticate()
 
-        comm.wiznet("gsocket_connect: Sending Auth to Grapevine Network.")
+        comm.wiznet('gsocket_connect: Sending Auth to Grapevine Network.')
         return True
 
     def gsocket_disconnect(self):
-        comm.wiznet("gsocket_disconnect: Disconnecting from Grapevine Network.")
-        self.state["connected"] = False
-        self.state["authenticated"] = False
+        comm.wiznet('gsocket_disconnect: Disconnecting from Grapevine Network.')
+        self.state['connected'] = False
+        self.state['authenticated'] = False
         self.inbound_frame_buffer.clear()
         self.outbound_frame_buffer.clear()
         self.events.clear()
@@ -578,23 +601,23 @@ class GrapevineSocket(WebSocket):
 
         Grapevine 1.0.0
         """
-        payload = {"client_id": self.client_id,
-                   "client_secret": self.client_secret,
-                   "supports": self.supports,
-                   "channels": self.channels,
-                   "version": self.version,
-                   "user_agent": self.user_agent}
+        payload = {'client_id': self.client_id,
+                   'client_secret': self.client_secret,
+                   'supports': self.supports,
+                   'channels': self.channels,
+                   'version': self.version,
+                   'user_agent': self.user_agent}
 
         # If we haven't assigned any channels, lets pull that out of our auth
         # so we aren't trying to auth to an empty string.  This also causes us
         # to receive an error back from Grapevine.
         if not self.channels:
-            payload.pop("channels")
+            payload.pop('channels')
 
-        msg = {"event": "authenticate",
-               "payload": payload}
+        msg = {'event': 'authenticate',
+               'payload': payload}
 
-        self.state["authenticated"] = True
+        self.state['authenticated'] = True
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
@@ -612,9 +635,9 @@ class GrapevineSocket(WebSocket):
 
         self.last_heartbeat = time.time()
 
-        payload = {"players": player_list}
-        msg = {"event": "heartbeat",
-               "payload": payload}
+        payload = {'players': player_list}
+        msg = {'event': 'heartbeat',
+               'payload': payload}
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
