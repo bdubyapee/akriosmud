@@ -124,8 +124,8 @@ def init_events_socket(socket):
     log.debug(f"Initializing events_socket: {socket}")
 
 
-def init_events_server(server):
-    log.debug(f"Initializing events_server: {server}")
+def init_events_server(server_):
+    log.debug(f"Initializing events_server: {server_}")
 
 
 def init_events_grapevine(grapevine_):
@@ -257,7 +257,7 @@ def reoccuring_event(func_to_decorate):
     return new_func
 
 
-def event_grapevine_restart(event_):
+def event_grapevine_restart():
     comm.wiznet("Grapevine restart event initiated")
     del grapevine.gsocket
 
@@ -503,4 +503,3 @@ def event_player_newbie_notify(event_):
             " 'toggle grapevine' to disable or 'gchat <message>' to speak to other players!"]
         
     event_.owner.write(f"\n\r{{P[NEWBIE TIP]{{x: {random.choice(tips)}")
-

@@ -166,5 +166,3 @@ class Atomic(object):
     @property
     def disp_name(self):
         return self.name.capitalize() if self.is_player else self.short_description
-
-

@@ -146,4 +146,3 @@ class Exit(olc.Editable):
                 f"{{BHas Door{{x: {self.hasdoor}\n"
                 f"{{BDoor Open{{x: {self.dooropen}\n"
                 f"{{BKeywords{{x: {', '.join(self.keywords)}\n")
-
