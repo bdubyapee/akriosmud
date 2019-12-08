@@ -87,8 +87,6 @@ class GrapevineReceivedMessage(object):
         # to your needs.
         log.debug(f'Received message from Grapevine: {message_}')
         self.message = json.loads(message_)
-        # for eachkey, eachvalue in json.loads(message).items():
-        #    setattr(self, eachkey, eachvalue)
 
         # Point an instance attribute to the module level grapevine socket.
         # Used for adding to and removing refs as well as keeping the foreign player
@@ -928,6 +926,9 @@ class GrapevineSocket(WebSocket):
             log.debug(f'Error sending data frame to Grapevine: {err}')
 
     def receive_message(self):
+        """
+        Attempt a read in from Grapevine.
+        """
         try:
             return GrapevineReceivedMessage(self.read_in(), self)
         except Exception as err:
