@@ -7,9 +7,13 @@
 # By: Jubelo
 
 import os
+local = True
 
 # Directory Configuration values
-homeDir = "/home/bwp/programming/muds/akrios/"
+if local:
+    homeDir = "/home/bwp/PycharmProjects/akriosmud/"
+else:
+    homeDir = "/home/bwp/programming/muds/akrios/"
 dataDir = os.path.join(homeDir, "data")
 logDir = os.path.join(dataDir, "log")
 helpDir = os.path.join(dataDir, "help")

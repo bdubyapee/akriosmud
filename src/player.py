@@ -48,6 +48,7 @@ class Player(livingthing.LivingThing):
                                 'quote': 'true'}
         self.events = event.Queue(self, "player")
         self.sock = None
+        self.uuid = ''
         if self.filename is not None:
             self.load()
 

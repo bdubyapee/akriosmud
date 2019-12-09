@@ -184,7 +184,6 @@ class Login(object):
             self.main_menu()
         elif inp == 'l':
             self.sock.dispatch('Thanks for playing.  We hope to see you again soon.')
-            log.info(f"{self.sock.host} disconnecting from Akrios.")
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
             self.sock.handle_close()
             self.clear()

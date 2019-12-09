@@ -19,6 +19,7 @@ import helpsys
 import color
 import area
 import comm
+import frontend
 import login
 import races
 import event
@@ -200,6 +201,12 @@ class Server(asyncore.dispatcher):
             grapevine_connected = grapevine.gsocket.gsocket_connect()
             if not grapevine_connected:
                 log.warning("Could not connect to grapevine on startup.")
+
+        log.info("Creating Front End Socket")
+        frontend.fesocket = frontend.FESocket()
+        frontend_connected = frontend.fesocket.fesocket_connect()
+        if not frontend_connected:
+            log.warning("Could not connect to front end on startup.")
 
         log.info(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
 

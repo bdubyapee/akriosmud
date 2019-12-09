@@ -13,6 +13,7 @@ import uuid
 
 import area
 import comm
+import frontend
 import grapevine
 import player
 import server
@@ -106,6 +107,7 @@ things_with_events = {"player": [],
                       "object": [],
                       "reset": [],
                       "server": [],
+                      "frontend": [],
                       "socket": [],
                       "grapevine": []}
 
@@ -126,6 +128,46 @@ def init_events_socket(socket):
 
 def init_events_server(server_):
     log.debug(f"Initializing events_server: {server_}")
+
+
+def init_events_frontend(frontend_):
+    log.debug(f"Initializing events_frontend: {frontend_}")
+
+    event = Event()
+    event.owner = frontend_
+    event.ownertype = "frontend"
+    event.eventtype = "frontend receive"
+    event.func = event_frontend_receive_message
+    event.passes = 1 * PULSE_PER_SECOND
+    event.totalpasses = event.passes
+    frontend_.events.add(event)
+
+    event = Event()
+    event.owner = frontend_
+    event.ownertype = "frontend"
+    event.eventtype = "frontend send"
+    event.func = event_frontend_send_message
+    event.passes = 1 * PULSE_PER_SECOND
+    event.totalpasses = event.passes
+    frontend_.events.add(event)
+
+    event = Event()
+    event.owner = frontend_
+    event.ownertype = "frontend"
+    event.eventtype = "frontend state check"
+    event.func = event_frontend_state_check
+    event.passes = 3 * PULSE_PER_MINUTE
+    event.totalpasses = event.passes
+    frontend_.events.add(event)
+
+    event = Event()
+    event.owner = frontend_
+    event.ownertype = "frontend"
+    event.eventtype = "frontend heartbeat"
+    event.func = event_frontend_heartbeat
+    event.passes = 1
+    event.totalpasses = event.passes
+    frontend_.events.add(event)
 
 
 def init_events_grapevine(grapevine_):
@@ -255,6 +297,92 @@ def reoccuring_event(func_to_decorate):
         return func_to_decorate(*args, **kwargs)
 
     return new_func
+
+
+def event_frontend_restart(fe_):
+    comm.wiznet("Front end restart event initiated")
+    del frontend.fesocket
+
+    frontend.fesocket = frontend.FESocket()
+    frontend_connected = frontend.fesocket.fesocket_connect()
+    if not frontend_connected:
+        comm.wiznet("Could not connect to Front End in event restart")
+
+
+@reoccuring_event
+def event_frontend_send_message(event_):
+    if event_.owner.outbound_frame_buffer:
+        event_.owner.handle_write()
+
+
+@reoccuring_event
+def event_frontend_heartbeat(event_):
+    fe_ = event_.owner
+    fe_.msg_gen_heartbeat()
+
+
+@reoccuring_event
+def event_frontend_receive_message(event_):
+    fe_ = event_.owner
+    fe_.handle_read()
+    if fe_.inbound_frame_buffer:
+        # Assign rcvd_msg to a FEReceivedMessage instance.
+        rcvd_msg = fe_.receive_message()
+        ret_value = rcvd_msg.parse_frame()
+
+        log.info(f'Received : {rcvd_msg}')
+
+        if ret_value:
+            # if rcvd_msg.message['event'] == "games/connect":
+            #     game = ret_value.capitalize()
+            #     message = f"\n\r{{GGrapevine Status Update: {game} connected to network{{x"
+            #     is_status_msg = True
+
+            if rcvd_msg.message['event'] == "player/input":
+                uuid_, addr, port, message = ret_value
+                comm.wiznet(f"FE: {uuid_}@{addr}:{port} sent: {message}")
+
+        if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
+            comm.wiznet("Received restart event from Front End.")
+            restart_fuzz = 15 + rcvd_msg.restart_downtime
+
+            fe_.fesocket_disconnect()
+
+            nextevent = Event()
+            nextevent.owner = fe_
+            nextevent.ownertype = "frontend"
+            nextevent.eventtype = "frontend restart"
+            nextevent.func = event_frontend_restart
+            nextevent.passes = restart_fuzz * PULSE_PER_SECOND
+            nextevent.totalpasses = nextevent.passes
+            fe_.events.add(nextevent)
+
+
+@reoccuring_event
+def event_frontend_state_check(event_):
+    fe_ = event_.owner
+
+    if time.time() - fe_.last_heartbeat > 60:
+        fe_.state["connected"] = False
+
+    if fe_.state["connected"]:
+        return
+    else:
+        for each_thing in things_with_events['frontend']:
+            for each_event in each_thing.events.eventlist:
+                if each_event.eventtype == "frontend restart":
+                    return
+
+        fe_.fesocket_disconnect()
+
+        nextevent = Event()
+        nextevent.owner = fe_
+        nextevent.ownertype = "frontend"
+        nextevent.eventtype = "frontend restart"
+        nextevent.func = event_frontend_restart
+        nextevent.passes = 30 * PULSE_PER_SECOND
+        nextevent.totalpasses = nextevent.passes
+        fe_.events.add(nextevent)
 
 
 def event_grapevine_restart():
@@ -413,6 +541,7 @@ def event_admin_system_status(event_):
                    'exit': 0,
                    'server': 0,
                    'socket': 0,
+                   'frontend': 0,
                    'grapevine': 0}
 
     for each_type in things_with_events:
@@ -446,6 +575,7 @@ def event_admin_system_status(event_):
            f"{{G          Exit Events{{x: {{R{event_count['exit']}{{x\n\r"
            f"{{G        Server Events{{x: {{R{event_count['server']}{{x\n\r"
            f"{{G        Socket Events{{x: {{R{event_count['socket']}{{x\n\r"
+           f"{{G     Front End Events{{x: {{R{event_count['frontend']}{{x\n\r"
            f"{{G     Grapevine Events{{x: {{R{event_count['grapevine']}{{x\n\r"
            f"{{G  Grapevine Connected{{x: {{R{grapevine.gsocket.state['connected']}{{x\n\r")
 

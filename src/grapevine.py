@@ -533,8 +533,8 @@ class GrapevineSocket(WebSocket):
     def gsocket_connect(self):
         try:
             result = self.connect('wss://grapevine.haus/socket')
-            comm.wiznet('gsocket_connect: Attempting connection to Grapevine.')
-            comm.wiznet(f'gsocket_connect result: {result}')
+            log.info('gsocket_connect: Attempting connection to Grapevine.')
+            log.info(f'gsocket_connect result: {result}')
         except ConnectionError or ConnectionRefusedError or ConnectionAbortedError as err:
             log.error(f'Exception raised in gsocket_connect: {err}')
             return False
