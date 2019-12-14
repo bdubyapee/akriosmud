@@ -52,7 +52,9 @@ class FEReceivedMessage(object):
         # When we receive a JSON message from the front end it will always have an event type.
         self.rcvr_func = {'heartbeat': (self.fesock.msg_gen_heartbeat, None),
                           'restart': (self.received_restart, None),
-                          'player/input': (self.received_player_input, None)}
+                          'player/input': (self.received_player_input, None),
+                          'connection/connected': (self.received_connection_connected, None),
+                          'connection/disconnected': (self.received_connection_disconnected, None)}
 
         self.restart_downtime = 0
 
@@ -107,6 +109,26 @@ class FEReceivedMessage(object):
 
             log.info(f"Received front end message: {uuid}@{addr}:{port} '{msg}'")
             return uuid, addr, port, msg
+
+    def received_connection_connected(self):
+        """
+        We received a notification of a new connection.
+        """
+        if 'payload' in self.message:
+            uuid = self.message['payload']['uuid']
+            addr = self.message['payload']['addr']
+
+            log.info(f'Received connection connected: {uuid}@{addr}')
+
+    def received_connection_disconnected(self):
+        """
+        We received a notification of a client disconnect.
+        """
+        if 'payload' in self.message:
+            uuid = self.message['payload']['uuid']
+            addr = self.message['payload']['addr']
+
+            log.info(f'Received client disconnect: {uuid}@{addr}')
 
 
 class FESocket(WebSocket):
@@ -169,6 +191,19 @@ class FESocket(WebSocket):
 
         msg = {'event': 'heartbeat',
                'secret': FRONT_END}
+
+        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+
+    def msg_gen_confirmation_echo(self, msg_, session_uuid):
+        """
+        Test msg generator to confirm receipt of message by echo
+        """
+        payload = {'message': msg_,
+                   'uuid': session_uuid}
+
+        msg = {'event': 'player/output',
+               'secret': FRONT_END,
+               'payload': payload}
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 

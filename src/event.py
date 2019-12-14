@@ -160,15 +160,6 @@ def init_events_frontend(frontend_):
     event.totalpasses = event.passes
     frontend_.events.add(event)
 
-    event = Event()
-    event.owner = frontend_
-    event.ownertype = "frontend"
-    event.eventtype = "frontend heartbeat"
-    event.func = event_frontend_heartbeat
-    event.passes = 1
-    event.totalpasses = event.passes
-    frontend_.events.add(event)
-
 
 def init_events_grapevine(grapevine_):
     log.debug("Initializing events_grapevine")
@@ -330,17 +321,17 @@ def event_frontend_receive_message(event_):
         rcvd_msg = fe_.receive_message()
         ret_value = rcvd_msg.parse_frame()
 
-        log.info(f'Received : {rcvd_msg}')
+        log.info(f'Received : {rcvd_msg.message}')
 
         if ret_value:
-            # if rcvd_msg.message['event'] == "games/connect":
-            #     game = ret_value.capitalize()
-            #     message = f"\n\r{{GGrapevine Status Update: {game} connected to network{{x"
-            #     is_status_msg = True
+            # Add checks for connection/connected and connection/disconnected here
 
             if rcvd_msg.message['event'] == "player/input":
                 uuid_, addr, port, message = ret_value
                 comm.wiznet(f"FE: {uuid_}@{addr}:{port} sent: {message}")
+
+                # Just a test Echo for now
+                frontend.fesocket.msg_gen_confirmation_echo(f'From Akrios: {message}', uuid_)
 
         if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
             comm.wiznet("Received restart event from Front End.")
