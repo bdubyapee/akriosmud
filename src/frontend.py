@@ -160,6 +160,7 @@ class FESocket(WebSocket):
         # We need to set the below on the socket as websocket.WebSocket is
         # blocking by default.  :(
         self.sock.setblocking(0)
+        self.state['connected'] = True
         return True
 
     def fesocket_disconnect(self):

@@ -354,6 +354,7 @@ def event_frontend_state_check(event_):
     fe_ = event_.owner
 
     if time.time() - fe_.last_heartbeat > 60:
+        log.info('Setting front end state to disconnected due to > 60 heartbeat.')
         fe_.state["connected"] = False
 
     if fe_.state["connected"]:
