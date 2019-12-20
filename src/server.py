@@ -214,7 +214,8 @@ class Server(asyncore.dispatcher):
     def run():
         currenttime = time.time
         while not Server.done:
-            timedelta = currenttime() + 0.125
+            # timedelta = currenttime() + 0.125
+            timedelta = currenttime() + 0.0625
             asyncore.poll()
             event.heartbeat()
             timenow = currenttime()

@@ -20,7 +20,7 @@ import server
 
 log = logging.getLogger(__name__)
 
-PULSE_PER_SECOND = 8
+PULSE_PER_SECOND = 16
 PULSE_PER_MINUTE = 60 * PULSE_PER_SECOND
 
 
@@ -331,7 +331,7 @@ def event_frontend_receive_message(event_):
                 comm.wiznet(f"FE: {uuid_}@{addr}:{port} sent: {message}")
 
                 # Just a test Echo for now
-                frontend.fesocket.msg_gen_confirmation_echo(f'From Akrios: {message}', uuid_)
+                frontend.fesocket.msg_gen_confirmation_echo(f'From Akrios: {message}\n\r', uuid_)
 
         if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
             comm.wiznet("Received restart event from Front End.")
