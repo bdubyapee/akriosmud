@@ -138,7 +138,7 @@ def init_events_frontend(frontend_):
     event.ownertype = "frontend"
     event.eventtype = "frontend receive"
     event.func = event_frontend_receive_message
-    event.passes = 1 * PULSE_PER_SECOND
+    event.passes = 1
     event.totalpasses = event.passes
     frontend_.events.add(event)
 
@@ -147,7 +147,7 @@ def init_events_frontend(frontend_):
     event.ownertype = "frontend"
     event.eventtype = "frontend send"
     event.func = event_frontend_send_message
-    event.passes = 1 * PULSE_PER_SECOND
+    event.passes = 1
     event.totalpasses = event.passes
     frontend_.events.add(event)
 
