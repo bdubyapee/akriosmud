@@ -212,22 +212,23 @@ class FESocket(WebSocket):
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_player_login(self, player_name):
+    def msg_gen_player_login(self, player_name, uuid_):
         """
         Notify the front end of a successful player login.
         """
-        payload = {'name': player_name.capitalize()}
+        payload = {'name': player_name.capitalize(),
+                   'uuid': uuid_}
         msg = {'event': 'players/sign-in',
                'secret': FRONT_END,
                'payload': payload}
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_player_logout(self, player_name):
+    def msg_gen_player_logout(self, uuid_):
         """
         Notify the front end of a player logout.
         """
-        payload = {'name': player_name.capitalize()}
+        payload = {'uuid': uuid_}
         msg = {'event': 'players/sign-out',
                'secret': FRONT_END,
                'payload': payload}

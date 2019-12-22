@@ -16,6 +16,7 @@ import uuid
 import area
 import comm
 import event
+import frontend
 import grapevine
 import helpsys
 import races
@@ -185,6 +186,7 @@ class Login(object):
         elif inp == 'l':
             self.sock.dispatch('Thanks for playing.  We hope to see you again soon.')
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
+            frontend.fesocket.msg_gen_player_logout(self.sock.session)
             self.sock.handle_close()
             self.clear()
             del self
@@ -224,6 +226,7 @@ class Login(object):
             if grapevine.LIVE:
                 log.debug(f"Sending player login to Grapevine : {newobject.name}")
                 grapevine.gsocket.msg_gen_player_login(newobject.name)
+                frontend.fesocket.msg_gen_player_login(newobject.name, newobject.sock.session)
             newobject.lasttime = time.ctime()
             newobject.lasthost = newobject.sock.host
         else:
