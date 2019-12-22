@@ -117,8 +117,10 @@ class FEReceivedMessage(object):
         if 'payload' in self.message:
             uuid = self.message['payload']['uuid']
             addr = self.message['payload']['addr']
+            port = self.message['payload']['port']
 
             log.info(f'Received connection connected: {uuid}@{addr}')
+            return uuid, addr, port
 
     def received_connection_disconnected(self):
         """
@@ -127,8 +129,10 @@ class FEReceivedMessage(object):
         if 'payload' in self.message:
             uuid = self.message['payload']['uuid']
             addr = self.message['payload']['addr']
+            port = self.message['payload']['port']
 
             log.info(f'Received client disconnect: {uuid}@{addr}')
+            return uuid, addr, port
 
 
 class FESocket(WebSocket):
@@ -195,7 +199,7 @@ class FESocket(WebSocket):
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_confirmation_echo(self, msg_, session_uuid):
+    def msg_gen_player_output(self, msg_, session_uuid):
         """
         Test msg generator to confirm receipt of message by echo
         """

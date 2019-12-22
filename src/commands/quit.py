@@ -29,6 +29,7 @@ def quit(caller, args, **kwargs):
     grapevine.gsocket.msg_gen_player_logout(caller.name)
     caller.location.contents.remove(caller)
     caller.sock.promptable = False
+    caller.sock.state['logged in'] = False
     caller.events.clear()
     conn = login.Login(caller.name)
     testsock = caller.sock

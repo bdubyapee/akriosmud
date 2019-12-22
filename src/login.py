@@ -364,6 +364,7 @@ class Login(object):
             player.playerlist.append(newplayer)
             player.playerlist_by_name[newplayer.name] = newplayer
             player.playerlist_by_aid[newplayer.aid] = newplayer
+            newplayer.sock.state['logged in'] = True
             newroom = area.room_by_vnum_global(1001)
             newplayer.move(newroom)
             newplayer.alias['s'] = 'south'

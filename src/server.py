@@ -34,6 +34,9 @@ startup = time.time()
 # This is the list of connected socket objects.
 connlist = []
 
+# This is the dict of connected sessions.
+session_list = {}
+
 # Assistant variables for removing certain characters from our input.
 validchars = string.printable
 validchars = validchars.replace(string.whitespace[1:], "")
@@ -43,6 +46,100 @@ SGARequest = IAC + WILL + SGA
 SGAAcknowledge = IAC + DO + SGA
 DOECHOTELNET = IAC + WONT + ECHO + theNULL
 DONTECHOTELNET = IAC + WILL + ECHO + theNULL
+
+
+class Session(object):
+    def __init__(self, uuid_, addr_, port_):
+        self.owner = None
+        self.host = addr_
+        self.port = port_
+        self.session = uuid_
+        self.ansi = True
+        self.promptable = False
+        self.inbuf = []
+        self.outbuf = ''
+        self.state = {'connected': True,
+                      'logged in': False}
+        self.events = event.Queue(self, "session")
+
+        self._login()
+
+    def clear(self):
+        del self
+
+    def handle_close(self):
+        if self.session in session_list:
+            session_list.pop(self.session)
+            self.state['connected'] = False
+            self.state['logged in'] = False
+
+    def do_echo_telnet(self):
+        pass
+
+    def dont_echo_telnet(self):
+        pass
+
+    def _login(self):
+        newconn = login.Login()
+        newconn.sock = self
+        newconn.sock.owner = newconn
+        session_list[self.session] = self
+        newconn.greeting()
+        comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
+
+    def dispatch(self, msg, trail=True):
+        if trail:
+            msg = f"{msg}\n\r"
+        if self.ansi:
+            msg = color.colorize(msg)
+        else:
+            msg = color.decolorize(msg)
+        self.outbuf = f"{self.outbuf}{msg}"
+
+        if hasattr(self.owner, "snooped_by") and len(self.owner.snooped_by) > 0:
+            for each_person in self.owner.snooped_by:
+                each_person.write(self.outbuf)
+
+    def send(self, msg_):
+        log.info(f'Sending {msg_} to {self.session}')
+        frontend.fesocket.msg_gen_player_output(msg_, self.session)
+
+    @property
+    def writable(self):
+        if self.outbuf:
+            log.info('Session is writable @property')
+            return True
+        else:
+            return False
+
+    def write(self):
+        try:
+            self.send(self.outbuf)
+            self.outbuf = ""
+            if hasattr(self.owner, "editing"):
+                output = ">"
+                self.send(output)
+            elif self.promptable:
+                if self.owner.oocflags["afk"]:
+                    pretext = "{W[{RAFK{W]{x "
+                else:
+                    pretext = ""
+
+                output = color.colorize(f"\n\r{pretext}{self.owner.prompt}")
+                self.send(output)
+        except Exception as err:
+            log.error(f"handle_write : {err}")
+
+    @property
+    def readable(self):
+        if self.inbuf:
+            log.info('Session is readable @property')
+            return True
+        else:
+            return False
+
+    def read(self):
+        self.owner.interp(self.inbuf.pop(0))
 
 
 class ConnSocket(asyncore.dispatcher):
@@ -216,8 +313,16 @@ class Server(asyncore.dispatcher):
         while not Server.done:
             # timedelta = currenttime() + 0.125
             timedelta = currenttime() + 0.0625
+
             asyncore.poll()
             event.heartbeat()
+
+            for _, each_session in session_list.items():
+                if each_session.writable:
+                    each_session.write()
+                if each_session.readable:
+                    each_session.read()
+
             timenow = currenttime()
             if timenow < timedelta:
                 time.sleep(timedelta - timenow)

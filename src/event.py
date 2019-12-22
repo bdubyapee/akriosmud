@@ -108,6 +108,7 @@ things_with_events = {"player": [],
                       "reset": [],
                       "server": [],
                       "frontend": [],
+                      "session": [],
                       "socket": [],
                       "grapevine": []}
 
@@ -118,9 +119,13 @@ def heartbeat():
             each_queue.events.update()
 
 
-# Below follows the init functions.  If a particular thing needs to have
+# Below are the init functions.  If a particular thing needs to have
 # an event set when it's created, it should go inside the appropriate
 # init below.
+
+def init_events_session(session):
+    log.debug(f'Initializing events_session: {session}')
+
 
 def init_events_socket(socket):
     log.debug(f"Initializing events_socket: {socket}")
@@ -324,29 +329,54 @@ def event_frontend_receive_message(event_):
         log.info(f'Received : {rcvd_msg.message}')
 
         if ret_value:
-            # Add checks for connection/connected and connection/disconnected here
-
             if rcvd_msg.message['event'] == "player/input":
                 uuid_, addr, port, message = ret_value
                 comm.wiznet(f"FE: {uuid_}@{addr}:{port} sent: {message}")
 
                 # Just a test Echo for now
-                frontend.fesocket.msg_gen_confirmation_echo(f'From Akrios: {message}\n\r', uuid_)
+                # frontend.fesocket.msg_gen_player_output(f'Echo from Akrios: {message}\n\r', uuid_)
+                if uuid_ in server.session_list:
+                    log.info(f'uuid_ in server.session_list')
+                    log.info(f'session_list: {server.session_list}')
+                    server.session_list[uuid_].inbuf.append(message)
+                    log.info(f'Appended to inbuf: {server.session_list[uuid_].inbuf}')
+                return
 
-        if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
-            comm.wiznet("Received restart event from Front End.")
-            restart_fuzz = 15 + rcvd_msg.restart_downtime
+            if rcvd_msg.message['event'] == 'connection/connected':
+                uuid_, addr_, port_ = ret_value
+                log.info(f'Creating connected session: {uuid_}')
+                server.Session(uuid_, addr_, port_)
+                log.info(f'SESSION LIST: {server.session_list}')
 
-            fe_.fesocket_disconnect()
+            if rcvd_msg.message['event'] == 'connection/disconnected':
+                uuid_, addr_, port_ = ret_value
+                if uuid_ not in server.session_list:
+                    log.warning('Trying to disconnect session not in session_list:')
+                    log.warning(f'{uuid_} not in {server.session_list.keys()}')
+                else:
+                    log.info(f'Disconnecting session {uuid_}')
+                    player_ = server.session_list[uuid_]
+                    if player_.state['logged in']:
+                        player_.interp('save')
+                        player_.interp('quit force')
+                        pass
+                    server.session_list.pop(uuid_)
+                    player_.clear()
 
-            nextevent = Event()
-            nextevent.owner = fe_
-            nextevent.ownertype = "frontend"
-            nextevent.eventtype = "frontend restart"
-            nextevent.func = event_frontend_restart
-            nextevent.passes = restart_fuzz * PULSE_PER_SECOND
-            nextevent.totalpasses = nextevent.passes
-            fe_.events.add(nextevent)
+            if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
+                comm.wiznet("Received restart event from Front End.")
+                restart_fuzz = 15 + rcvd_msg.restart_downtime
+
+                fe_.fesocket_disconnect()
+
+                nextevent = Event()
+                nextevent.owner = fe_
+                nextevent.ownertype = "frontend"
+                nextevent.eventtype = "frontend restart"
+                nextevent.func = event_frontend_restart
+                nextevent.passes = restart_fuzz * PULSE_PER_SECOND
+                nextevent.totalpasses = nextevent.passes
+                fe_.events.add(nextevent)
 
 
 @reoccuring_event
@@ -354,7 +384,7 @@ def event_frontend_state_check(event_):
     fe_ = event_.owner
 
     if time.time() - fe_.last_heartbeat > 60:
-        log.info('Setting front end state to disconnected due to > 60 heartbeat.')
+        log.info('Setting front end state to disconnected due to > 60 seconds with no heartbeat.')
         fe_.state["connected"] = False
 
     if fe_.state["connected"]:
