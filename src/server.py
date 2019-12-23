@@ -69,7 +69,6 @@ class Session(object):
 
     def handle_close(self):
         if self.session in session_list:
-            session_list.pop(self.session)
             self.state['connected'] = False
             self.state['logged in'] = False
 
@@ -317,11 +316,16 @@ class Server(asyncore.dispatcher):
             asyncore.poll()
             event.heartbeat()
 
-            for _, each_session in session_list.items():
-                if each_session.writable:
-                    each_session.write()
-                if each_session.readable:
-                    each_session.read()
+            for each_session, session_obj in session_list.items():
+                if session_obj.state['connected']:
+                    if session_obj.writable:
+                        session_obj.write()
+                    if session_obj.readable:
+                        session_obj.read()
+                else:
+                    session_list.pop(each_session)
+                    session_obj.handle_close()
+                    session_obj.clear()
 
             timenow = currenttime()
             if timenow < timedelta:
