@@ -68,9 +68,9 @@ class Session(object):
         del self
 
     def handle_close(self):
-        if self.session in session_list:
-            self.state['connected'] = False
-            self.state['logged in'] = False
+        self.state['connected'] = False
+        self.state['logged in'] = False
+        del self
 
     def do_echo_telnet(self):
         pass
@@ -322,10 +322,8 @@ class Server(asyncore.dispatcher):
                         session_obj.write()
                     if session_obj.readable:
                         session_obj.read()
-                else:
-                    session_list.pop(each_session)
-                    session_obj.handle_close()
-                    session_obj.clear()
+
+            [session.handle_close() for session in session_list.values() if not session.state['connected']]
 
             timenow = currenttime()
             if timenow < timedelta:
