@@ -100,13 +100,12 @@ class Session(object):
                 each_person.write(self.outbuf)
 
     def send(self, msg_):
-        log.info(f'Sending {msg_} to {self.session}')
+        log.debug(f'Sending {msg_} to {self.session}')
         frontend.fesocket.msg_gen_player_output(msg_, self.session)
 
     @property
     def writable(self):
         if self.outbuf:
-            log.info('Session is writable @property')
             return True
         else:
             return False
@@ -132,7 +131,6 @@ class Session(object):
     @property
     def readable(self):
         if self.inbuf:
-            log.info('Session is readable @property')
             return True
         else:
             return False

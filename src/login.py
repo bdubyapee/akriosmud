@@ -126,6 +126,7 @@ class Login(object):
             log.info(f"{self.name.capitalize()} logged into main menu. Last login {self.lasttime} from {self.lasthost}")
             self.lasttime = time.ctime()
             self.lasthost = self.sock.host.strip()
+            frontend.fesocket.msg_gen_player_login(self.name.capitalize(), self.sock.session)
             self.main_menu()
             self.interp = self.main_menu_get_option
                         
@@ -187,12 +188,12 @@ class Login(object):
         elif inp == 'l':
             self.sock.dispatch('Thanks for playing.  We hope to see you again soon.')
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
-            frontend.fesocket.msg_gen_player_logout(self.sock.session)
             if isinstance(self.sock, server.ConnSocket):
                 self.sock.handle_close()
                 self.clear()
                 del self
             elif isinstance(self.sock, server.Session):
+                frontend.fesocket.msg_gen_player_logout(self.name.capitalize(), self.sock.session)
                 self.sock.state['connected'] = False
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')

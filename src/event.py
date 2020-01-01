@@ -333,8 +333,6 @@ def event_frontend_receive_message(event_):
                 uuid_, addr, port, message = ret_value
                 comm.wiznet(f"FE: {uuid_}@{addr}:{port} sent: {message}")
 
-                # Just a test Echo for now
-                # frontend.fesocket.msg_gen_player_output(f'Echo from Akrios: {message}\n\r', uuid_)
                 if uuid_ in server.session_list:
                     log.info(f'uuid_ in server.session_list')
                     log.info(f'session_list: {server.session_list}')
