@@ -109,7 +109,6 @@ things_with_events = {"player": [],
                       "server": [],
                       "frontend": [],
                       "session": [],
-                      "socket": [],
                       "grapevine": []}
 
 
@@ -125,10 +124,6 @@ def heartbeat():
 
 def init_events_session(session):
     log.debug(f'Initializing events_session: {session}')
-
-
-def init_events_socket(socket):
-    log.debug(f"Initializing events_socket: {socket}")
 
 
 def init_events_server(server_):
@@ -331,8 +326,6 @@ def event_frontend_receive_message(event_):
         if ret_value:
             if rcvd_msg.message['event'] == "player/input":
                 uuid_, addr, port, message = ret_value
-                comm.wiznet(f"FE: {uuid_}@{addr}:{port} sent: {message}")
-
                 if uuid_ in server.session_list:
                     log.info(f'uuid_ in server.session_list')
                     log.info(f'session_list: {server.session_list}')
@@ -560,7 +553,7 @@ def event_admin_system_status(event_):
                    'reset': 0,
                    'exit': 0,
                    'server': 0,
-                   'socket': 0,
+                   'session': 0,
                    'frontend': 0,
                    'grapevine': 0}
 
@@ -580,7 +573,7 @@ def event_admin_system_status(event_):
         objlist += len(eacharea.objectlist)
 
     msg = (f"\n\r{{RAkrios System Status (5 minute update){{x\n\r"
-           f"{{GPlayer Connections{{x: {{R{len(server.connlist)}{{x\n\r"
+           f"{{GPlayer Connections{{x: {{R{len(server.session_list)}{{x\n\r"
            f"{{G      Mobile Index{{x: {{R{moblist_index}{{x\n\r"
            f"{{G           Mobiles{{x: {{R{moblist}{{x\n\r"
            f"{{G      Object Index{{x: {{R{objlist_index}{{x\n\r"
@@ -594,7 +587,7 @@ def event_admin_system_status(event_):
            f"{{G         Reset Events{{x: {{R{event_count['reset']}{{x\n\r"
            f"{{G          Exit Events{{x: {{R{event_count['exit']}{{x\n\r"
            f"{{G        Server Events{{x: {{R{event_count['server']}{{x\n\r"
-           f"{{G        Socket Events{{x: {{R{event_count['socket']}{{x\n\r"
+           f"{{G       Session Events{{x: {{R{event_count['session']}{{x\n\r"
            f"{{G     Front End Events{{x: {{R{event_count['frontend']}{{x\n\r"
            f"{{G     Grapevine Events{{x: {{R{event_count['grapevine']}{{x\n\r"
            f"{{G  Grapevine Connected{{x: {{R{grapevine.gsocket.state['connected']}{{x\n\r")

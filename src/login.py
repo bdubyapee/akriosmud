@@ -20,7 +20,6 @@ import frontend
 import grapevine
 import helpsys
 import races
-import server
 from math_utils import dice, fuzz
 import world
 import player
@@ -182,13 +181,8 @@ class Login(object):
         elif inp == 'l':
             self.sock.dispatch('Thanks for playing.  We hope to see you again soon.')
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
-            if isinstance(self.sock, server.ConnSocket):
-                self.sock.handle_close()
-                self.clear()
-                del self
-            elif isinstance(self.sock, server.Session):
-                frontend.fesocket.msg_gen_player_logout(self.name.capitalize(), self.sock.session)
-                self.sock.state['connected'] = False
+            frontend.fesocket.msg_gen_player_logout(self.name.capitalize(), self.sock.session)
+            self.sock.state['connected'] = False
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')
             comm.wiznet(f"Character {self.name} deleted by {self.sock.host}")
