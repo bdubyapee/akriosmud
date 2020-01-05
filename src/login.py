@@ -29,12 +29,6 @@ import livingthing
 
 log = logging.getLogger(__name__)
 
-badwords = []
-
-with open(f"{world.dataDir}/badwords.txt") as thefile:
-    for eachword in thefile.readlines():
-        badwords.append(eachword.strip())
-
 
 class Login(object):
     def __init__(self, name=''):
@@ -69,8 +63,8 @@ class Login(object):
         elif not inp.isalpha():
             self.sock.dispatch('Character names may only contain letters.')
             self.sock.dispatch('Enter a character name: ', trail=False)
-        elif inp in badwords or inp in ['admanthos', 'aludra', 'caerdik', 'malyki', 
-                                        'myst', 'nephium', 'selucia', 'sirian', 'tharian']:
+        elif inp in ['admanthos', 'aludra', 'caerdik', 'malyki',
+                     'myst', 'nephium', 'selucia', 'sirian', 'tharian']:
             self.sock.dispatch('Character name unacceptable.')
             self.sock.dispatch('Enter a character name: ', trail=False)
         else:
