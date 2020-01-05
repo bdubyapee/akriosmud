@@ -18,7 +18,7 @@ from world import serverlog
 if __name__ == "__main__":
     logging.basicConfig(filename=serverlog, filemode='w',
                         format='%(asctime)s: %(name)s - %(levelname)s - %(message)s',
-                        level=logging.DEBUG)
+                        level=logging.INFO)
 
     game = server.Server()
     game.run()
