@@ -74,7 +74,7 @@ class Session(object):
         newconn.sock = self
         newconn.sock.owner = newconn
         session_list[self.session] = self
-        if name_:
+        if not name_:
             newconn.greeting()
             comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
 
