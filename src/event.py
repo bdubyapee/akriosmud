@@ -572,6 +572,11 @@ def event_admin_system_status(event_):
         objlist_index += len(eacharea.objectlist_index)
         objlist += len(eacharea.objectlist)
 
+    if grapevine.LIVE:
+        grapevine_status = grapevine.gsocket.state['connected']
+    else:
+        grapevine_status = 'Disabled'
+
     msg = (f"\n\r{{RAkrios System Status (5 minute update){{x\n\r"
            f"{{GPlayer Connections{{x: {{R{len(server.session_list)}{{x\n\r"
            f"{{G      Mobile Index{{x: {{R{moblist_index}{{x\n\r"
@@ -590,7 +595,7 @@ def event_admin_system_status(event_):
            f"{{G       Session Events{{x: {{R{event_count['session']}{{x\n\r"
            f"{{G     Front End Events{{x: {{R{event_count['frontend']}{{x\n\r"
            f"{{G     Grapevine Events{{x: {{R{event_count['grapevine']}{{x\n\r"
-           f"{{G  Grapevine Connected{{x: {{R{grapevine.gsocket.state['connected']}{{x\n\r")
+           f"{{G  Grapevine Connected{{x: {{R{grapevine_status}{{x\n\r")
 
     event_.owner.write(msg)
 
