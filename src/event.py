@@ -319,25 +319,29 @@ def event_frontend_receive_message(event_):
     if fe_.inbound_frame_buffer:
         # Assign rcvd_msg to a FEReceivedMessage instance.
         rcvd_msg = fe_.receive_message()
-        ret_value = rcvd_msg.parse_frame()
+        if rcvd_msg:
+            ret_value = rcvd_msg.parse_frame()
+        else:
+            log.warning('ret_value = NoneType in event_frontend_receive_message\nPossible Front end failure.')
+            return
 
-        log.info(f'Received : {rcvd_msg.message}')
+        log.debug(f'event_frontend_receive_message received : {rcvd_msg.message}')
 
         if ret_value:
             if rcvd_msg.message['event'] == "player/input":
                 uuid_, addr, port, message = ret_value
                 if uuid_ in server.session_list:
-                    log.info(f'uuid_ in server.session_list')
-                    log.info(f'session_list: {server.session_list}')
+                    log.debug(f'uuid_ in server.session_list')
+                    log.debug(f'session_list: {server.session_list}')
                     server.session_list[uuid_].inbuf.append(message)
-                    log.info(f'Appended to inbuf: {server.session_list[uuid_].inbuf}')
+                    log.debug(f'Appended to inbuf: {server.session_list[uuid_].inbuf}')
                 return
 
             if rcvd_msg.message['event'] == 'connection/connected':
                 uuid_, addr_, port_ = ret_value
-                log.info(f'Creating connected session: {uuid_}')
+                log.debug(f'Creating connected session: {uuid_}')
                 server.Session(uuid_, addr_, port_)
-                log.info(f'SESSION LIST: {server.session_list}')
+                log.debug(f'SESSION LIST: {server.session_list}')
 
             if rcvd_msg.message['event'] == 'connection/disconnected':
                 uuid_, addr_, port_ = ret_value
@@ -345,12 +349,11 @@ def event_frontend_receive_message(event_):
                     log.warning('Trying to disconnect session not in session_list:')
                     log.warning(f'{uuid_} not in {server.session_list.keys()}')
                 else:
-                    log.info(f'Disconnecting session {uuid_}')
+                    log.debug(f'Disconnecting session {uuid_}')
                     player_ = server.session_list[uuid_]
                     if player_.state['logged in']:
                         player_.interp('save')
                         player_.interp('quit force')
-                        pass
                     server.session_list.pop(uuid_)
                     player_.clear()
 
@@ -375,7 +378,7 @@ def event_frontend_state_check(event_):
     fe_ = event_.owner
 
     if time.time() - fe_.last_heartbeat > 60:
-        log.info('Setting front end state to disconnected due to > 60 seconds with no heartbeat.')
+        log.warning('Setting front end state to disconnected due to > 60 seconds with no heartbeat.')
         fe_.state["connected"] = False
 
     if fe_.state["connected"]:
@@ -385,6 +388,10 @@ def event_frontend_state_check(event_):
             for each_event in each_thing.events.eventlist:
                 if each_event.eventtype == "frontend restart":
                     return
+
+        # Save all 'headless' players and log them out?
+        # Not really a good way to recover from a front end failure.
+        # Investigate this more.
 
         fe_.fesocket_disconnect()
 

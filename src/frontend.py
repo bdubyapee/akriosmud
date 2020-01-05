@@ -107,7 +107,7 @@ class FEReceivedMessage(object):
             port = self.message['payload']['port']
             msg = self.message['payload']['msg']
 
-            log.info(f"Received front end message: {uuid}@{addr}:{port} '{msg}'")
+            log.debug(f"Received front end message: {uuid}@{addr}:{port} '{msg}'")
             return uuid, addr, port, msg
 
     def received_connection_connected(self):
