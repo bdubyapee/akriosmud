@@ -24,7 +24,6 @@ requirements = {'capability': ['admin'],
 @Command(**requirements)
 def shutdown(caller, args, **kwargs):
     for each_player in player.playerlist:
-        each_player.save()    
         if each_player.is_building or each_player.is_editing:
             caller.write(f"{each_player.disp_name} is Building right now! No Shutdown for you!")
             return

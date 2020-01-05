@@ -77,6 +77,9 @@ class Session(object):
         if not name_:
             newconn.greeting()
             comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
+        else:
+            newconn.interp = newconn.character_login
+            newconn.interp()
 
     def dispatch(self, msg, trail=True):
         if trail:
@@ -176,12 +179,17 @@ class Server(object):
             if timenow < timedelta:
                 time.sleep(timedelta - timenow)
 
-        for each_player in session_list.values():
-            each_player.interp('quit force')
-            each_player.handle_close()
+        player_quit = 'quit force'
 
         if Server.softboot:
-            frontend.fesocket.msg_gen_game_softboot(wait_time=5)
+            log.info('Softboot has been executed')
+            frontend.fesocket.msg_gen_game_softboot(wait_time=1)
+            player_quit = 'quit force no_notify'
+
+        # server.Server.done has been set to True
+        for each_player in session_list.values():
+            each_player.owner.interp(player_quit)
+            each_player.handle_close()
 
         grapevine.gsocket.gsocket_disconnect()
         frontend.fesocket.fesocket_disconnect()

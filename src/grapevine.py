@@ -548,6 +548,7 @@ class GrapevineSocket(WebSocket):
 
     def gsocket_disconnect(self):
         comm.wiznet('gsocket_disconnect: Disconnecting from Grapevine Network.')
+        self.handle_write()
         self.state['connected'] = False
         self.state['authenticated'] = False
         self.inbound_frame_buffer.clear()

@@ -40,7 +40,7 @@ def quit(caller, args, **kwargs):
     if caller.aid in player.playerlist_by_aid:
         player.playerlist_by_aid.pop(caller.aid)
     if args == "force":
-        reason = "[IDLE TIMEOUT] "
+        reason = "[FORCED] "
     else:
         reason = ""
 
@@ -54,6 +54,8 @@ def quit(caller, args, **kwargs):
     # them completely from the game and don't leave them stuck at the menu.
     if args == "force":
         conn.main_menu_get_option('l')
+    elif args == "force no_notify":
+        conn.main_menu_get_option('l no_notify')
     else:
         conn.interp = conn.main_menu_get_option
 

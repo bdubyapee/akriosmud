@@ -42,18 +42,12 @@ class Login(object):
         self.softboot = softboot
         if not self.softboot:
             self.interp = self.get_char_name
-        else:
-            self.softboot_login()
 
     def clear(self):
         self.interp = self.get_char_name
         self.newchar = {}
         self.newstats = {}
         self.sock = None
-
-    def softboot_login(self):
-        self.interp = self.character_login
-        self.interp()
 
     def greeting(self):
         self.sock.dispatch(helpsys.get_help('greet', server=True))
@@ -191,6 +185,8 @@ class Login(object):
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
             frontend.fesocket.msg_gen_player_logout(self.name.capitalize(), self.sock.session)
             self.sock.state['connected'] = False
+        elif inp == 'l no_notify':
+            self.sock.state['connected'] = False
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')
             comm.wiznet(f"Character {self.name} deleted by {self.sock.host}")
@@ -222,11 +218,13 @@ class Login(object):
             event.init_events_player(newobject)
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             if newobject.position == "sleeping":
-                newobject.write("Something feels....different.")
+                if self.softboot:
+                    newobject.write("Something feels....different.")
                 newobject.write("You are sleeping.")
             else:
                 newobject.interp("look")
-                newobject.write("Something feels....different.")
+                if self.softboot:
+                    newobject.write("Something feels....different.")
             if grapevine.LIVE:
                 log.debug(f"Sending player login to Grapevine : {newobject.name}")
                 grapevine.gsocket.msg_gen_player_login(newobject.name)

@@ -183,6 +183,7 @@ class FESocket(WebSocket):
 
     def fesocket_disconnect(self):
         comm.wiznet('fesocket_disconnect: Disconnecting from front end.')
+        self.handle_write()
         self.state['connected'] = False
         self.state['authenticated'] = False
         self.inbound_frame_buffer.clear()
