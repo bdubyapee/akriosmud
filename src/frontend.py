@@ -53,6 +53,7 @@ class FEReceivedMessage(object):
         self.rcvr_func = {'heartbeat': (self.fesock.msg_gen_heartbeat, None),
                           'restart': (self.received_restart, None),
                           'player/input': (self.received_player_input, None),
+                          'game/load_players': (self.received_game_load_players, None),
                           'connection/connected': (self.received_connection_connected, None),
                           'connection/disconnected': (self.received_connection_disconnected, None)}
 
@@ -133,6 +134,19 @@ class FEReceivedMessage(object):
 
             log.info(f'Received client disconnect: {uuid}@{addr}')
             return uuid, addr, port
+
+    def received_game_load_players(self):
+        """
+        We should receive this after a 'softboot'.
+        We have notified the front end of a soft boot, it should have restarted us.
+        When the game connects to the front end, if there is a list of sessions that means
+        we have soft booted, so we're receiving a list of session ID's and player names to log in.
+        """
+        if 'payload' in self.message:
+            players_dict = self.message['payload']['players']
+
+            log.info(f'Received session->player dict after startup: {players_dict}')
+            return players_dict
 
 
 class FESocket(WebSocket):
@@ -231,6 +245,17 @@ class FESocket(WebSocket):
         payload = {'name': player_name,
                    'uuid': uuid_}
         msg = {'event': 'players/sign-out',
+               'secret': FRONT_END,
+               'payload': payload}
+
+        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+
+    def msg_gen_game_softboot(self, wait_time=10):
+        """
+        Notify the front end the game is going down for softboot.
+        """
+        payload = {'wait_time': wait_time}
+        msg = {'event': 'game/softboot',
                'secret': FRONT_END,
                'payload': payload}
 

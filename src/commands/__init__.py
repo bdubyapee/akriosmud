@@ -334,6 +334,7 @@ from . import raceedit
 from . import raceslist
 from . import roomedit
 from . import shutdown
+from . import softboot
 from . import viewolcdetails
 
 # Player Commands

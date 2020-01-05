@@ -30,9 +30,8 @@ log = logging.getLogger(__name__)
 
 
 class Login(object):
-    def __init__(self, name=''):
+    def __init__(self, name='', softboot=False):
         super().__init__()
-        self.interp = self.get_char_name
         self.lasthost = ""
         self.lasttime = ""
         self.name = name
@@ -40,12 +39,21 @@ class Login(object):
         self.newstats = {}
         self.password = ""
         self.sock = None
+        self.softboot = softboot
+        if not self.softboot:
+            self.interp = self.get_char_name
+        else:
+            self.softboot_login()
 
     def clear(self):
         self.interp = self.get_char_name
         self.newchar = {}
         self.newstats = {}
         self.sock = None
+
+    def softboot_login(self):
+        self.interp = self.character_login
+        self.interp()
 
     def greeting(self):
         self.sock.dispatch(helpsys.get_help('greet', server=True))
@@ -203,9 +211,10 @@ class Login(object):
             newobject.sock.owner = newobject
             newobject.sock.promptable = True
             newobject.write = newobject.sock.dispatch
-            newobject.write("")
-            newobject.write(helpsys.get_help("motd", server=True))
-            newobject.write("")
+            if not self.softboot:
+                newobject.write("")
+                newobject.write(helpsys.get_help("motd", server=True))
+                newobject.write("")
             comm.wiznet(f"{newobject.name.capitalize()} logging in from {newobject.sock.host}.")
             player.playerlist.append(newobject)
             player.playerlist_by_name[newobject.name] = newobject
@@ -213,9 +222,11 @@ class Login(object):
             event.init_events_player(newobject)
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             if newobject.position == "sleeping":
+                newobject.write("Something feels....different.")
                 newobject.write("You are sleeping.")
             else:
                 newobject.interp("look")
+                newobject.write("Something feels....different.")
             if grapevine.LIVE:
                 log.debug(f"Sending player login to Grapevine : {newobject.name}")
                 grapevine.gsocket.msg_gen_player_login(newobject.name)

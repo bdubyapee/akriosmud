@@ -37,7 +37,7 @@ validchars = validchars.replace(string.whitespace[1:], "")
 
 
 class Session(object):
-    def __init__(self, uuid_, addr_, port_):
+    def __init__(self, uuid_, addr_, port_, name_=None):
         self.owner = None
         self.host = addr_
         self.port = port_
@@ -50,7 +50,7 @@ class Session(object):
                       'logged in': False}
         self.events = event.Queue(self, "session")
 
-        self._login()
+        self._login(name_)
 
     def clear(self):
         del self
@@ -66,13 +66,17 @@ class Session(object):
     def dont_echo_telnet(self):
         pass
 
-    def _login(self):
-        newconn = login.Login()
+    def _login(self, name_):
+        if name_:
+            newconn = login.Login(name_, softboot=True)
+        else:
+            newconn = login.Login()
         newconn.sock = self
         newconn.sock.owner = newconn
         session_list[self.session] = self
-        newconn.greeting()
-        comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
+        if name_:
+            newconn.greeting()
+            comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
 
     def dispatch(self, msg, trail=True):
         if trail:
@@ -165,20 +169,22 @@ class Server(object):
                         session_obj.write()
                     if session_obj.readable:
                         session_obj.read()
-
-            [session.handle_close() for session in session_list.values() if not session.state['connected']]
+                else:
+                    session_obj.handle_close()
 
             timenow = currenttime()
             if timenow < timedelta:
                 time.sleep(timedelta - timenow)
-        if not Server.softboot:
-            # XXX Save all players before hard close! XXX
-            [session.handle_close() for session in session_list.values()]
-        else:
-            # Add in a "copyover" style soft reboot.
-            # Save state, save players, save file descriptors to disk.
-            # Restart Mud, reload file descriptors and load players.
-            # XXX Implement this at some point.
-            pass
+
+        for each_player in session_list.values():
+            each_player.interp('quit force')
+            each_player.handle_close()
+
+        if Server.softboot:
+            frontend.fesocket.msg_gen_game_softboot(wait_time=5)
+
+        grapevine.gsocket.gsocket_disconnect()
+        frontend.fesocket.fesocket_disconnect()
+
         log.info("System shutdown successful.")
         sys.exit()

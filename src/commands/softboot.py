@@ -1,0 +1,33 @@
+#! usr/bin/env python3
+# Project: Akrios
+# filename: commands/softboot.py
+#
+# Capability : admin
+#
+# Command Description: This command soft boots the game.
+#
+#
+#
+# By: Jubelo
+
+from commands import *
+
+name = "softboot"
+version = 1
+
+requirements = {'capability': ['admin'],
+                'generic_fail': "See {WHelp softboot{x for help with this command.",
+                'truth_checks':  [],
+                'false_checks': []}
+
+
+@Command(**requirements)
+def softboot(caller, args, **kwargs):
+    for each_player in player.playerlist:
+        each_player.save()    
+        if each_player.is_building or each_player.is_editing:
+            caller.write(f"{each_player.disp_name} is Building right now! No Softboot for you!")
+            return
+
+    server.Server.done = True
+    server.Server.softboot = True

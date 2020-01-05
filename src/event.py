@@ -349,13 +349,21 @@ def event_frontend_receive_message(event_):
                     log.warning('Trying to disconnect session not in session_list:')
                     log.warning(f'{uuid_} not in {server.session_list.keys()}')
                 else:
+                    # Do we really want to do this?  We already handle link death with event timers.....
+                    # Perhaps flag the player as link dead and let the timers do their thing?
                     log.debug(f'Disconnecting session {uuid_}')
                     player_ = server.session_list[uuid_]
                     if player_.state['logged in']:
-                        player_.interp('save')
                         player_.interp('quit force')
                     server.session_list.pop(uuid_)
-                    player_.clear()
+                    # player_.clear()
+
+            if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'game/load_players':
+                player_dict = ret_value
+                for session, player_ in player_dict.items():
+                    name_, addr_, port_ = player_
+                    log.info(f'Creating connected session for softboot: {name_} : {session}')
+                    server.Session(session, addr_, port_, name_)
 
             if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
                 comm.wiznet("Received restart event from Front End.")
