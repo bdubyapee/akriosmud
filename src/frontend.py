@@ -262,6 +262,28 @@ class FESocket(WebSocket):
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
+    def msg_gen_do_echo(self, uuid_):
+        """
+        Notify the front end to send a do echo.
+        """
+        payload = {'uuid': uuid_}
+        msg = {'event': 'game/do-echo',
+               'secret': FRONT_END,
+               'payload': payload}
+
+        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+
+    def msg_gen_dont_echo(self, uuid_):
+        """
+        Notify the front end to send a dont echo.
+        """
+        payload = {'uuid': uuid_}
+        msg = {'event': 'game/dont-echo',
+               'secret': FRONT_END,
+               'payload': payload}
+
+        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+
     def handle_read(self):
         """
         Perform the actual socket read attempt. Append anything received to the inbound

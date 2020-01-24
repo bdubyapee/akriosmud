@@ -218,13 +218,12 @@ class Login(object):
             event.init_events_player(newobject)
             newobject.logpath = os.path.join(world.logDir, f"{newobject.name}.log")
             if newobject.position == "sleeping":
-                if self.softboot:
-                    newobject.write("Something feels....different.")
                 newobject.write("You are sleeping.")
             else:
                 newobject.interp("look")
-                if self.softboot:
-                    newobject.write("Something feels....different.")
+            if self.softboot:
+                newobject.write('')
+                newobject.write('Something feels different.')
             if grapevine.LIVE:
                 log.debug(f"Sending player login to Grapevine : {newobject.name}")
                 grapevine.gsocket.msg_gen_player_login(newobject.name)
