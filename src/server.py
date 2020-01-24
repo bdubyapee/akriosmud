@@ -61,10 +61,10 @@ class Session(object):
         del self
 
     def do_echo_telnet(self):
-        frontend.fesocket.msg_gen_do_echo(self.session)
+        pass
 
     def dont_echo_telnet(self):
-        frontend.fesocket.msg_gen_dont_echo(self.session)
+        pass
 
     def _login(self, name_):
         if name_:
