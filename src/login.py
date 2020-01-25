@@ -101,7 +101,6 @@ class Login(object):
                 if person.name == self.name:
                     self.sock.dispatch("\n\rYour character seems to be logged in already.  Reconnecting you.")
                     del person.sock.owner
-                    person.sock.close()
                     del person.sock
                     testsock = self.sock
                     self.clear()
