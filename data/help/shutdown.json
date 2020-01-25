@@ -1,6 +1,6 @@
 {
     "creator": "belial",
-    "description": "{RHelp Topic{W: shutdown{x\n\nThis shuts down the MUD. So...yeah.",
+    "description": "{RHelp Topic{W: shutdown{x\n\r\n\rThis shuts down the MUD. So...yeah.",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [

@@ -1,6 +1,6 @@
 {
     "creator": "jubelo",
-    "description": "\n{RHelp Topic{W: sleep{x\n\nThe {Wsleep{x command is utilized to make your character go to sleep.",
+    "description": "\n\r{RHelp Topic{W: sleep{x\n\r\n\rThe {Wsleep{x command is utilized to make your character go to sleep.",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [

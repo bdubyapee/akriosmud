@@ -1,5 +1,5 @@
 {
-    "description": "There seems to be nothing special about this small cave. In fact it appears\nto just be a hole in the ground. The rock walls are covered with lichen and\nmoss, mostly a dark green with some browns and yellows mixed in. There is\nonly one opening to the south.",
+    "description": "There seems to be nothing special about this small cave. In fact it appears\n\rto just be a hole in the ground. The rock walls are covered with lichen and\n\rmoss, mostly a dark green with some browns and yellows mixed in. There is\n\ronly one opening to the south.",
     "extradescriptions": {},
     "flags": [],
     "json_class_name": "__Room__",

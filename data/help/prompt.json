@@ -1,6 +1,6 @@
 {
     "creator": "belial",
-    "description": "{RHelp Topic{W: prompt{x (argument)\n\n{Wprompt (argument):{x\n     Changes your prompt!{x",
+    "description": "{RHelp Topic{W: prompt{x (argument)\n\r\n\r{Wprompt (argument):{x\n\r     Changes your prompt!{x",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [

@@ -1,6 +1,6 @@
 {
     "creator": "jubelo",
-    "description": "{RHelp Topic{W: open {x\n\n{Wopen <argument>{x\n     Typing open with an <argument> will allow you to attempt to open the <argument>.",
+    "description": "{RHelp Topic{W: open {x\n\r\n\r{Wopen <argument>{x\n\r     Typing open with an <argument> will allow you to attempt to open the <argument>.",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [

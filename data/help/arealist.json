@@ -1,6 +1,6 @@
 {
     "creator": "belial",
-    "description": "{RHelp Topic{W: arealist{x\n\nThis command will give you a list of all areas.",
+    "description": "{RHelp Topic{W: arealist{x\n\r\n\rThis command will give you a list of all areas.",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [

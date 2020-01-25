@@ -1,6 +1,6 @@
 {
     "creator": "belial",
-    "description": "{RHelp Topic{W: alias{x <argumemnt>(command) / <remove>(argument) / <list>\n\n{Walias (argument) (command):{x\n     This sets a command to said argument.\n\n{Walias remove (argument):{x\n     Removes the specified alias.\n\n{Walias list:{x\n     Shows you a list of aliases you currently have.",
+    "description": "{RHelp Topic{W: alias{x <argumemnt>(command) / <remove>(argument) / <list>\n\r\n\r{Walias (argument) (command):{x\n\r     This sets a command to said argument.\n\r\n\r{Walias remove (argument):{x\n\r     Removes the specified alias.\n\r\n\r{Walias list:{x\n\r     Shows you a list of aliases you currently have.",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [

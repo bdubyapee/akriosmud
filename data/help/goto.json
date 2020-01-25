@@ -1,6 +1,6 @@
 {
     "creator": "belial",
-    "description": "{RHelp Topic{W: goto{x <player>/<vnum>\n\nThis command will take you directly to said player or vnum.",
+    "description": "{RHelp Topic{W: goto{x <player>/<vnum>\n\r\n\rThis command will take you directly to said player or vnum.",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [

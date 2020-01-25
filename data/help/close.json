@@ -1,6 +1,6 @@
 {
     "creator": "jubelo",
-    "description": "{RHelp Topic{W: close{x\n\n{Wclose <argument>{x\n     Typing close with an <argument> will allow you to attempt to close the <argument>.",
+    "description": "{RHelp Topic{W: close{x\n\r\n\r{Wclose <argument>{x\n\r     Typing close with an <argument> will allow you to attempt to close the <argument>.",
     "json_class_name": "__Help__",
     "json_version": 1,
     "keywords": [
