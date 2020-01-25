@@ -247,7 +247,7 @@ class Buffer(object):
         return False
 
     def done(self, args):
-        self.lines = "\n".join(self.lines)
+        self.lines = "\n\r".join(self.lines)
         return True
 
     def display(self, args=None):

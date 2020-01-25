@@ -635,7 +635,6 @@ def event_player_idle_check(event_):
 
     if idle_time > 8 * 60:
         event_.owner.write("\n\r{WYou have been idle for over 8 minutes. Auto logout in 2 minutes.{x")
-        event_.owner.sock.send(b'\x07')
         return
 
     if idle_time >= 5 * 60:
@@ -643,7 +642,6 @@ def event_player_idle_check(event_):
         if event_.owner.oocflags['afk']:
             return
         event_.owner.write("\n\r{WYou have been idle for over 5 minutes.  Placing you in AFK.{x")
-        event_.owner.sock.send(b'\x07')
         event_.owner.oocflags['afk'] = True
 
 
