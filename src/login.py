@@ -78,13 +78,13 @@ class Login(object):
                 self.lasthost = maybeplayer['lasthost']
                 self.sock.dispatch('Please enter your password: ', trail=False)
                 self.interp = self.get_char_password
-                self.sock.dont_echo_telnet()
+                self.sock.dont_echo()
             else:
                 if world.allownewCharacters:
                     self.sock.dispatch('Is this a new character? ', trail=False)
                     self.interp = self.confirm_new_char
                 else:
-                    self.sock.dispatch("I'm sorry, we aren't allowing new characters at this time.\n\r")
+                    self.sock.dispatch("I'm sorry, we are not allowing new characters at this time.\n\r")
                     self.sock.dispatch("Contact jubelo@akriosmud.funcity.org for an invite!")
                     self.sock.close()
                                 
@@ -92,11 +92,11 @@ class Login(object):
         inp = inp.encode("utf-8")
         if not bcrypt.checkpw(inp, self.password.encode("utf-8")):
             self.sock.dispatch("\n\rI'm sorry, that isn't the correct password. Good bye.")
+            frontend.fesocket.msg_gen_player_login_failed(self.name, self.sock.session)
             self.sock.handle_close()
             self.clear()
-            del self
         else:
-            self.sock.do_echo_telnet()
+            self.sock.do_echo()
             for person in player.playerlist:
                 if person.name == self.name:
                     self.sock.dispatch("\n\rYour character seems to be logged in already.  Reconnecting you.")
@@ -128,7 +128,7 @@ class Login(object):
     def confirm_new_char(self, inp):
         inp = inp.lower()
         if inp == "y" or inp == "yes":
-            self.sock.dont_echo_telnet()
+            self.sock.dont_echo()
             self.sock.dispatch("Please choose a password for this character: ", trail=False)
             self.interp = self.confirm_new_password
         else:
@@ -156,7 +156,7 @@ class Login(object):
         else:
             inp = inp.encode('utf-8')
             self.password = bcrypt.hashpw(inp[:71], bcrypt.gensalt(10)).decode('utf-8')
-            self.sock.do_echo_telnet()
+            self.sock.do_echo()
             self.show_races()
             self.sock.dispatch('Please choose a race: ', trail=False)
             self.interp = self.get_race

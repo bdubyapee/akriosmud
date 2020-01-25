@@ -221,7 +221,7 @@ class FESocket(WebSocket):
         payload = {'message': msg_,
                    'uuid': session_uuid}
 
-        msg = {'event': 'player/output',
+        msg = {'event': 'players/output',
                'secret': FRONT_END,
                'payload': payload}
 
@@ -251,12 +251,48 @@ class FESocket(WebSocket):
 
         self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
+    def msg_gen_player_login_failed(self, player_name, uuid_):
+        """
+        Notify the front end of a player failed login, "wrong password".
+        """
+        payload = {'name': player_name,
+                   'uuid': uuid_}
+        msg = {'event': 'players/login-failed',
+               'secret': FRONT_END,
+               'payload': payload}
+
+        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+
     def msg_gen_game_softboot(self, wait_time=10):
         """
         Notify the front end the game is going down for softboot.
         """
         payload = {'wait_time': wait_time}
         msg = {'event': 'game/softboot',
+               'secret': FRONT_END,
+               'payload': payload}
+
+        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+
+    def msg_gen_player_do_client_echo(self, uuid_):
+        """
+        Notify the front end to send a 'do echo' to clients (where appropriate).
+        """
+        payload = {'command': 'do echo',
+                   'uuid': uuid_}
+        msg = {'event': 'player/session command',
+               'secret': FRONT_END,
+               'payload': payload}
+
+        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+
+    def msg_gen_player_dont_client_echo(self, uuid_):
+        """
+        Notify the front end to send a 'dont echo' to clients (where appropriate).
+        """
+        payload = {'command': 'dont echo',
+                   'uuid': uuid_}
+        msg = {'event': 'player/session command',
                'secret': FRONT_END,
                'payload': payload}
 

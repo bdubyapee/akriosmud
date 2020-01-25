@@ -60,11 +60,11 @@ class Session(object):
         self.state['logged in'] = False
         del self
 
-    def do_echo_telnet(self):
-        pass
+    def do_echo(self):
+        frontend.fesocket.msg_gen_player_do_client_echo(self.session)
 
-    def dont_echo_telnet(self):
-        pass
+    def dont_echo(self):
+        frontend.fesocket.msg_gen_player_dont_client_echo(self.session)
 
     def _login(self, name_):
         if name_:
