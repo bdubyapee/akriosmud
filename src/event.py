@@ -151,14 +151,14 @@ def init_events_frontend(frontend_):
     event.totalpasses = event.passes
     frontend_.events.add(event)
 
-    event = Event()
-    event.owner = frontend_
-    event.ownertype = "frontend"
-    event.eventtype = "frontend state check"
-    event.func = event_frontend_state_check
-    event.passes = 3 * PULSE_PER_MINUTE
-    event.totalpasses = event.passes
-    frontend_.events.add(event)
+    # event = Event()
+    # event.owner = frontend_
+    # event.ownertype = "frontend"
+    # event.eventtype = "frontend state check"
+    # event.func = event_frontend_state_check
+    # event.passes = 90 * PULSE_PER_SECOND
+    # event.totalpasses = event.passes
+    # frontend_.events.add(event)
 
 
 def init_events_grapevine(grapevine_):
@@ -385,6 +385,7 @@ def event_frontend_receive_message(event_):
 def event_frontend_state_check(event_):
     fe_ = event_.owner
 
+    log.info(f'time.time: {time.time()} last_heartbeat: {fe_.last_heartbeat}')
     if time.time() - fe_.last_heartbeat > 60:
         log.warning('Setting front end state to disconnected due to > 60 seconds with no heartbeat.')
         fe_.state["connected"] = False

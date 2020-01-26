@@ -209,6 +209,8 @@ class FESocket(WebSocket):
         """
         self.last_heartbeat = time.time()
 
+        log.info(f'Received heartbeat from frontend at {self.last_heartbeat}')
+
         msg = {'event': 'heartbeat',
                'secret': FRONT_END}
 

@@ -70,11 +70,11 @@ def look(caller, args, **kwargs):
         else:
             for thing in caller.location.contents:
                 if hasattr(thing, "name"):
-                    if args.lower() in thing.name:
+                    if args in thing.name:
                         lookingat = thing
                         notfound = False
                 if hasattr(thing, "keywords"):
-                    if args.lower() in thing.keywords:
+                    if args in thing.keywords:
                         lookingat = thing
                         notfound = False
         if notfound is False:
