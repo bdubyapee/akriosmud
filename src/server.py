@@ -56,6 +56,7 @@ class Session(object):
         del self
 
     def handle_close(self):
+        frontend.fesocket.msg_gen_player_logout(self.owner.name.capitalize(), self.session)
         self.state['connected'] = False
         self.state['logged in'] = False
         del self

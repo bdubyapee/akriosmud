@@ -244,6 +244,7 @@ class FESocket(WebSocket):
         Notify the front end of a player logout.
         """
         payload = {'name': player_name,
+                   'message': 'Connection closed',
                    'uuid': uuid_}
         msg = {'event': 'players/sign-out',
                'secret': FRONT_END,
@@ -256,6 +257,7 @@ class FESocket(WebSocket):
         Notify the front end of a player failed login, "wrong password".
         """
         payload = {'name': player_name,
+                   'message': 'Connection closed',
                    'uuid': uuid_}
         msg = {'event': 'players/login-failed',
                'secret': FRONT_END,

@@ -182,17 +182,14 @@ class Login(object):
         elif inp == 'l':
             self.sock.dispatch('Thanks for playing.  We hope to see you again soon.')
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
-            frontend.fesocket.msg_gen_player_logout(self.name.capitalize(), self.sock.session)
-            self.sock.state['connected'] = False
+            self.sock.handle_close()
         elif inp == 'l no_notify':
-            self.sock.state['connected'] = False
+            self.sock.handle_close()
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')
             comm.wiznet(f"Character {self.name} deleted by {self.sock.host}")
             os.remove(f"{world.playerDir}/{self.name}.json")
             self.sock.handle_close()
-            self.clear()
-            del self
         else:
             self.main_menu()
                         

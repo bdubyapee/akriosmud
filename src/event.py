@@ -657,7 +657,6 @@ def event_player_newbie_notify(event_):
             "Type 'who' to see who else is playing in Akrios.",
             "Type 'commands' to see the commands available to you.",
             "Type 'ooc <message>' to post an Out of Character message to all players in Akrios.",
-            "Type 'beep Jubelo' to send a beep to Jubelo if you need help!",
             "Type 'say <message>' to say something to other players in the same room.",
             "Type 'look' to look at the room you are in",
             "Akrios is connected to grapevine.haus for Grapevine Chat!\n\rType"
