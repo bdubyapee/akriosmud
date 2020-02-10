@@ -11,7 +11,6 @@
 # Don't forget to rewrite this to do 1/0;fore;back at some point.
 
 color_table = {"{x": "0;0m",  # Clear back to white on black
-               "{*": "\x07",  # Beep code
                "{d": "0;30m",  # Set foreground color to black
                "{r": "0;31m",  # Set foreground color to red
                "{g": "0;32m",  # Set foreground color to green
@@ -46,19 +45,16 @@ color_table = {"{x": "0;0m",  # Clear back to white on black
                '{bW': '1;47m'}  # Set background color to bright white
 
 
-def colorize(text):
+def colorize(text) -> str:
     if "{" in text:
         for item, code in color_table.items():
-            if item == '{*':
-                text = text.replace(item, "\x07")
-            else:
-                text = text.replace(item, f"\x1b[{code}")
+            text = text.replace(item, f"\x1b[{code}")
         return text
     else:
         return text
 
 
-def decolorize(text):
+def decolorize(text) -> str:
     if "{" in text:
         for item in color_table.keys():
             text = text.replace(item, "")

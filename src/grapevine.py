@@ -5,9 +5,6 @@
 # File Description: A module to allow connection to Grapevine chat network.
 #                   Visit https://www.grapevine.haus/
 #
-# Dependencies: You will need to 'pip3 install websocket-client' to use this module.
-#
-#
 # Implemented features:
 #       Authentication to the grapevine network.
 #       Registration to the Gossip Channel(default) or other channels.
@@ -23,19 +20,6 @@
 #       Achievements (Sync, Creation, update, deletion)
 #
 #
-# Example usage would be to import this module into your main game server.  During server startup
-# assign grapevine.gsocket to grapevine.GrapevineSocket().  After instance init is when you need
-# to connect via grapevine.gsocket.gsocket_connect().  PLEASE PUT YOUR CLIENT ID AND CLIENT SECRET
-# into the appropriate instance attributes of GrapevineSocket below.
-#
-# You will need to periodically call the gsocket.handle_read() and gsocket.handle_write() as
-# required by your configuration.   Please see the examples in the repo of how this might look
-# for you.
-#
-#
-# Please see additional code examples of commands, events, etc in the repo.
-# https://github.com/oestrich/gossip-clients
-#
 # Or visit the latest version of the live client at:
 # https://github.com/bdubyapee/akriosmud
 #
@@ -49,888 +33,841 @@
     https://grapevine.haus
     https://vineyard.haus
 
-    Classes:
-        GrapevineReceivedMessage is used to parse incoming JSON messages from the network.
-        __init__(self, message, gsock)
-            message is the JSON from the grapevine network
-            gsock is the instance of GrapevineSocket for tracking foreign players locally
-
-        GrapevineSocket is used to authenticate to and send messages to the grapevine network.
-        __init__(self)
-
 """
 
+import asyncio
 import datetime
 import json
 import logging
-import socket
 import time
+from typing import Tuple
 import uuid
-from websocket import WebSocket
+import websockets
 
-import comm
-import event
 from keys import LIVE, CLIENT_ID, SECRET_KEY
 import player
+import status
 
 log = logging.getLogger(__name__)
 
-gsocket = None
+messages_to_grapevine = asyncio.Queue()
+messages_from_grapevine = asyncio.Queue()
+messages_to_game = asyncio.Queue()
 
 
-class GrapevineReceivedMessage(object):
-    def __init__(self, message_, gsock):
-        super().__init__()
+supports = ['channels', 'games', 'players', 'tells']
 
-        # Short hand to convert JSON data to instance attributes.
-        # Not secure at all.  If you're worried about it feel free to modify
-        # to your needs.
-        log.debug(f'Received message from Grapevine: {message_}')
-        self.message = json.loads(message_)
+# Populate the channels attribute if you want to subscribe to a specific
+# channel or channels during authentication.
+channels = ['gossip']
+version = '2.3.0'
+user_agent = 'AkriosMUD v0.4.5'
 
-        # Point an instance attribute to the module level grapevine socket.
-        # Used for adding to and removing refs as well as keeping the foreign player
-        # cache in the gsocket up to date.
-        self.gsock = gsock
+subscribed = {'gossip': True}
 
-        # When we receive a JSON message from grapevine it will always have an event type.
-        self.rcvr_func = {'heartbeat': (self.gsock.msg_gen_heartbeat, None),
-                          'authenticate': (self.received_auth, None),
-                          'restart': (self.received_restart, None),
-                          'channels/broadcast': (self.received_broadcast_message, None),
-                          'channels/subscribe': (self.received_chan_sub, gsock.sent_refs),
-                          'channels/unsubscribe': (self.received_chan_unsub, gsock.sent_refs),
-                          'players/sign-out': (self.received_player_logout, gsock.sent_refs),
-                          'players/sign-in': (self.received_player_login, gsock.sent_refs),
-                          'games/connect': (self.received_games_connected, None),
-                          'games/disconnect': (self.received_games_disconnected, None),
-                          'games/status': (self.received_games_status, gsock.sent_refs),
-                          'players/status': (self.received_player_status, gsock.sent_refs),
-                          'tells/send': (self.received_tells_status, gsock.sent_refs),
-                          'tells/receive': (self.received_tells_message, None),
-                          'channels/send': (self.received_message_confirm, gsock.sent_refs),
-                          'achievements/sync': (self.received_achievements_sync, gsock.sent_refs),
-                          'achievements/create': (self.received_achievements_create, gsock.sent_refs),
-                          'achievements/update': (self.received_achievements_update, gsock.sent_refs),
-                          'achievements/delete': (self.received_achievements_delete, gsock.sent_refs)}
+sent_refs = {}
 
-        self.restart_downtime = 0
-        self.achievements = {}
-        self.total_achievements = 0
+# The below is a cache of players we know about from other games.
+# Right now I just use this to populate additional fields in our in-game 'who' command
+# to also show players logged into other Grapevine connected games.
+other_games_players = {}
 
-    def parse_frame(self):
-        """
-            Parse any received JSON from the Grapevine network.
+inner_values = {'restart_downtime': 0,
+                'total_achievements': 0,
+                'last_heartbeat': 0.0,
+                'achievements': {}}
 
-            Verify we have an attribute from the JSON that is 'event'. If we have a key
-            in the rcvr_func that matches we will execute.
 
-            return whatever is returned by the method, or None.
-       """
-        if 'event' in self.message and self.message['event'] in self.rcvr_func:
-            exec_func, args = self.rcvr_func[self.message['event']]
-            if args is None:
-                retvalue = exec_func()
-            else:
-                retvalue = exec_func(args)
+def is_event_status(message, status_):
+    """
+        A helper method to determine if the event we received is type of status.
 
-            if retvalue:
-                return retvalue
-
-    def is_event_status(self, status):
-        """
-            A helper method to determine if the event we received is type of status.
-
-            return True/False
-        """
-        if 'event' in self.message and 'status' in self.message:
-            if self.message['status'] == status:
-                return True
-            else:
-                return False
-
-    def received_auth(self):
-        """
-            We received an event Auth event type.
-            Determine if we are already authenticated, if so subscribe to the channels
-            as determined in msg_gen_chan_subscribed in the GrapevineSocket Object.
-            Otherwise, if we are not authenticated yet we send another authentication attempt
-            via msg_gen_authenticate().  This is in place for path hiccups or restart events.
-
-            Grapevine 1.0.0
-        """
-        if self.is_event_status('success'):
-            self.gsock.state['authenticated'] = True
-            self.gsock.state['connected'] = True
-            self.gsock.msg_gen_chan_subscribe()
-            comm.wiznet('Received authentication success from Grapevine.')
-            self.gsock.msg_gen_player_status_query()
-            comm.wiznet('Sending player status query to all Grapevine games.')
-        elif not self.gsock.state['authenticated']:
-            comm.wiznet('received_auth: Sending Authentication message to Grapevine.')
-            self.gsock.msg_gen_authenticate()
-
-    def received_restart(self):
-        """
-        We received a restart event. We'll assign the value to the restart_downtime
-        attribute for access by the calling code.
-
-        Grapevine 1.0.0
-        """
-        if 'payload' in self.message:
-            self.restart_downtime = int(self.message['payload']['downtime'])
-
-    def received_chan_sub(self, sent_refs):
-        """
-        We have attempted to subscribe to a channel.  This is a response message from Grapevine.
-        If failure, we make sure we show unsubscribed in our local list.
-        if success, we make sure we show subscribed in our local list.
-
-        Grapevine 1.0.0
-        """
-        if 'ref' in self.message and self.message['ref'] in sent_refs:
-            orig_req = sent_refs.pop(self.message['ref'])
-            if self.is_event_status('failure'):
-                channel = orig_req['payload']['channel']
-                self.gsock.subscribed[channel] = False
-                comm.wiznet(f"Grapevine failed to subscribe to channel {channel}")
-            elif self.is_event_status('success'):
-                channel = orig_req['payload']['channel']
-                self.gsock.subscribed[channel] = True
-                comm.wiznet(f"Grapevine successfully subscribed to channel {channel}")
-
-    def received_chan_unsub(self, sent_refs):
-        """
-        We at some point sent a channel unsubscribe. This is verifying Grapevine
-        received that.  We unsub in our local list.
-
-        Grapevine 1.0.0
-        """
-        if 'ref' in self.message and self.message['ref'] in sent_refs:
-            orig_req = sent_refs.pop(self.message['ref'])
-            channel = orig_req['payload']['channel']
-            self.gsock.subscribed[channel] = False
-            comm.wiznet(f"Grapevine unsubscribed from channel {channel}")
-
-    def received_player_logout(self, sent_refs):
-        """
-        We have received a "player/sign-out" message from Grapevine.
-
-        Determine if it is a success message, which is an indication to us that Grapevine
-        received a player logout from us and is acknowledging, or if it is a message from
-        another game on the Grapevine network.
-
-        return None if it's an ack from grapevine, return player info if it's foreign.
-
-        Grapevine 1.0.0
-        """
-        if 'ref' in self.message:
-            # We are a success message from Grapevine returned from our notification.
-            if self.message['ref'] in sent_refs and self.is_event_status('success'):
-                sent_refs.pop(self.message['ref'])
-                return
-            # We are receiving a player logout from another game.
-            if 'game' in self.message['payload']:
-                game = self.message['payload']['game'].capitalize()
-                player_ = self.message['payload']['name'].capitalize()
-                if game in self.gsock.other_games_players:
-                    if player_ in self.gsock.other_games_players[game]:
-                        self.gsock.other_games_players[game].remove(player_)
-                    if len(self.gsock.other_games_players[game]) <= 0:
-                        self.gsock.other_games_players.pop(game)
-
-                return player_, 'signed out of', game
-
-    def received_player_login(self, sent_refs):
-        """
-        We have received a "player/sign-in" message from Grapevine.
-
-        Determine if it is a success message, which is an indication to us that Grapevine
-        received a player login from us and is acknowledging, or if it is a message from
-        another game on the Grapevine Network.
-
-        return None if it's an ack from grapevine, return player info if it's foreign
-
-        Grapevine 1.0.0
-        """
-        if 'ref' in self.message:
-            if self.message['ref'] in sent_refs and self.is_event_status('success'):
-                sent_refs.pop(self.message['ref'])
-                return
-            if 'game' in self.message['payload']:
-                game = self.message['payload']['game'].capitalize()
-                player_ = self.message['payload']['name'].capitalize()
-                if game in self.gsock.other_games_players:
-                    if player_ not in self.gsock.other_games_players[game]:
-                        self.gsock.other_games_players[game].append(player_)
-                else:
-                    self.gsock.other_games_players[game] = []
-                    self.gsock.other_games_players[game].append(player_)
-
-                return player_, 'signed into', game
-
-    def received_player_status(self, sent_refs):
-        """
-        We have requested a multi-game or single game status update.
-        This is the response. We pop the valid Ref from our local list
-        and add them to the local cache.
-
-        Grapevine 1.1.0
-        """
-        if 'ref' in self.message and 'payload' in self.message:
-            # On first receive we pop the ref just so it's gone from the queue
-            if self.message['ref'] in sent_refs:
-                sent_refs.pop(self.message['ref'])
-
-            game = self.message['payload']['game'].capitalize()
-
-            if len(self.message['payload']['players']) == 1 and self.message['payload']['players'] in ['', None]:
-                self.gsock.other_games_players[game] = []
-                return
-            if len(self.message['payload']['players']) == 1:
-                player_ = self.message['payload']['players'][0].capitalize()
-                self.gsock.other_games_players[game] = []
-                self.gsock.other_games_players[game].append(player_)
-                return
-            if len(self.message['payload']['players']) > 1:
-                player_ = [player_.capitalize() for player_ in self.message['payload']['players']]
-                self.gsock.other_games_players[game] = []
-                self.gsock.other_games_players[game] = player_
-                return
-
-    def received_tells_status(self, sent_refs):
-        """
-        One of the local players has sent a tell.  This is specific response of an error.
-        Provide the error and other pertinent info to the local game for handling
-        as required.
-
-        Grapevine 2.0.0
-        """
-        if 'ref' in self.message:
-            if self.message['ref'] in sent_refs and 'error' in self.message:
-                orig_req = sent_refs.pop(self.message['ref'])
-                if self.is_event_status('failure'):
-                    caller = orig_req['payload']['from_name'].capitalize()
-                    target = orig_req['payload']['to_name'].capitalize()
-                    game = orig_req['payload']['to_game'].capitalize()
-                    return caller, target, game, self.message['error']
-
-    def received_tells_message(self):
-        """
-        We have received a tell message destined for a player in our game.
-        Grab the details and return to the local game to handle as required.
-
-        Grapevine 2.0.0
-        """
-        if 'ref' in self.message and 'payload' in self.message:
-            sender = self.message['payload']['from_name']
-            target = self.message['payload']['to_name']
-            game = self.message['payload']['from_game']
-            sent = self.message['payload']['sent_at']
-            message = self.message['payload']['message']
-
-            log.info(f"Grapevine received tell: {sender}@{game} told {target} '{message}'")
-            return sender, target, game, sent, message
-
-    def received_games_status(self, sent_refs):
-        """
-        Received a game status response.  Return the received info to the local
-        game to handle as required.
-
-        Grapevine 2.1.0
-        """
-        if 'ref' in self.message and 'payload' in self.message and self.is_event_status("success"):
-            sent_refs.pop(self.message['ref'])
-            if self.message['ref'] in sent_refs:
-                game = self.message['payload']['game']
-                display_name = self.message['payload']['display_name']
-                description = self.message['payload']['description']
-                homepage = self.message['payload']['homepage_url']
-                user_agent = self.message['payload']['user_agent']
-                user_agent_repo = self.message['payload']['user_agent_repo_url']
-                connections = self.message['payload']['connections']
-
-                supports = self.message['payload']['supports']
-                num_players = self.message['payload']['players_online_count']
-
-                return (game, display_name, description, homepage, user_agent,
-                        user_agent_repo, connections, supports, num_players)
-
-        if 'ref' in self.message and 'error' in self.message and self.is_event_status('failure'):
-            orig_req = sent_refs.pop(self.message['ref'])
-            if self.message['ref'] in sent_refs:
-                game = orig_req['payload']['game']
-                return game, self.message['error']
-
-    def received_message_confirm(self, sent_refs):
-        """
-        We received a confirmation that Grapevine received an outbound broadcast message
-        from us.  Nothing to see here other than removing from our sent references list.
-
-        Grapevine : Should be semi version neutral.
-        """
-        if 'ref' in self.message:
-            if self.message['ref'] in sent_refs and self.is_event_status('success'):
-                sent_refs.pop(self.message['ref'])
-
-    def is_other_game_player_update(self):
-        """
-        A helper method to determine if this is a player update from another game.
-        """
-        if 'event' in self.message:
-            if self.message['event'] == 'players/sign-in' or self.message['event'] == 'players/sign-out':
-                if 'payload' in self.message and 'game' in self.message['payload']:
-                    return True
-            else:
-                return False
-
-    def received_games_connected(self):
-        """
-        A foreign game has connected to the network, add the game to our local
-        cache of games/players and send a request for player list.
-
-        Grapevine 2.2.0
-        """
-        if 'payload' in self.message:
-            # Clear what we knew about this game and request an update.
-            # Requesting updates from all games at this point, might as well refresh
-            # as I'm sure some games don't implement all features like player sign-in
-            # and sign-outs.
-            self.gsock.other_games_players[self.message['payload']['game']] = []
-            self.gsock.msg_gen_player_status_query()
-            return self.message['payload']['game']
-
-    def received_games_disconnected(self):
-        """
-        A foreign game has disconnected, remove it from our local cache and return
-        details to local game to handle as required.
-
-        Grapevine 2.2.0
-        """
-        if 'payload' in self.message:
-            if self.message['payload']['game'] in self.gsock.other_games_players:
-                self.gsock.other_games_players.pop(self.message['payload']['game'])
-            return self.message['payload']['game']
-
-    def received_broadcast_message(self):
-        """
-        We received a broadcast message from another game.  Return the pertinent
-        info so the local game can handle as required.  See examples above.
-
-        Grapevine 1.0.0
-        """
-        if 'payload' in self.message:
-            name = self.message['payload']['name']
-            game = self.message['payload']['game']
-            message = self.message['payload']['message']
-            channel = self.message['payload']['channel']
-
-            log.info(f"Grapevine received message: {name}@{game} on {channel} said '{message}'")
-            return name, game, message, channel
-
-    def received_achievements_sync(self, sent_refs):
-        """
-        We have received an achievements sync response.
-        Grab the details and update the achievements attribute.
-
-        Grapevine 2.3.0
-        """
-        if 'ref' in self.message and 'payload' in self.message:
-            if self.message['ref'] in sent_refs:
-                sent_refs.pop(self.message['ref'])
-            self.total_achievements = self.message['payload']['total']
-            all_achievements = self.message['payload']['achievements']
-
-            for each_achievement in all_achievements:
-                self.achievements[each_achievement['key']] = each_achievement
-
-    def received_achievements_create(self, sent_refs):
-        """
-        We have received an achievements create response.
-        Grab the details and update the achievements attribute.
-
-        Grapevine 2.3.0
-        """
-        if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
-            if self.message['ref'] in sent_refs:
-                sent_refs.pop(self.message['ref'])
-            if self.message['status'] == 'success':
-                if self.message['payload']['key'] not in self.achievements:
-                    self.achievements['key'] = self.message['payload']
-                    return
-            elif self.message['status'] == 'failure':
-                return self.message['payload']['errors']
-
-    def received_achievements_update(self, sent_refs):
-        """
-        We have received an achievements update response.
-        Grab the details and update the achievements attribute.
-
-        Grapevine 2.3.0
-        """
-        if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
-            if self.message['ref'] in sent_refs:
-                sent_refs.pop(self.message['ref'])
-            if self.message['status'] == 'success':
-                if self.message['payload']['key'] not in self.achievements:
-                    self.achievements['key'] = self.message['payload']
-                    return
-            elif self.message['status'] == 'failure':
-                return self.message['payload']['errors']
-
-    def received_achievements_delete(self, sent_refs):
-        """
-        We have received an achievements update response.
-        Grab the details and update the achievements attribute.
-
-        Grapevine 2.3.0
-        """
-        if 'ref' in self.message and 'payload' in self.message and 'status' in self.message:
-            if self.message['ref'] in sent_refs:
-                sent_refs.pop(self.message['ref'])
-            if self.message['status'] == 'success':
-                if self.message['payload']['key'] in self.achievements:
-                    self.achievements.pop(self.message['payload']['key'])
-                    return
-
-
-class GrapevineSocket(WebSocket):
-    def __init__(self):
-        super().__init__(sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),))
-
-        self.inbound_frame_buffer = []
-        self.outbound_frame_buffer = []
-
-        self.events = event.Queue(self, 'grapevine')
-
-        self.client_id = CLIENT_ID
-        self.client_secret = SECRET_KEY
-        self.supports = ['channels', 'games', 'players', 'tells']
-
-        # Populate the channels attribute if you want to subscribe to a specific
-        # channel or channels during authentication.
-        self.channels = ['gossip']
-        self.version = '2.3.0'
-        self.user_agent = 'AkriosMUD v0.4.5'
-
-        self.state = {'connected': False,
-                      'authenticated': False}
-
-        self.subscribed = {'gossip': True}
-
-        event.init_events_grapevine(self)
-
-        self.sent_refs = {}
-
-        # The below is a cache of players we know about from other games.
-        # Right now I just use this to populate additional fields in our in-game 'who' command
-        # to also show players logged into other Grapevine connected games.
-        self.other_games_players = {}
-
-        # The below is to track the last time we received a heartbeat from Grapevine.
-        self.last_heartbeat = 0
-
-    def gsocket_connect(self):
-        try:
-            result = self.connect('wss://grapevine.haus/socket')
-            log.info('gsocket_connect: Attempting connection to Grapevine.')
-            log.info(f'gsocket_connect result: {result}')
-        except ConnectionError or ConnectionRefusedError or ConnectionAbortedError as err:
-            log.error(f'Exception raised in gsocket_connect: {err}')
+        return True/False
+    """
+    if 'event' in message and 'status' in message:
+        if message['status'] == status_:
+            return True
+        else:
             return False
-        # We need to set the below on the socket as websocket.WebSocket is
-        # blocking by default.  :(
-        self.sock.setblocking(0)
-        self.msg_gen_authenticate()
 
-        comm.wiznet('gsocket_connect: Sending Auth to Grapevine Network.')
-        return True
 
-    def gsocket_disconnect(self):
-        comm.wiznet('gsocket_disconnect: Disconnecting from Grapevine Network.')
-        self.handle_write()
-        self.state['connected'] = False
-        self.state['authenticated'] = False
-        self.inbound_frame_buffer.clear()
-        self.outbound_frame_buffer.clear()
-        self.events.clear()
-        self.subscribed.clear()
-        self.other_games_players.clear()
-        self.close()
+async def received_heartbeat(message) -> None:
+    last_heartbeat = time.time()
+    log.debug(f'Received heartbeat from grapevine at {last_heartbeat}')
+    inner_values['last_heartbeat'] = last_heartbeat
+    asyncio.create_task(msg_gen_heartbeat())
+    
 
-    def send_out(self, frame):
-        """
-        A generic to make writing out cleaner, nothing more.
-        """
-        self.outbound_frame_buffer.append(frame)
-
-    def read_in(self):
-        """
-        A generic to make reading in cleaner, nothing more.
-        """
-        return self.inbound_frame_buffer.pop(0)
-
-    def msg_gen_authenticate(self):
-        """
-        Need to authenticate to the Grapevine.haus network to participate.
-        This creates and sends that authentication as well as defaults us to
-        an authenticated state unless we get an error back indicating otherwise.
+async def received_auth(message) -> None:
+    """
+        We received an event Auth event type.
+        Determine if we are already authenticated, if so subscribe to the channels
+        as determined in msg_gen_chan_subscribed in the GrapevineSocket Object.
+        Otherwise, if we are not authenticated yet we send another authentication attempt
+        via msg_gen_authenticate().  This is in place for path hiccups or restart events.
 
         Grapevine 1.0.0
-        """
-        payload = {'client_id': self.client_id,
-                   'client_secret': self.client_secret,
-                   'supports': self.supports,
-                   'channels': self.channels,
-                   'version': self.version,
-                   'user_agent': self.user_agent}
+    """
+    if is_event_status(message, 'success'):
+        status.grapevine['authenticated'] = True
+        status.grapevine['connected'] = True
+        asyncio.create_task(msg_gen_chan_subscribe())
+        log.info('Received authentication success from Grapevine.')
+        asyncio.create_task(msg_gen_player_status_query())
+        log.info('Sending player status query to all Grapevine games.')
+    elif not status.grapevine['authenticated']:
+        log.info('received_auth: Sending Authentication message to Grapevine.')
+        asyncio.create_task(msg_gen_authenticate())
 
-        # If we haven't assigned any channels, lets pull that out of our auth
-        # so we aren't trying to auth to an empty string.  This also causes us
-        # to receive an error back from Grapevine.
-        if not self.channels:
-            payload.pop('channels')
 
-        msg = {'event': 'authenticate',
-               'payload': payload}
+async def received_restart(message) -> None:
+    """
+    We received a restart event. We'll assign the value to the restart_downtime
+    attribute for access by the calling code.
 
-        self.state['authenticated'] = True
+    Grapevine 1.0.0
+    """
+    if 'payload' in message:
+        inner_values['restart_downtime'] = int(message['payload']['downtime'])
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_heartbeat(self):
-        """
-        Once registered to Grapevine we will receive regular heartbeats.  The
-        docs indicate to respond with the below heartbeat response which
-        also provides an update player logged in list to the network.
+async def received_chan_sub(message, sent_refs_) -> None:
+    """
+    We have attempted to subscribe to a channel.  This is a response message from Grapevine.
+    If failure, we make sure we show unsubscribed in our local list.
+    if success, we make sure we show subscribed in our local list.
 
-        Grapevine 1.0.0
-        """
-        # The below line builds a list of player names logged into Akrios for sending
-        # in response to a grapevine heartbeat.
-        player_list = [player_.name.capitalize() for player_ in player.playerlist]
+    Grapevine 1.0.0
+    """
+    if 'ref' in message and message['ref'] in sent_refs_:
+        orig_req = sent_refs_.pop(message['ref'])
+        if is_event_status(message, 'failure'):
+            channel = orig_req['payload']['channel']
+            subscribed[channel] = False
+            log.warning(f"Grapevine failed to subscribe to channel {channel}")
+        elif is_event_status(message, 'success'):
+            channel = orig_req['payload']['channel']
+            subscribed[channel] = True
+            log.info(f"Grapevine successfully subscribed to channel {channel}")
 
-        self.last_heartbeat = time.time()
 
-        payload = {'players': player_list}
-        msg = {'event': 'heartbeat',
-               'payload': payload}
+async def received_chan_unsub(message, sent_refs_) -> None:
+    """
+    We at some point sent a channel unsubscribe. This is verifying Grapevine
+    received that.  We unsub in our local list.
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    Grapevine 1.0.0
+    """
+    if 'ref' in message and message['ref'] in sent_refs_:
+        orig_req = sent_refs_.pop(message['ref'])
+        channel = orig_req['payload']['channel']
+        subscribed[channel] = False
+        log.info(f"Grapevine unsubscribed from channel {channel}")
 
-    def msg_gen_chan_subscribe(self, chan=None):
-        """
-        Subscribe to a specific channel, or Gossip by default.
 
-        Grapevine 1.0.0
-        """
-        ref = str(uuid.uuid4())
-        if chan is None or not chan:
-            payload = {'channel': 'gossip'}
+async def received_player_logout(message, sent_refs_) -> Tuple:
+    """
+    We have received a "player/sign-out" message from Grapevine.
+
+    Determine if it is a success message, which is an indication to us that Grapevine
+    received a player logout from us and is acknowledging, or if it is a message from
+    another game on the Grapevine network.
+
+    return None if it's an ack from grapevine, return player info if it's foreign.
+
+    Grapevine 1.0.0
+    """
+    if 'ref' in message:
+        # We are a success message from Grapevine returned from our notification.
+        if message['ref'] in sent_refs_ and is_event_status(message, 'success'):
+            sent_refs_.pop(message['ref'])
+        # We are receiving a player logout from another game.
+        if 'game' in message['payload']:
+            game = message['payload']['game'].capitalize()
+            player_ = message['payload']['name'].capitalize()
+            if game in other_games_players:
+                if player_ in other_games_players[game]:
+                    other_games_players[game].remove(player_)
+                if len(other_games_players[game]) <= 0:
+                    other_games_players.pop(game)
+
+            return 'player/logout', f'{player_} signed out of {game}'
+
+
+async def received_player_login(message, sent_refs_) -> Tuple:
+    """
+    We have received a "player/sign-in" message from Grapevine.
+
+    Determine if it is a success message, which is an indication to us that Grapevine
+    received a player login from us and is acknowledging, or if it is a message from
+    another game on the Grapevine Network.
+
+    return None if it's an ack from grapevine, return player info if it's foreign
+
+    Grapevine 1.0.0
+    """
+    if 'ref' in message:
+        if message['ref'] in sent_refs_ and is_event_status(message, 'success'):
+            sent_refs_.pop(message['ref'])
+        if 'game' in message['payload']:
+            game = message['payload']['game'].capitalize()
+            player_ = message['payload']['name'].capitalize()
+            if game in other_games_players:
+                if player_ not in other_games_players[game]:
+                    other_games_players[game].append(player_)
+            else:
+                other_games_players[game] = []
+                other_games_players[game].append(player_)
+
+            return 'player/logout', f'{player_} signed into {game}'
+
+
+async def received_player_status(message, sent_refs_) -> None:
+    """
+    We have requested a multi-game or single game status update.
+    This is the response. We pop the valid Ref from our local list
+    and add them to the local cache.
+
+    Grapevine 1.1.0
+    """
+    if 'ref' in message and 'payload' in message:
+        # On first receive we pop the ref just so it's gone from the queue
+        if message['ref'] in sent_refs_:
+            sent_refs_.pop(message['ref'])
+
+        game = message['payload']['game'].capitalize()
+
+        if len(message['payload']['players']) == 1 and message['payload']['players'] in ['', None]:
+            other_games_players[game] = []
+        if len(message['payload']['players']) == 1:
+            player_ = message['payload']['players'][0].capitalize()
+            other_games_players[game] = []
+            other_games_players[game].append(player_)
+        if len(message['payload']['players']) > 1:
+            player_ = [player_.capitalize() for player_ in message['payload']['players']]
+            other_games_players[game] = []
+            other_games_players[game] = player_
+
+
+async def received_tells_status(message, sent_refs_) -> Tuple:
+    """
+    One of the local players has sent a tell.  This is specific response of an error.
+    Provide the error and other pertinent info to the local game for handling
+    as required.
+
+    Grapevine 2.0.0
+    """
+    if 'ref' in message:
+        if message['ref'] in sent_refs_ and 'error' in message:
+            orig_req = sent_refs_.pop(message['ref'])
+            if is_event_status(message, 'failure'):
+                caller = orig_req['payload']['from_name'].capitalize()
+                target = orig_req['payload']['to_name'].capitalize()
+                game = orig_req['payload']['to_game'].capitalize()
+                
+                return 'tells/send', (caller, target, game, message['error'])
+
+
+async def received_tells_message(message) -> Tuple:
+    """
+    We have received a tell message destined for a player in our game.
+    Grab the details and return to the local game to handle as required.
+
+    Grapevine 2.0.0
+    """
+    if 'ref' in message and 'payload' in message:
+        sender = message['payload']['from_name']
+        target = message['payload']['to_name']
+        game = message['payload']['from_game']
+        sent = message['payload']['sent_at']
+        message = message['payload']['message']
+
+        log.info(f"Grapevine received tell: {sender}@{game} told {target} '{message}'")
+        
+        return 'tells/receive', (sender, target, game, sent, message)
+
+
+async def received_games_status(message, sent_refs_) -> Tuple:
+    """
+    Received a game status response.  Return the received info to the local
+    game to handle as required.
+
+    Grapevine 2.1.0
+    """
+    if 'ref' in message and 'payload' in message and is_event_status(message, "success"):
+        sent_refs_.pop(message['ref'])
+        if message['ref'] in sent_refs_:
+            game = message['payload']['game']
+            display_name = message['payload']['display_name']
+            description = message['payload']['description']
+            homepage = message['payload']['homepage_url']
+            user_agent_ = message['payload']['user_agent']
+            user_agent_repo = message['payload']['user_agent_repo_url']
+            connections = message['payload']['connections']
+
+            supports_ = message['payload']['supports']
+            num_players = message['payload']['players_online_count']
+
+            return (game, display_name, description, homepage, user_agent_,
+                    user_agent_repo, connections, supports_, num_players)
+
+    if 'ref' in message and 'error' in message and is_event_status(message, 'failure'):
+        orig_req = sent_refs_.pop(message['ref'])
+        if message['ref'] in sent_refs_:
+            game = orig_req['payload']['game']
+            return game, message['error']
+
+
+async def received_message_confirm(message, sent_refs_) -> None:
+    """
+    We received a confirmation that Grapevine received an outbound broadcast message
+    from us.  Nothing to see here other than removing from our sent references list.
+
+    Grapevine : Should be semi version neutral.
+    """
+    if 'ref' in message:
+        if message['ref'] in sent_refs_ and is_event_status(message, 'success'):
+            sent_refs_.pop(message['ref'])
+
+
+def is_other_game_player_update(message) -> bool:
+    """
+    A helper method to determine if this is a player update from another game.
+    """
+    if 'event' in message:
+        if message['event'] == 'players/sign-in' or message['event'] == 'players/sign-out':
+            if 'payload' in message and 'game' in message['payload']:
+                return True
         else:
-            payload = {'channel': chan}
+            return False
 
-        if payload['channel'] in self.subscribed:
-            return
 
-        msg = {'event': 'channels/subscribe',
-               'ref': ref,
-               'payload': payload}
+async def received_games_connected(message) -> Tuple:
+    """
+    A foreign game has connected to the network, add the game to our local
+    cache of games/players and send a request for player list.
 
-        self.sent_refs[ref] = msg
+    Grapevine 2.2.0
+    """
+    if 'payload' in message:
+        # Clear what we knew about this game and request an update.
+        # Requesting updates from all games at this point, might as well refresh
+        # as I'm sure some games don't implement all features like player sign-in
+        # and sign-outs.
+        other_games_players[message['payload']['game']] = []
+        asyncio.create_task(msg_gen_player_status_query())
+        return 'games/connect', (message['payload']['game'])
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_chan_unsubscribe(self, chan=None):
-        """
-        Unsubscribe from a specific channel, default to Gossip channel if
-        none given.
+async def received_games_disconnected(message) -> Tuple:
+    """
+    A foreign game has disconnected, remove it from our local cache and return
+    details to local game to handle as required.
 
-        Grapevine 1.0.0
-        """
-        ref = str(uuid.uuid4())
-        if not chan:
-            payload = {'channel': 'gossip'}
+    Grapevine 2.2.0
+    """
+    if 'payload' in message:
+        if message['payload']['game'] in other_games_players:
+            other_games_players.pop(message['payload']['game'])
+        return 'games/disconnect', (message['payload']['game'])
+
+
+async def received_broadcast_message(message) -> Tuple:
+    """
+    We received a broadcast message from another game.  Return the pertinent
+    info so the local game can handle as required.  See examples above.
+
+    Grapevine 1.0.0
+    """
+    if 'payload' in message:
+        name = message['payload']['name']
+        game = message['payload']['game']
+        message = message['payload']['message']
+        channel = message['payload']['channel']
+
+        log.info(f"Grapevine received message: {name}@{game} on {channel} said '{message}'")
+        return 'channels/broadcast', (name, game, message, channel)
+
+
+async def received_achievements_sync(message, sent_refs_) -> None:
+    """
+    We have received an achievements sync response.
+    Grab the details and update the achievements attribute.
+
+    Grapevine 2.3.0
+    """
+    if 'ref' in message and 'payload' in message:
+        if message['ref'] in sent_refs_:
+            sent_refs_.pop(message['ref'])
+        # total_achievements = message['payload']['total']
+        all_achievements = message['payload']['achievements']
+
+        for each_achievement in all_achievements:
+            inner_values['achievements'][each_achievement['key']] = each_achievement
+
+
+async def received_achievements_create(message, sent_refs_) -> None:
+    """
+    We have received an achievements create response.
+    Grab the details and update the achievements attribute.
+
+    Grapevine 2.3.0
+    """
+    if 'ref' in message and 'payload' in message and 'status' in message:
+        if message['ref'] in sent_refs_:
+            sent_refs_.pop(message['ref'])
+        if message['status'] == 'success':
+            if message['payload']['key'] not in inner_values['achievements']:
+                inner_values['achievements']['key'] = message['payload']
+                return
+        elif message['status'] == 'failure':
+            return message['payload']['errors']
+
+
+async def received_achievements_update(message, sent_refs_) -> None:
+    """
+    We have received an achievements update response.
+    Grab the details and update the achievements attribute.
+
+    Grapevine 2.3.0
+    """
+    if 'ref' in message and 'payload' in message and 'status' in message:
+        if message['ref'] in sent_refs_:
+            sent_refs_.pop(message['ref'])
+        if message['status'] == 'success':
+            if message['payload']['key'] not in inner_values['achievements']:
+                inner_values['achievements']['key'] = message['payload']
+                return
+        elif message['status'] == 'failure':
+            return message['payload']['errors']
+
+
+async def received_achievements_delete(message, sent_refs_) -> None:
+    """
+    We have received an achievements update response.
+    Grab the details and update the achievements attribute.
+
+    Grapevine 2.3.0
+    """
+    if 'ref' in message and 'payload' in message and 'status' in message:
+        if message['ref'] in sent_refs_:
+            sent_refs_.pop(message['ref'])
+        if message['status'] == 'success':
+            key = message['payload']['key']
+            if key in inner_values['achievements']:
+                inner_values['achievements'][key].pop(key)
+
+
+async def parse_received() -> None:
+    rcvr_func = {'heartbeat': (received_heartbeat, None),
+                 'authenticate': (received_auth, None),
+                 'restart': (received_restart, None),
+                 'channels/broadcast': (received_broadcast_message, None),
+                 'channels/subscribe': (received_chan_sub, sent_refs),
+                 'channels/unsubscribe': (received_chan_unsub, sent_refs),
+                 'players/sign-out': (received_player_logout, sent_refs),
+                 'players/sign-in': (received_player_login, sent_refs),
+                 'games/connect': (received_games_connected, None),
+                 'games/disconnect': (received_games_disconnected, None),
+                 'games/status': (received_games_status, sent_refs),
+                 'players/status': (received_player_status, sent_refs),
+                 'tells/send': (received_tells_status, sent_refs),
+                 'tells/receive': (received_tells_message, None),
+                 'channels/send': (received_message_confirm, sent_refs),
+                 'achievements/sync': (received_achievements_sync, sent_refs),
+                 'achievements/create': (received_achievements_create, sent_refs),
+                 'achievements/update': (received_achievements_update, sent_refs),
+                 'achievements/delete': (received_achievements_delete, sent_refs)}
+
+    while status.grapevine['connected']:
+        message = await messages_from_grapevine.get()
+        message = json.loads(message)
+        if 'event' in message and message['event'] in rcvr_func:
+            exec_func, args = rcvr_func[message['event']]
+            if args is None:
+                response = exec_func(message)
+            else:
+                response = exec_func(message, args)
+            if response:
+                asyncio.create_task(messages_to_game.put(response))
+
+
+async def read(websocket) -> None:
+    while status.grapevine['connected']:
+        if message := await websocket.recv():
+            asyncio.create_task(messages_from_grapevine.put(message))
         else:
-            payload = {'channel': chan}
+            status.grapevine['connected'] = False
 
-        msg = {'event': 'channels/unsubscribe',
-               'ref': ref,
-               'payload': payload}
 
-        self.sent_refs[ref] = msg
+async def write(websocket) -> None:
+    while status.grapevine['connected']:
+        message = await messages_to_grapevine.get()
+        asyncio.create_task(websocket.send(message))
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_player_login(self, player_name):
-        """
-        Notify the Grapevine network of a player login.
+async def connect() -> None:
+    """
+    Connect to the Grapevine service.
+    Create tasks related to this connection
+    """
+    async with websockets.connect('wss://grapevine.haus/socket') as websocket:
+        log.info('Run of grapevine connect')
+        asyncio.create_task(msg_gen_authenticate())
+        status.grapevine['connected'] = True
+        tasks = [asyncio.create_task(parse_received()),
+                 asyncio.create_task(read(websocket)),
+                 asyncio.create_task(write(websocket))]
+        _, pending = await asyncio.wait(tasks, return_when="FIRST_COMPLETED")
 
-        Grapevine 1.0.0
-        """
-        ref = str(uuid.uuid4())
-        payload = {'name': player_name.capitalize()}
-        msg = {'event': 'players/sign-in',
-               'ref': ref,
-               'payload': payload}
+    log.info('Shutting down Grapevine connection.')
+    status.frontend['connected'] = False
+    subscribed.clear()
+    other_games_players.clear()
 
-        self.sent_refs[ref] = msg
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+async def msg_gen_authenticate() -> None:
+    """
+    Need to authenticate to the Grapevine.haus network to participate.
+    This creates and sends that authentication as well as defaults us to
+    an authenticated state unless we get an error back indicating otherwise.
+
+    Grapevine 1.0.0
+    """
+    payload = {'client_id': CLIENT_ID,
+               'client_secret': SECRET_KEY,
+               'supports': supports,
+               'channels': channels,
+               'version': version,
+               'user_agent': user_agent}
 
-    def msg_gen_player_logout(self, player_name):
-        """
-        Notify the Grapevine network of a player logout.
+    # If we haven't assigned any channels, lets pull that out of our auth
+    # so we aren't trying to auth to an empty string.  This also causes us
+    # to receive an error back from Grapevine.
+    if not channels:
+        payload.pop('channels')
 
-        Grapevine 1.0.0
-        """
-        ref = str(uuid.uuid4())
-        payload = {'name': player_name.capitalize()}
-        msg = {'event': 'players/sign-out',
-               'ref': ref,
-               'payload': payload}
+    msg = {'event': 'authenticate',
+           'payload': payload}
 
-        self.sent_refs[ref] = msg
+    status.grapevine['authenticated'] = True
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-    def msg_gen_message_channel_send(self, caller, channel, message):
-        """
-        Sends a channel message to the Grapevine network.  If we're not showing
-        as subscribed on our end, we bail out.
 
-        Grapevine 1.0.0
-        """
-        if channel not in self.subscribed:
-            return
+async def msg_gen_heartbeat() -> None:
+    """
+    Once registered to Grapevine we will receive regular heartbeats.  The
+    docs indicate to respond with the below heartbeat response which
+    also provides an update player logged in list to the network.
 
-        ref = str(uuid.uuid4())
-        payload = {'channel': channel,
-                   'name': caller.disp_name,
-                   'message': message[:290]}
-        msg = {'event': 'channels/send',
-               'ref': ref,
-               'payload': payload}
+    Grapevine 1.0.0
+    """
+    # The below line builds a list of player names logged into Akrios for sending
+    # in response to a grapevine heartbeat.
+    player_list = [player_.name.capitalize() for player_ in player.playerlist]
 
-        log.info(f"Grapevine message: {caller.disp_name} on {channel} said '{message}'")
+    payload = {'players': player_list}
+    msg = {'event': 'heartbeat',
+           'payload': payload}
 
-        self.sent_refs[ref] = msg
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
 
-    def msg_gen_game_all_status_query(self):
-        """
-        Request for all games to send full status update.  You will receive in
-        return from each game quite a bit of detailed information.  See the
-        grapevine.haus Documentation or review the receiver code above.
+async def msg_gen_chan_subscribe(chan=None) -> None:
+    """
+    Subscribe to a specific channel, or Gossip by default.
 
-        Grapevine 2.1.0
-        """
-        ref = str(uuid.uuid4())
+    Grapevine 1.0.0
+    """
+    ref = str(uuid.uuid4())
+    if not chan:
+        payload = {'channel': 'gossip'}
+    else:
+        payload = {'channel': chan}
 
-        msg = {'events': 'games/status',
-               'ref': ref}
+    if payload['channel'] in subscribed:
+        return
 
-        self.sent_refs[ref] = msg
+    msg = {'event': 'channels/subscribe',
+           'ref': ref,
+           'payload': payload}
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    sent_refs[ref] = msg
 
-    def msg_gen_game_single_status_query(self, game):
-        """
-        Request for a single game to send full status update.  You will receive in
-        return from each game quite a bit of detailed information.  See the
-        grapevine.haus Documentation or review the receiver code above.
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        Grapevine 2.1.0
-        """
-        ref = str(uuid.uuid4())
 
-        msg = {'events': 'games/status',
-               'ref': ref,
-               'payload': {'game': game}}
+async def msg_gen_chan_unsubscribe(chan=None) -> None:
+    """
+    Unsubscribe from a specific channel, default to Gossip channel if
+    none given.
 
-        self.sent_refs[ref] = msg
+    Grapevine 1.0.0
+    """
+    ref = str(uuid.uuid4())
+    if not chan:
+        payload = {'channel': 'gossip'}
+    else:
+        payload = {'channel': chan}
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    msg = {'event': 'channels/unsubscribe',
+           'ref': ref,
+           'payload': payload}
 
-    def msg_gen_player_status_query(self):
-        """
-        This requests a player list status update from all connected games.
+    sent_refs[ref] = msg
 
-        Grapevine 1.1.0
-        """
-        ref = str(uuid.uuid4())
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        msg = {'event': 'players/status',
-               'ref': ref}
 
-        self.sent_refs[ref] = msg
+async def msg_gen_player_login(player_name) -> None:
+    """
+    Notify the Grapevine network of a player login.
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    Grapevine 1.0.0
+    """
+    ref = str(uuid.uuid4())
+    payload = {'name': player_name.capitalize()}
+    msg = {'event': 'players/sign-in',
+           'ref': ref,
+           'payload': payload}
 
-    def msg_gen_player_single_status_query(self, game):
-        """
-        Request a player list status update from a single connected game.
+    sent_refs[ref] = msg
 
-        Grapevine 1.1.0
-        """
-        ref = str(uuid.uuid4())
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        msg = {'events': 'players/status',
-               'ref': ref,
-               'payload': {'game': game}}
 
-        self.sent_refs[ref] = msg
+async def msg_gen_player_logout(player_name) -> None:
+    """
+    Notify the Grapevine network of a player logout.
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    Grapevine 1.0.0
+    """
+    ref = str(uuid.uuid4())
+    payload = {'name': player_name.capitalize()}
+    msg = {'event': 'players/sign-out',
+           'ref': ref,
+           'payload': payload}
 
-    def msg_gen_player_tells(self, caller_name, game, target, message):
-        """
-        Send a tell message to a player on the Grapevine network.
+    sent_refs[ref] = msg
 
-        Grapevine 2.0.0
-        """
-        game = game.capitalize()
-        target = target.capitalize()
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        ref = str(uuid.uuid4())
-        time_now = f'{datetime.datetime.utcnow().replace(microsecond=0).isoformat()}Z'
-        payload = {'from_name': caller_name,
-                   'to_game': game,
-                   'to_name': target,
-                   'sent_at': time_now,
-                   'message': message[:290]}
 
-        msg = {'event': 'tells/send',
-               'ref': ref,
-               'payload': payload}
+async def msg_gen_message_channel_send(caller, channel, message) -> None:
+    """
+    Sends a channel message to the Grapevine network.  If we're not showing
+    as subscribed on our end, we bail out.
 
-        log.info(f"Grapevine tell: {caller_name} to {target}@{game} said '{message}'")
+    Grapevine 1.0.0
+    """
+    if channel not in subscribed:
+        return
 
-        self.sent_refs[ref] = msg
+    ref = str(uuid.uuid4())
+    payload = {'channel': channel,
+               'name': caller.disp_name,
+               'message': message[:290]}
+    msg = {'event': 'channels/send',
+           'ref': ref,
+           'payload': payload}
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    log.info(f"Grapevine message: {caller.disp_name} on {channel} said '{message}'")
 
-    def msg_gen_achievements_sync(self):
-        """
-        Request the list of achievements for our game.
+    sent_refs[ref] = msg
 
-        Grapevine 2.3.0
-        """
-        ref = str(uuid.uuid4())
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        msg = {'events': 'achievements/sync',
-               'ref': ref}
 
-        self.sent_refs[ref] = msg
+async def msg_gen_game_all_status_query() -> None:
+    """
+    Request for all games to send full status update.  You will receive in
+    return from each game quite a bit of detailed information.  See the
+    grapevine.haus Documentation or review the receiver code above.
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    Grapevine 2.1.0
+    """
+    ref = str(uuid.uuid4())
 
-    def msg_gen_achievements_create(self, title='Generic Title', desc='Generic Description',
-                                    points=10, display=False, partial=False, total=None):
-        """
-        Create a new achievement.
+    msg = {'events': 'games/status',
+           'ref': ref}
 
-        The payload should contain all of the attributes of an achievement that you wish to
-        set.  I have included all fields possible below for reference.
+    sent_refs[ref] = msg
 
-        Grapevine 2.3.0
-        """
-        ref = str(uuid.uuid4())
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        payload = {'title': title,
-                   'description': desc,
-                   'points': points,
-                   'display': display,
-                   'partial_progress': partial,
-                   'total_progress': total}
 
-        msg = {'events': 'achievements/create',
-               'ref': ref,
-               'payload': payload}
+async def msg_gen_game_single_status_query(game) -> None:
+    """
+    Request for a single game to send full status update.  You will receive in
+    return from each game quite a bit of detailed information.  See the
+    grapevine.haus Documentation or review the receiver code above.
 
-        self.sent_refs[ref] = msg
+    Grapevine 2.1.0
+    """
+    ref = str(uuid.uuid4())
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    msg = {'events': 'games/status',
+           'ref': ref,
+           'payload': {'game': game}}
 
-    def msg_gen_achievements_update(self, key, title='Generic Title', desc='Generic Description',
-                                    points=0, display=False, partial=False, total=None):
-        """
-        Update an existing achievement
+    sent_refs[ref] = msg
 
-        Per the documentation we utilize the same event type of 'achievements/create' and include
-        the unique key in the payload.  You only need to provide the payload fields you wish to
-        update.  We have included all fields possible below for reference.  Modify for your needs.
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        Grapevine 2.3.0
-        """
-        ref = str(uuid.uuid4())
 
-        payload = {'key': key,
-                   'title': title,
-                   'description': desc,
-                   'points': points,
-                   'display': display,
-                   'partial_progress': partial,
-                   'total_progress': total}
+async def msg_gen_player_status_query() -> None:
+    """
+    This requests a player list status update from all connected games.
 
-        msg = {'events': 'achievements/update',
-               'ref': ref,
-               'payload': payload}
+    Grapevine 1.1.0
+    """
+    ref = str(uuid.uuid4())
 
-        self.sent_refs[ref] = msg
+    msg = {'event': 'players/status',
+           'ref': ref}
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    sent_refs[ref] = msg
 
-    def msg_gen_achievements_delete(self, key):
-        """
-        Delete an existing achievement.
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-        Provide the unique key for the achievement, provide as the payload to delete
-        the achievement on Grapevine.
 
-        Grapevine 2.3.0
-        """
-        ref = str(uuid.uuid4())
+async def msg_gen_player_single_status_query(game) -> None:
+    """
+    Request a player list status update from a single connected game.
 
-        payload = {'key': key}
+    Grapevine 1.1.0
+    """
+    ref = str(uuid.uuid4())
 
-        msg = {'events': 'achievements/delete',
-               'ref': ref,
-               'payload': payload}
+    msg = {'events': 'players/status',
+           'ref': ref,
+           'payload': {'game': game}}
 
-        self.sent_refs[ref] = msg
+    sent_refs[ref] = msg
 
-        self.send_out(json.dumps(msg, sort_keys=True, indent=4))
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
 
-    def handle_read(self):
-        """
-        Perform the actual socket read attempt. Append anything received to the inbound
-        buffer.
-        """
-        try:
-            self.inbound_frame_buffer.append(self.recv())
-            log.debug(f'Grapevine In: {self.inbound_frame_buffer[-1]}')
-        except Exception as err:
-            log.debug(f'Exception raised in handle_read: {err}')
 
-    def handle_write(self):
-        """
-        Perform a write out to Grapevine from the outbound buffer.
-        """
-        try:
-            outdata = self.outbound_frame_buffer.pop(0)
-            if outdata is not None:
-                self.send(outdata)
-                log.debug(f'Grapevine Out: {outdata}')
-        except Exception as err:
-            log.debug(f'Error sending data frame to Grapevine: {err}')
+async def msg_gen_player_tells(caller_name, game, target, message):
+    """
+    Send a tell message to a player on the Grapevine network.
 
-    def receive_message(self):
-        """
-        Attempt a read in from Grapevine.
-        """
-        try:
-            return GrapevineReceivedMessage(self.read_in(), self)
-        except Exception as err:
-            log.debug(f'Error receiving message from Grapevine: {err}')
+    Grapevine 2.0.0
+    """
+    game = game.capitalize()
+    target = target.capitalize()
+
+    ref = str(uuid.uuid4())
+    time_now = f'{datetime.datetime.utcnow().replace(microsecond=0).isoformat()}Z'
+    payload = {'from_name': caller_name,
+               'to_game': game,
+               'to_name': target,
+               'sent_at': time_now,
+               'message': message[:290]}
+
+    msg = {'event': 'tells/send',
+           'ref': ref,
+           'payload': payload}
+
+    log.info(f"Grapevine tell: {caller_name} to {target}@{game} said '{message}'")
+
+    sent_refs[ref] = msg
+
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
+
+
+async def msg_gen_achievements_sync() -> None:
+    """
+    Request the list of achievements for our game.
+
+    Grapevine 2.3.0
+    """
+    ref = str(uuid.uuid4())
+
+    msg = {'events': 'achievements/sync',
+           'ref': ref}
+
+    sent_refs[ref] = msg
+
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
+
+
+async def msg_gen_achievements_create(title='Generic Title', desc='Generic Description',
+                                      points=10, display=False, partial=False, total=None) -> None:
+    """
+    Create a new achievement.
+
+    The payload should contain all of the attributes of an achievement that you wish to
+    set.  I have included all fields possible below for reference.
+
+    Grapevine 2.3.0
+    """
+    ref = str(uuid.uuid4())
+
+    payload = {'title': title,
+               'description': desc,
+               'points': points,
+               'display': display,
+               'partial_progress': partial,
+               'total_progress': total}
+
+    msg = {'events': 'achievements/create',
+           'ref': ref,
+           'payload': payload}
+
+    sent_refs[ref] = msg
+
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
+
+
+async def msg_gen_achievements_update(key, title='Generic Title', desc='Generic Description',
+                                      points=0, display=False, partial=False, total=None) -> None:
+    """
+    Update an existing achievement
+
+    Per the documentation we utilize the same event type of 'achievements/create' and include
+    the unique key in the payload.  You only need to provide the payload fields you wish to
+    update.  We have included all fields possible below for reference.  Modify for your needs.
+
+    Grapevine 2.3.0
+    """
+    ref = str(uuid.uuid4())
+
+    payload = {'key': key,
+               'title': title,
+               'description': desc,
+               'points': points,
+               'display': display,
+               'partial_progress': partial,
+               'total_progress': total}
+
+    msg = {'events': 'achievements/update',
+           'ref': ref,
+           'payload': payload}
+
+    sent_refs[ref] = msg
+
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))
+
+
+async def msg_gen_achievements_delete(key) -> None:
+    """
+    Delete an existing achievement.
+
+    Provide the unique key for the achievement, provide as the payload to delete
+    the achievement on Grapevine.
+
+    Grapevine 2.3.0
+    """
+    ref = str(uuid.uuid4())
+
+    payload = {'key': key}
+
+    msg = {'events': 'achievements/delete',
+           'ref': ref,
+           'payload': payload}
+
+    sent_refs[ref] = msg
+
+    asyncio.create_task(messages_to_grapevine.put((json.dumps(msg, sort_keys=True, indent=4))))

@@ -11,7 +11,7 @@ import json
 import os
 
 import area
-import livingthing
+from livingthing import LivingThing
 import objects
 import event
 import races
@@ -25,7 +25,7 @@ playerlist_by_name = {}
 playerlist_by_aid = {}
 
 
-class Player(livingthing.LivingThing):
+class Player(LivingThing):
     CLASS_NAME = "__Player__"
     FILE_VERSION = 1
 

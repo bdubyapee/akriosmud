@@ -27,7 +27,6 @@ import exits
 import grapevine
 import helpsys
 import login
-import mobile
 import room
 import races
 import comm

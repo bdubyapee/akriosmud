@@ -1,199 +1,335 @@
 #! usr/bin/env python
-# Project: Akrios
+# Project: Dark Waters
 # Filename: server.py
 # 
 # File Description: The main server module.
 # 
 # By: Jubelo
 
+# Standard Library
+import argparse
+import asyncio
 import logging
+import signal
 import string
-import time
-import sys
+from typing import Dict, List
 
+# Third Party
+
+# Project
+import area
+import color
+import comm
+import event
+import frontend
 import grapevine
 import helpsys
-import color
-import area
-import comm
-import frontend
 import login
+import player
 import races
-import event
+import status
+from world import serverlog
 
 log = logging.getLogger(__name__)
 
-# This is outside the scope of the rest of this module so we have a good
-# reference time to base our total startup time.  Used only in the server
-# __init__ to determine startup time.
-startup = time.time()
-
 # This is the dict of connected sessions.
-session_list = {}
+sessions = {}
 
 # Assistant variables for removing certain characters from our input.
-validchars = string.printable
-validchars = validchars.replace(string.whitespace[1:], "")
+valid_chars = string.printable.replace(string.whitespace[1:], "")
 
 
 class Session(object):
-    def __init__(self, uuid_, addr_, port_, name_=None):
+    def __init__(self, uuid, address, port, name=None):
         self.owner = None
-        self.host = addr_
-        self.port = port_
-        self.session = uuid_
+        self.host = address
+        self.port = port
+        self.session = uuid
         self.ansi = True
         self.promptable = False
-        self.inbuf = []
-        self.outbuf = ''
+        self.in_buf = asyncio.Queue()
+        self.out_buf = asyncio.Queue()
         self.state = {'connected': True,
+                      'link dead': False,
                       'logged in': False}
-        self.events = event.Queue(self, "session")
+        sessions[self.session] = self
 
-        self._login(name_)
+        asyncio.create_task(self.read())
+        asyncio.create_task(self.send())
 
-    def clear(self):
-        del self
+        self.login(name)
 
     def handle_close(self):
-        frontend.fesocket.msg_gen_player_logout(self.owner.name.capitalize(), self.session)
+        asyncio.create_task(frontend.msg_gen_player_logout(self.owner.name.capitalize(), self.session))
         self.state['connected'] = False
         self.state['logged in'] = False
         del self
 
-    def do_echo(self):
-        frontend.fesocket.msg_gen_player_do_client_echo(self.session)
-
-    def dont_echo(self):
-        frontend.fesocket.msg_gen_player_dont_client_echo(self.session)
-
-    def _login(self, name_):
-        if name_:
-            newconn = login.Login(name_, softboot=True)
+    def login(self, name):
+        if name:
+            new_conn = login.Login(name, softboot=True)
         else:
-            newconn = login.Login()
-        newconn.sock = self
-        newconn.sock.owner = newconn
-        session_list[self.session] = self
-        if not name_:
-            newconn.greeting()
-            comm.wiznet(f"Accepting connection from: {newconn.sock.host}")
+            new_conn = login.Login()
+        new_conn.sock = self
+        new_conn.sock.owner = new_conn
+        if not name:
+            new_conn.greeting()
+            comm.wiznet(f"Accepting connection from: {new_conn.sock.host}")
         else:
-            newconn.interp = newconn.character_login
-            newconn.interp()
+            new_conn.interp = new_conn.character_login
+            new_conn.interp()
 
     def dispatch(self, msg, trail=True):
+        asyncio.create_task(self.a_dispatch(msg, trail))
+
+    async def a_dispatch(self, msg, trail=True):
         if trail:
-            msg = f"{msg}\n\r"
+            msg = f'{msg}\n\r'
         if self.ansi:
             msg = color.colorize(msg)
         else:
             msg = color.decolorize(msg)
-        self.outbuf = f"{self.outbuf}{msg}"
-
-        if hasattr(self.owner, "snooped_by") and len(self.owner.snooped_by) > 0:
-            for each_person in self.owner.snooped_by:
-                each_person.write(self.outbuf)
-
-    def send(self, msg_):
-        log.debug(f'Sending {msg_} to {self.session}')
-        frontend.fesocket.msg_gen_player_output(msg_, self.session)
-
-    @property
-    def writable(self):
-        return True if self.outbuf else False
+        asyncio.create_task(self.out_buf.put(msg))
 
     def write(self):
         try:
-            self.send(self.outbuf)
-            self.outbuf = ""
             if hasattr(self.owner, "editing"):
-                output = ">"
-                self.send(output)
+                asyncio.create_task(self.out_buf.put(">"))
             elif self.promptable:
                 if self.owner.oocflags["afk"]:
                     pretext = "{W[{RAFK{W]{x "
                 else:
                     pretext = ""
                 output = color.colorize(f"\n\r{pretext}{self.owner.prompt}\n\r")
-                self.send(output)
+                asyncio.create_task(self.out_buf.put(output))
         except Exception as err:
             log.error(f"handle_write : {err}")
 
-    @property
-    def readable(self):
-        return True if self.inbuf else False
+    async def send(self):
+        while self.state['connected']:
+            message = await self.out_buf.get()
+            asyncio.create_task(frontend.msg_gen_player_output(message, self.session))
 
-    def read(self):
-        self.owner.interp(self.inbuf.pop(0))
+    async def read(self):
+        while self.state['connected']:
+            message = await self.in_buf.get()
+            self.owner.interp(message)
 
 
-class Server(object):
-    done = False
-    softboot = False
-    
-    def __init__(self):
-        super().__init__()
-        log.info("Starting Akrios main loop.")
-        self.events = event.Queue(self, "server")
+async def shutdown(signal_: signal.Signals, loop_: asyncio.AbstractEventLoop) -> None:
+    """
+        shutdown coroutine utilized for cleanup on receipt of certain signals.
+        Created and added as a handler to the loop in __main__
 
-        helpsys.init()
-        races.init()
-        area.init()
+        https://www.roguelynn.com/talks/
+    """
+    log.warning(f'Received exit signal {signal_.name}')
 
-        event.init_events_server(self)
+    tasks: List[asyncio.Task] = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
 
-        if grapevine.LIVE:
-            log.info("grapevine.LIVE : Creating Grapevine Socket.")
-            grapevine.gsocket = grapevine.GrapevineSocket()
+    log.info(f'Cancelling {len(tasks)} outstanding tasks')
 
-            grapevine_connected = grapevine.gsocket.gsocket_connect()
-            if not grapevine_connected:
-                log.warning("Could not connect to grapevine on startup.")
+    for task in tasks:
+        task.cancel()
 
-        log.info("Creating Front End Socket")
-        frontend.fesocket = frontend.FESocket()
-        frontend_connected = frontend.fesocket.fesocket_connect()
-        if not frontend_connected:
-            log.warning("Could not connect to front end on startup.")
+    await asyncio.gather(*tasks, return_exceptions=True)
+    loop_.stop()
 
-        log.info(f"Akrios is up and running in {time.time() - startup:,.6f} seconds.")
 
-    @staticmethod
-    def run():
-        currenttime = time.time
-        while not Server.done:
-            timedelta = currenttime() + 0.0625
+def handle_exception_generic(loop_: asyncio.AbstractEventLoop, context: Dict) -> None:
+    msg: str = context.get('exception', context['message'])
+    log.warning(f'Caught exception: {msg} in loop: {loop_}')
+    log.warning(f'Caught in task: {asyncio.current_task().get_name()}')  # type: ignore
 
-            event.heartbeat()
 
-            for each_session, session_obj in session_list.items():
-                if session_obj.state['connected']:
-                    if session_obj.writable:
-                        session_obj.write()
-                    if session_obj.readable:
-                        session_obj.read()
-                else:
-                    session_obj.handle_close()
+async def handle_messages() -> None:
+    while status.server['running']:
+        message = await frontend.messages_to_game.get()
+        uuid, msg = message
+        if uuid in sessions:
+            asyncio.create_task(sessions[uuid].in_buf.put(msg))
 
-            timenow = currenttime()
-            if timenow < timedelta:
-                time.sleep(timedelta - timenow)
 
-        player_quit = 'quit force'
+async def cmd_client_connected(options) -> None:
+    uuid, address, port = options
+    Session(uuid, address, port)
 
-        if Server.softboot:
-            log.info('Softboot has been executed')
-            frontend.fesocket.msg_gen_game_softboot(wait_time=1)
-            player_quit = 'quit force no_notify'
 
-        # server.Server.done has been set to True
-        for each_player in session_list.values():
-            each_player.owner.interp(player_quit)
-            each_player.handle_close()
+async def cmd_client_disconnected(options) -> None:
+    uuid, address, port = options
+    if uuid in sessions:
+        sessions[uuid].status['link dead'] = True
 
-        grapevine.gsocket.gsocket_disconnect()
-        frontend.fesocket.fesocket_disconnect()
 
-        log.info("System shutdown successful.")
-        sys.exit()
+async def cmd_game_load_players(options) -> None:
+    for session in options:
+        name, address, port = options[session]
+        Session(session, address, port, name)
+
+
+async def handle_commands() -> None:
+    commands = {'client_connected': cmd_client_connected,
+                'client_disconnected': cmd_client_disconnected,
+                'game_load_players': cmd_game_load_players}
+
+    while status.server['running']:
+        command = await frontend.commands_to_game.get()
+        command_type, options = command
+        if command_type in commands:
+            asyncio.create_task(commands[command_type](options))
+
+
+async def cmd_grapevine_tells_send(message):
+    caller, target, game, error_msg = message
+    message = (f"\n\r{{GGrapevine Tell to {{y{target}@{game}{{G "
+               f"returned an Error{{x: {{R{error_msg}{{x")
+    for eachplayer in player.playerlist:
+        if eachplayer.disp_name == caller:
+            if eachplayer.oocflags_stored['grapevine'] == 'true':
+                eachplayer.write(message)
+                return
+
+
+async def cmd_grapevine_tells_receive(message):
+    sender, target, game, sent, message = message
+    message = (f"\n\r{{GGrapevine Tell from {{y{sender}@{game}{{x: "
+               f"{{G{message}{{x.\n\rReceived at : {sent}.")
+    for eachplayer in player.playerlist:
+        if eachplayer.disp_name == target.capitalize():
+            if eachplayer.oocflags_stored['grapevine'] == 'true':
+                eachplayer.write(message)
+                return
+
+
+async def cmd_grapevine_games_connect(message):
+    game = message.capitalize()
+    message = f"\n\r{{GGrapevine Status Update: {game} connected to network{{x"
+
+    if message != "":
+        grape_enabled = [players for players in player.playerlist
+                         if players.oocflags_stored['grapevine'] == 'true']
+        for eachplayer in grape_enabled:
+            eachplayer.write(message)
+
+
+async def cmd_grapevine_games_disconnect(message):
+    game = message.capitalize()
+    message = f"\n\r{{GGrapevine Status Update: {game} disconnected from network{{x"
+    if message != "":
+        grape_enabled = [players for players in player.playerlist
+                         if players.oocflags_stored['grapevine'] == 'true']
+        for eachplayer in grape_enabled:
+            eachplayer.write(message)
+
+
+async def cmd_grapevine_channels_broadcast(message):
+    name, game, message, channel = message
+    if name is None or game is None:
+        comm.wiznet("Received channels/broadcast with None type")
+        return
+    message = (f"\n\r{{GGrapevine {{B{channel}{{x Chat{{x:{{y{name.capitalize()}"
+               f"@{game.capitalize()}{{x:{{G{message}{{x")
+
+    if message != "":
+        grape_enabled = [players for players in player.playerlist
+                         if players.oocflags_stored['grapevine'] == 'true']
+        for eachplayer in grape_enabled:
+            if channel in eachplayer.oocflags['grapevine_channels']:
+                eachplayer.write(message)
+
+
+async def cmd_grapevine_player_login(message):
+    msg = f"\n\r{{GGrapevine Status Update: {message}{{x"
+    if msg != "":
+        grape_enabled = [players for players in player.playerlist
+                         if players.oocflags_stored['grapevine'] == 'true']
+        for eachplayer in grape_enabled:
+            eachplayer.write(msg)
+
+
+async def cmd_grapevine_player_logout(message):
+    msg = f"\n\r{{GGrapevine Status Update: {message}{{x"
+    if msg != "":
+        grape_enabled = [players for players in player.playerlist
+                         if players.oocflags_stored['grapevine'] == 'true']
+        for eachplayer in grape_enabled:
+            eachplayer.write(msg)
+
+
+async def handle_grapevine_messages() -> None:
+    commands = {'tells/send': cmd_grapevine_tells_send,
+                'tells/receive': cmd_grapevine_tells_receive,
+                'games/connect': cmd_grapevine_games_connect,
+                'games/disconnect': cmd_grapevine_games_disconnect,
+                'channels/broadcast': cmd_grapevine_channels_broadcast,
+                'player/login': cmd_grapevine_player_login,
+                'player/logout': cmd_grapevine_player_logout}
+
+    message = await grapevine.messages_to_game.get()
+
+    event_type, values = message
+    if event_type in commands:
+        commands[event_type](values)
+
+
+async def handle_events() -> None:
+    while status.server['running']:
+        await asyncio.sleep(0.0625)
+        event.heartbeat()
+
+if __name__ == '__main__':
+    log.info('Starting Dark Waters')
+
+    parser = argparse.ArgumentParser(
+        description='Change the option prefix characters',
+        prefix_chars='-+/',
+    )
+
+    parser.add_argument('-d', action='store_true',
+                        default=None,
+                        help='Set log level to debug',
+                        )
+
+    args = parser.parse_args()
+
+    logging.basicConfig(filename=serverlog, filemode='w',
+                        format='%(asctime)s: %(name)s - %(levelname)s - %(message)s',
+                        level=logging.DEBUG if args.d else logging.INFO)
+    log: logging.Logger = logging.getLogger(__name__)
+
+    loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
+
+    for sig in (signal.SIGHUP, signal.SIGTERM, signal.SIGINT):
+        loop.add_signal_handler(sig, lambda: asyncio.create_task(shutdown(sig, loop)))
+
+    loop.set_exception_handler(handle_exception_generic)
+
+    helpsys.init()
+    races.init()
+    area.init()
+
+    engine_tasks = [frontend.connect(),
+                    grapevine.connect(),
+                    handle_commands(),
+                    handle_messages(),
+                    handle_grapevine_messages(),
+                    handle_events()]
+
+    asyncio.gather(*engine_tasks, return_exceptions=True)
+
+    loop.run_forever()
+
+    player_quit = 'quit force'
+
+    if status.server['softboot']:
+        log.info('Softboot has been executed')
+        asyncio.gather(frontend.msg_gen_game_softboot(wait_time=1), return_exceptions=True)
+        player_quit = 'quit force no_notify'
+
+    # server.Server.done has been set to True
+    for each_player in sessions.values():
+        each_player.owner.interp(player_quit)
+        each_player.handle_close()
+
+    log.info('Dark Waters shutdown.')
+    loop.close()

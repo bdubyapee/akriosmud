@@ -17,6 +17,7 @@ import frontend
 import grapevine
 import player
 import server
+import status
 
 log = logging.getLogger(__name__)
 
@@ -105,11 +106,7 @@ things_with_events = {"player": [],
                       "exit": [],
                       "mobile": [],
                       "object": [],
-                      "reset": [],
-                      "server": [],
-                      "frontend": [],
-                      "session": [],
-                      "grapevine": []}
+                      "reset": []}
 
 
 def heartbeat():
@@ -128,67 +125,6 @@ def init_events_session(session):
 
 def init_events_server(server_):
     log.debug(f"Initializing events_server: {server_}")
-
-
-def init_events_frontend(frontend_):
-    log.debug(f"Initializing events_frontend: {frontend_}")
-
-    event = Event()
-    event.owner = frontend_
-    event.ownertype = "frontend"
-    event.eventtype = "frontend receive"
-    event.func = event_frontend_receive_message
-    event.passes = 1
-    event.totalpasses = event.passes
-    frontend_.events.add(event)
-
-    event = Event()
-    event.owner = frontend_
-    event.ownertype = "frontend"
-    event.eventtype = "frontend send"
-    event.func = event_frontend_send_message
-    event.passes = 1
-    event.totalpasses = event.passes
-    frontend_.events.add(event)
-
-    # event = Event()
-    # event.owner = frontend_
-    # event.ownertype = "frontend"
-    # event.eventtype = "frontend state check"
-    # event.func = event_frontend_state_check
-    # event.passes = 90 * PULSE_PER_SECOND
-    # event.totalpasses = event.passes
-    # frontend_.events.add(event)
-
-
-def init_events_grapevine(grapevine_):
-    log.debug("Initializing events_grapevine")
-    event = Event()
-    event.owner = grapevine_
-    event.ownertype = "grapevine"
-    event.eventtype = "grapevine receive"
-    event.func = event_grapevine_receive_message
-    event.passes = 1 * PULSE_PER_SECOND
-    event.totalpasses = event.passes
-    grapevine_.events.add(event)
-
-    event = Event()
-    event.owner = grapevine_
-    event.ownertype = "grapevine"
-    event.eventtype = "grapevine send"
-    event.func = event_grapevine_send_message
-    event.passes = 1 * PULSE_PER_SECOND
-    event.totalpasses = event.passes
-    grapevine_.events.add(event)
-
-    event = Event()
-    event.owner = grapevine_
-    event.ownertype = "grapevine"
-    event.eventtype = "grapevine state check"
-    event.func = event_grapevine_state_check
-    event.passes = 3 * PULSE_PER_MINUTE
-    event.totalpasses = event.passes
-    grapevine_.events.add(event)
 
 
 def init_events_area(area_):
@@ -290,146 +226,6 @@ def reoccuring_event(func_to_decorate):
     return new_func
 
 
-def event_frontend_restart(fe_):
-    comm.wiznet("Front end restart event initiated")
-    del frontend.fesocket
-
-    frontend.fesocket = frontend.FESocket()
-    frontend_connected = frontend.fesocket.fesocket_connect()
-    if not frontend_connected:
-        comm.wiznet("Could not connect to Front End in event restart")
-
-
-@reoccuring_event
-def event_frontend_send_message(event_):
-    if event_.owner.outbound_frame_buffer:
-        event_.owner.handle_write()
-
-
-@reoccuring_event
-def event_frontend_heartbeat(event_):
-    fe_ = event_.owner
-    fe_.msg_gen_heartbeat()
-
-
-@reoccuring_event
-def event_frontend_receive_message(event_):
-    fe_ = event_.owner
-    fe_.handle_read()
-    if fe_.inbound_frame_buffer:
-        # Assign rcvd_msg to a FEReceivedMessage instance.
-        rcvd_msg = fe_.receive_message()
-        if rcvd_msg:
-            ret_value = rcvd_msg.parse_frame()
-        else:
-            log.warning('ret_value = NoneType in event_frontend_receive_message\nPossible Front end failure.')
-            return
-
-        log.debug(f'event_frontend_receive_message received : {rcvd_msg.message}')
-
-        if ret_value:
-            if rcvd_msg.message['event'] == "player/input":
-                uuid_, addr, port, message = ret_value
-                if uuid_ in server.session_list:
-                    log.debug(f'uuid_ in server.session_list')
-                    log.debug(f'session_list: {server.session_list}')
-                    server.session_list[uuid_].inbuf.append(message)
-                    log.debug(f'Appended to inbuf: {server.session_list[uuid_].inbuf}')
-                return
-
-            if rcvd_msg.message['event'] == 'connection/connected':
-                uuid_, addr_, port_ = ret_value
-                log.debug(f'Creating connected session: {uuid_}')
-                server.Session(uuid_, addr_, port_)
-                log.debug(f'SESSION LIST: {server.session_list}')
-
-            if rcvd_msg.message['event'] == 'connection/disconnected':
-                uuid_, addr_, port_ = ret_value
-                if uuid_ not in server.session_list:
-                    log.warning('Trying to disconnect session not in session_list:')
-                    log.warning(f'{uuid_} not in {server.session_list.keys()}')
-                else:
-                    # Do we really want to do this?  We already handle link death with event timers.....
-                    # Perhaps flag the player as link dead and let the timers do their thing?
-                    log.debug(f'Disconnecting session {uuid_}')
-                    player_ = server.session_list[uuid_]
-                    if player_.state['logged in']:
-                        player_.interp('quit force')
-                    server.session_list.pop(uuid_)
-                    # player_.clear()
-
-            if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'game/load_players':
-                player_dict = ret_value
-                for session, player_ in player_dict.items():
-                    name_, addr_, port_ = player_
-                    log.info(f'Creating connected session for softboot: {name_} : {session}')
-                    server.Session(session, addr_, port_, name_)
-
-            if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
-                comm.wiznet("Received restart event from Front End.")
-                restart_fuzz = 15 + rcvd_msg.restart_downtime
-
-                fe_.fesocket_disconnect()
-
-                nextevent = Event()
-                nextevent.owner = fe_
-                nextevent.ownertype = "frontend"
-                nextevent.eventtype = "frontend restart"
-                nextevent.func = event_frontend_restart
-                nextevent.passes = restart_fuzz * PULSE_PER_SECOND
-                nextevent.totalpasses = nextevent.passes
-                fe_.events.add(nextevent)
-
-
-@reoccuring_event
-def event_frontend_state_check(event_):
-    fe_ = event_.owner
-
-    log.info(f'time.time: {time.time()} last_heartbeat: {fe_.last_heartbeat}')
-    if time.time() - fe_.last_heartbeat > 60:
-        log.warning('Setting front end state to disconnected due to > 60 seconds with no heartbeat.')
-        fe_.state["connected"] = False
-
-    if fe_.state["connected"]:
-        return
-    else:
-        for each_thing in things_with_events['frontend']:
-            for each_event in each_thing.events.eventlist:
-                if each_event.eventtype == "frontend restart":
-                    return
-
-        # Save all 'headless' players and log them out?
-        # Not really a good way to recover from a front end failure.
-        # Investigate this more.
-
-        fe_.fesocket_disconnect()
-
-        nextevent = Event()
-        nextevent.owner = fe_
-        nextevent.ownertype = "frontend"
-        nextevent.eventtype = "frontend restart"
-        nextevent.func = event_frontend_restart
-        nextevent.passes = 30 * PULSE_PER_SECOND
-        nextevent.totalpasses = nextevent.passes
-        fe_.events.add(nextevent)
-
-
-def event_grapevine_restart():
-    comm.wiznet("Grapevine restart event initiated")
-    del grapevine.gsocket
-
-    grapevine.gsocket = grapevine.GrapevineSocket()
-    grapevine_connected = grapevine.gsocket.gsocket_connect()
-    if not grapevine_connected:
-        comm.wiznet("Could not connect to Grapevine in event restart")
-
-
-@reoccuring_event
-def event_grapevine_send_message(event_):
-    if event_.owner.outbound_frame_buffer:
-        event_.owner.handle_write()
-
-
 @reoccuring_event
 def event_grapevine_receive_message(event_):
     grapevine_ = event_.owner
@@ -461,14 +257,6 @@ def event_grapevine_receive_message(event_):
                         if eachplayer.oocflags_stored['grapevine'] == 'true':
                             eachplayer.write(message)
                             return
-
-            if rcvd_msg.message['event'] == "games/status":
-                if ret_value:
-                    # We've received a game status request response from
-                    # grapevine.  Do what you will here with the information,
-                    # Not going to do anything with it in Akrios at the moment.
-                    return
-
             # Received Grapevine Info that goes to all players goes here.
             message = ""
             channel = ""
@@ -510,51 +298,6 @@ def event_grapevine_receive_message(event_):
                             eachplayer.write(message)
                 return
 
-        if 'event' in rcvd_msg.message and rcvd_msg.message['event'] == 'restart':
-            comm.wiznet("Received restart event from Grapevine.")
-            restart_fuzz = 15 + rcvd_msg.restart_downtime
- 
-            grapevine_.gsocket_disconnect()
-
-            nextevent = Event()
-            nextevent.owner = grapevine_
-            nextevent.ownertype = "grapevine"
-            nextevent.eventtype = "grapevine restart"
-            nextevent.func = event_grapevine_restart
-            nextevent.passes = restart_fuzz * PULSE_PER_SECOND
-            nextevent.totalpasses = nextevent.passes
-            grapevine_.events.add(nextevent)
-
-
-@reoccuring_event
-def event_grapevine_state_check(event_):
-    grapevine_ = event_.owner
-
-    if time.time() - grapevine_.last_heartbeat > 60:
-        grapevine_.state["connected"] = False
-        grapevine_.state["authenticated"] = False
-
-    if grapevine_.state["connected"]:
-        grapevine_.other_games_players = {}
-        grapevine_.msg_gen_player_status_query()
-        return
-    else:
-        for each_thing in things_with_events['grapevine']:
-            for each_event in each_thing.events.eventlist:
-                if each_event.eventtype == "grapevine restart":
-                    return
-
-        grapevine_.gsocket_disconnect()
-
-        nextevent = Event()
-        nextevent.owner = grapevine_
-        nextevent.ownertype = "grapevine"
-        nextevent.eventtype = "grapevine restart"
-        nextevent.func = event_grapevine_restart
-        nextevent.passes = 30 * PULSE_PER_SECOND
-        nextevent.totalpasses = nextevent.passes
-        grapevine_.events.add(nextevent)
-
 
 @reoccuring_event
 def event_admin_system_status(event_):
@@ -567,11 +310,7 @@ def event_admin_system_status(event_):
                    'area': 0,
                    'room': 0,
                    'reset': 0,
-                   'exit': 0,
-                   'server': 0,
-                   'session': 0,
-                   'frontend': 0,
-                   'grapevine': 0}
+                   'exit': 0}
 
     for each_type in things_with_events:
         for each_thing in things_with_events[each_type]:
@@ -589,12 +328,12 @@ def event_admin_system_status(event_):
         objlist += len(eacharea.objectlist)
 
     if grapevine.LIVE:
-        grapevine_status = grapevine.gsocket.state['connected']
+        grapevine_status = status.grapevine['connected']
     else:
         grapevine_status = 'Disabled'
 
     msg = (f"\n\r{{RAkrios System Status (5 minute update){{x\n\r"
-           f"{{GPlayer Connections{{x: {{R{len(server.session_list)}{{x\n\r"
+           f"{{GPlayer Connections{{x: {{R{len(server.sessions)}{{x\n\r"
            f"{{G      Mobile Index{{x: {{R{moblist_index}{{x\n\r"
            f"{{G           Mobiles{{x: {{R{moblist}{{x\n\r"
            f"{{G      Object Index{{x: {{R{objlist_index}{{x\n\r"
@@ -607,10 +346,6 @@ def event_admin_system_status(event_):
            f"{{G          Room Events{{x: {{R{event_count['room']}{{x\n\r"
            f"{{G         Reset Events{{x: {{R{event_count['reset']}{{x\n\r"
            f"{{G          Exit Events{{x: {{R{event_count['exit']}{{x\n\r"
-           f"{{G        Server Events{{x: {{R{event_count['server']}{{x\n\r"
-           f"{{G       Session Events{{x: {{R{event_count['session']}{{x\n\r"
-           f"{{G     Front End Events{{x: {{R{event_count['frontend']}{{x\n\r"
-           f"{{G     Grapevine Events{{x: {{R{event_count['grapevine']}{{x\n\r"
            f"{{G  Grapevine Connected{{x: {{R{grapevine_status}{{x\n\r")
 
     event_.owner.write(msg)

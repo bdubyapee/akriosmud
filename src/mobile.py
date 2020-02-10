@@ -10,7 +10,7 @@ import logging
 import json
 import uuid
 
-import livingthing
+from livingthing import LivingThing
 import olc
 import event
 import races
@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 WRITE_NEW_FILE_VERSION = False
 
 
-class Mobile(livingthing.LivingThing, olc.Editable):
+class Mobile(LivingThing, olc.Editable):
     CLASS_NAME = "__Mobile__"
     FILE_VERSION = 1
 

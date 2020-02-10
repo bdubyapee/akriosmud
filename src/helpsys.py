@@ -104,7 +104,7 @@ def init():
 
 
 def reload():
-    helpfiles = {}
+    helpfiles.clear()
     init()
 
 

@@ -1,2 +1,2 @@
 bcrypt
-websocket-client
+websockets

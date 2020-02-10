@@ -245,10 +245,10 @@ def init():
 
 
 def reload():
-    racesdict = {}
-    goodraces = []
-    neutralraces = []
-    evilraces = []
+    racesdict.clear()
+    goodraces.clear()
+    neutralraces.clear()
+    evilraces.clear()
     init()
 
 

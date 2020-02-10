@@ -6,6 +6,7 @@
 # 
 # By: Jubelo
 
+import asyncio
 import bcrypt
 import logging
 import os
@@ -78,7 +79,7 @@ class Login(object):
                 self.lasthost = maybeplayer['lasthost']
                 self.sock.dispatch('Please enter your password: ', trail=False)
                 self.interp = self.get_char_password
-                self.sock.dont_echo()
+                # self.sock.dont_echo()
             else:
                 if world.allownewCharacters:
                     self.sock.dispatch('Is this a new character? ', trail=False)
@@ -92,11 +93,11 @@ class Login(object):
         inp = inp.encode("utf-8")
         if not bcrypt.checkpw(inp, self.password.encode("utf-8")):
             self.sock.dispatch("\n\rI'm sorry, that isn't the correct password. Good bye.")
-            frontend.fesocket.msg_gen_player_login_failed(self.name, self.sock.session)
+            asyncio.create_task(frontend.msg_gen_player_login_failed(self.name, self.sock.session))
             self.sock.handle_close()
             self.clear()
         else:
-            self.sock.do_echo()
+            # self.sock.do_echo()
             for person in player.playerlist:
                 if person.name == self.name:
                     self.sock.dispatch("\n\rYour character seems to be logged in already.  Reconnecting you.")
@@ -120,14 +121,14 @@ class Login(object):
             log.info(f"{self.name.capitalize()} logged into main menu. Last login {self.lasttime} from {self.lasthost}")
             self.lasttime = time.ctime()
             self.lasthost = self.sock.host.strip()
-            frontend.fesocket.msg_gen_player_login(self.name.capitalize(), self.sock.session)
+            asyncio.create_task(frontend.msg_gen_player_login(self.name.capitalize(), self.sock.session))
             self.main_menu()
             self.interp = self.main_menu_get_option
                         
     def confirm_new_char(self, inp):
         inp = inp.lower()
         if inp == "y" or inp == "yes":
-            self.sock.dont_echo()
+            # self.sock.dont_echo()
             self.sock.dispatch("Please choose a password for this character: ", trail=False)
             self.interp = self.confirm_new_password
         else:
@@ -155,7 +156,7 @@ class Login(object):
         else:
             inp = inp.encode('utf-8')
             self.password = bcrypt.hashpw(inp[:71], bcrypt.gensalt(10)).decode('utf-8')
-            self.sock.do_echo()
+            # self.sock.do_echo()
             self.show_races()
             self.sock.dispatch('Please choose a race: ', trail=False)
             self.interp = self.get_race
@@ -222,8 +223,8 @@ class Login(object):
                 newobject.write('Something feels different.')
             if grapevine.LIVE:
                 log.debug(f"Sending player login to Grapevine : {newobject.name}")
-                grapevine.gsocket.msg_gen_player_login(newobject.name)
-                frontend.fesocket.msg_gen_player_login(newobject.name, newobject.sock.session)
+                asyncio.create_task(grapevine.msg_gen_player_login(newobject.name))
+                asyncio.create_task(frontend.msg_gen_player_login(newobject.name, newobject.sock.session))
             newobject.lasttime = time.ctime()
             newobject.lasthost = newobject.sock.host
         else:
