@@ -91,7 +91,7 @@ class Session(object):
             msg = color.decolorize(msg)
         asyncio.create_task(self.out_buf.put(msg))
 
-    def write(self):
+    async def write(self):
         try:
             if hasattr(self.owner, "editing"):
                 asyncio.create_task(self.out_buf.put(">"))

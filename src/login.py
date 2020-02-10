@@ -361,7 +361,7 @@ class Login(object):
             newplayer.sock.owner = newplayer
             newplayer.prompt = '{pAkriosMUD{g:{x '
             newplayer.sock.promptable = True
-            newplayer.write = newplayer.sock.dispatch
+            newplayer.write = newplayer.sock.write
             player.playerlist.append(newplayer)
             player.playerlist_by_name[newplayer.name] = newplayer
             player.playerlist_by_aid[newplayer.aid] = newplayer
