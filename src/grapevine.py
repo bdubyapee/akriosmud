@@ -485,9 +485,9 @@ async def parse_received() -> None:
         if 'event' in message and message['event'] in rcvr_func:
             exec_func, args = rcvr_func[message['event']]
             if args is None:
-                response = exec_func(message)
+                response = asyncio.create_task(exec_func(message))
             else:
-                response = exec_func(message, args)
+                response = asyncio.create_task(exec_func(message, args))
             if response:
                 asyncio.create_task(messages_to_game.put(response))
 
