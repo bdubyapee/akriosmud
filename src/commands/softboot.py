@@ -28,5 +28,5 @@ def softboot(caller, args, **kwargs):
             caller.write(f"{each_player.disp_name} is Building right now! No Softboot for you!")
             return
 
-    server.Server.done = True
-    server.Server.softboot = True
+    status.server['running'] = False
+    status.server['softboot'] = True

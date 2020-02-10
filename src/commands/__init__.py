@@ -7,7 +7,7 @@
 #
 # By: Jubelo
 
-
+import asyncio
 from functools import wraps
 import logging
 import json
@@ -31,6 +31,7 @@ import room
 import races
 import comm
 import server
+import status
 import player
 import world
 

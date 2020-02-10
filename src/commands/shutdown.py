@@ -28,4 +28,4 @@ def shutdown(caller, args, **kwargs):
             caller.write(f"{each_player.disp_name} is Building right now! No Shutdown for you!")
             return
 
-    server.Server.done = True
+    status.server['running'] = False

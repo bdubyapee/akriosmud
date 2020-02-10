@@ -22,5 +22,4 @@ requirements = {'capability': ['admin'],
 def playerinfo(caller, args):
     for person in player.playerlist:
         caller.write(f"Player: {person.disp_name:15} "
-                     f"Host: {person.sock.host:15} "
-                     f"{{R{person.sock.socket.fileno}{{x")
+                     f"Host: {person.sock.host:15} ")

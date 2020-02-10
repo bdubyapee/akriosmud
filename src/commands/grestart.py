@@ -33,6 +33,6 @@ def grestart(caller, args, **kwargs):
 
     jsonified = json.dumps(package, sort_keys=True, indent=4)
 
-    grapevine.gsocket.inbound_frame_buffer.append(jsonified)
+    asyncio.create_task(grapevine.messages_from_grapevine.put(jsonified))
     
     comm.wiznet("Created fake restart JSON payload and appended to socket in buffer")

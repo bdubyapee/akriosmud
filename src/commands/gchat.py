@@ -29,13 +29,13 @@ def gchat(caller, args, **kwargs):
     channel, msg = args.split()
     channel = channel.lower()
 
-    if channel not in grapevine.gsocket.subscribed:
+    if channel not in grapevine.subscribed:
         caller.write("Channel not subscribed.\n\r{Wgchat <channel> <message>{x")
-        caller.write(f"Subscribed channels are: {grapevine.gsocket.subscribed}")
+        caller.write(f"Subscribed channels are: {grapevine.subscribed}")
         return
 
     try:
-        grapevine.gsocket.msg_gen_message_channel_send(caller, channel, msg)
+        asyncio.create_task(grapevine.msg_gen_message_channel_send(caller, channel, msg))
     except:
         caller.write(f"{{WError chatting to Grapevine Network, try again later{{x")
         comm.wiznet(f"Error writing to Grapevine network. {caller.disp_name} : {msg}")

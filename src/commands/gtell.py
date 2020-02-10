@@ -39,7 +39,7 @@ def gtell(caller, args, **kwargs):
         caller.write("Just use in-game channels to talk to players on Akrios.")
         return
 
-    grapevine.gsocket.msg_gen_player_tells(caller.disp_name, game, target, message)
+    asyncio.create_task(grapevine.msg_gen_player_tells(caller.disp_name, game, target, message))
 
     caller.write(f"{{GYou Grapevine tell {{y{target}@{game}{{x: '{{G{message}{{x'")
 

@@ -27,7 +27,7 @@ def gsubscribe(caller, args='', **kwargs):
 
     if args == '':
         akrios_subscribed = []
-        for chan, subbed in grapevine.gsocket.subscribed.items():
+        for chan, subbed in grapevine.subscribed.items():
             if subbed:
                 akrios_subscribed.append(chan)
 
@@ -44,16 +44,16 @@ def gsubscribe(caller, args='', **kwargs):
         force_ = ''
 
     if caller.is_admin and force_ == 'force':
-        if channel in grapevine.gsocket.subscribed:
-            grapevine.gsocket.msg_gen_chan_unsubscribe(channel)
+        if channel in grapevine.subscribed:
+            asyncio.create_task(grapevine.msg_gen_chan_unsubscribe(channel))
             caller.write(f"Sending unsubscribe to Grapevine for channel: {channel}")
             return
         else:
-            grapevine.gsocket.msg_gen_chan_subscribe(channel)
+            asyncio.create_task(grapevine.msg_gen_chan_subscribe(channel))
             caller.write(f"Sending subscribe to Grapevine for channel: {channel}")
             return
 
-    if channel in grapevine.gsocket.subscribed:
+    if channel in grapevine.subscribed:
         if channel in caller.oocflags['grapevine_channels']:
             caller.write(f"You are already subscribed to channels: {caller.oocflags['grapevine_channels']}.")
             return
