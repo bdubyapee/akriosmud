@@ -54,8 +54,8 @@ class Session(object):
                       'logged in': False}
         sessions[self.session] = self
 
-        asyncio.create_task(self.read())
-        asyncio.create_task(self.send())
+        asyncio.create_task(self.read(), name=self.session)
+        asyncio.create_task(self.send(), name=self.session)
 
         self.login(name)
 
@@ -63,7 +63,9 @@ class Session(object):
         asyncio.create_task(frontend.msg_gen_player_logout(self.owner.name.capitalize(), self.session))
         self.state['connected'] = False
         self.state['logged in'] = False
-        del self
+        for tasks in asyncio.all_tasks():
+            if self.session == tasks.get_name():
+                tasks.cancel()
 
     def login(self, name):
         if name:
@@ -80,7 +82,8 @@ class Session(object):
             new_conn.interp()
 
     def dispatch(self, msg, trail=True):
-        asyncio.create_task(self.a_dispatch(msg, trail))
+        if self.state['connected']:
+            asyncio.create_task(self.a_dispatch(msg, trail), name=self.session)
 
     async def a_dispatch(self, msg, trail=True):
         if trail:
@@ -89,10 +92,10 @@ class Session(object):
             msg = color.colorize(msg)
         else:
             msg = color.decolorize(msg)
-        asyncio.create_task(self.out_buf.put(msg))
+        asyncio.create_task(self.out_buf.put(msg), name=self.session)
 
     async def write(self):
-        try:
+        if self.state['logged in']:
             if hasattr(self.owner, "editing"):
                 asyncio.create_task(self.out_buf.put(">"))
             elif self.promptable:
@@ -101,14 +104,13 @@ class Session(object):
                 else:
                     pretext = ""
                 output = color.colorize(f"\n\r{pretext}{self.owner.prompt}\n\r")
-                asyncio.create_task(self.out_buf.put(output))
-        except Exception as err:
-            log.error(f"handle_write : {err}")
+                asyncio.create_task(self.out_buf.put(output), name=self.session)
 
     async def send(self):
         while self.state['connected']:
             message = await self.out_buf.get()
-            asyncio.create_task(frontend.msg_gen_player_output(message, self.session))
+            asyncio.create_task(frontend.msg_gen_player_output(message, self.session),
+                                name=self.session)
 
     async def read(self):
         while self.state['connected']:
@@ -145,9 +147,9 @@ def handle_exception_generic(loop_: asyncio.AbstractEventLoop, context: Dict) ->
 async def handle_messages() -> None:
     while status.server['running']:
         message = await frontend.messages_to_game.get()
-        uuid, msg = message
-        if uuid in sessions:
-            asyncio.create_task(sessions[uuid].in_buf.put(msg))
+        session, msg = message
+        if session in sessions:
+            asyncio.create_task(sessions[session].in_buf.put(msg))
 
 
 async def cmd_client_connected(options) -> None:
@@ -240,20 +242,20 @@ async def cmd_grapevine_channels_broadcast(message):
 
 async def cmd_grapevine_player_login(message):
     msg = f"\n\r{{GGrapevine Status Update: {message}{{x"
-    if msg != "":
-        grape_enabled = [players for players in player.playerlist
-                         if players.oocflags_stored['grapevine'] == 'true']
-        for eachplayer in grape_enabled:
-            eachplayer.write(msg)
+
+    grape_enabled = [players for players in player.playerlist
+                     if players.oocflags_stored['grapevine'] == 'true']
+    for eachplayer in grape_enabled:
+        eachplayer.write(msg)
 
 
 async def cmd_grapevine_player_logout(message):
     msg = f"\n\r{{GGrapevine Status Update: {message}{{x"
-    if msg != "":
-        grape_enabled = [players for players in player.playerlist
-                         if players.oocflags_stored['grapevine'] == 'true']
-        for eachplayer in grape_enabled:
-            eachplayer.write(msg)
+
+    grape_enabled = [players for players in player.playerlist
+                     if players.oocflags_stored['grapevine'] == 'true']
+    for eachplayer in grape_enabled:
+        eachplayer.write(msg)
 
 
 async def handle_grapevine_messages() -> None:
@@ -265,11 +267,12 @@ async def handle_grapevine_messages() -> None:
                 'player/login': cmd_grapevine_player_login,
                 'player/logout': cmd_grapevine_player_logout}
 
-    message = await grapevine.messages_to_game.get()
+    while status.grapevine['connected']:
+        message = await grapevine.messages_to_game.get()
 
-    event_type, values = message
-    if event_type in commands:
-        commands[event_type](values)
+        event_type, values = message
+        if event_type in commands:
+            commands[event_type](values)
 
 
 async def handle_events() -> None:
