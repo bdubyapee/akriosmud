@@ -45,7 +45,6 @@ def quit(caller, args, **kwargs):
         reason = ""
 
     comm.wiznet(f"{reason}{caller.name} logging out of Akrios.")
-    del caller
 
     conn.sock = testsock
     conn.sock.owner = conn

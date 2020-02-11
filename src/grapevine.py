@@ -521,7 +521,7 @@ async def connect() -> None:
         _, pending = await asyncio.wait(tasks, return_when="FIRST_COMPLETED")
 
     log.info('Shutting down Grapevine connection.')
-    status.frontend['connected'] = False
+    status.grapevine['connected'] = False
     subscribed.clear()
     other_games_players.clear()
 

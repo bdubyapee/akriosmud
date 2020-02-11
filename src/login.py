@@ -94,8 +94,7 @@ class Login(object):
         if not bcrypt.checkpw(inp, self.password.encode("utf-8")):
             self.sock.dispatch("\n\rI'm sorry, that isn't the correct password. Good bye.")
             asyncio.create_task(frontend.msg_gen_player_login_failed(self.name, self.sock.session))
-            self.sock.handle_close()
-            self.clear()
+            asyncio.create_task(self.sock.handle_close())
         else:
             # self.sock.do_echo()
             for person in player.playerlist:
@@ -183,14 +182,14 @@ class Login(object):
         elif inp == 'l':
             self.sock.dispatch('Thanks for playing.  We hope to see you again soon.')
             comm.wiznet(f"{self.sock.host} disconnecting from Akrios.")
-            self.sock.handle_close()
+            asyncio.create_task(self.sock.handle_close())
         elif inp == 'l no_notify':
-            self.sock.handle_close()
+            asyncio.create_task(self.sock.handle_close())
         elif inp == 'd':
             self.sock.dispatch('Sorry to see you go.  Come again soon!')
             comm.wiznet(f"Character {self.name} deleted by {self.sock.host}")
             os.remove(f"{world.playerDir}/{self.name}.json")
-            self.sock.handle_close()
+            asyncio.create_task(self.sock.handle_close())
         else:
             self.main_menu()
                         
@@ -203,6 +202,7 @@ class Login(object):
             newobject.sock = testsock
             newobject.sock.owner = newobject
             newobject.sock.promptable = True
+            newobject.sock.state['logged in'] = True
             newobject.write = newobject.sock.dispatch
             if not self.softboot:
                 newobject.write("")
@@ -361,7 +361,7 @@ class Login(object):
             newplayer.sock.owner = newplayer
             newplayer.prompt = '{pAkriosMUD{g:{x '
             newplayer.sock.promptable = True
-            newplayer.write = newplayer.sock.write
+            newplayer.write = newplayer.sock.dispatch
             player.playerlist.append(newplayer)
             player.playerlist_by_name[newplayer.name] = newplayer
             player.playerlist_by_aid[newplayer.aid] = newplayer

@@ -59,8 +59,8 @@ class Session(object):
 
         self.login(name)
 
-    def handle_close(self):
-        asyncio.create_task(frontend.msg_gen_player_logout(self.owner.name.capitalize(), self.session))
+    async def handle_close(self):
+        await frontend.msg_gen_player_logout(self.owner.name.capitalize(), self.session)
         self.state['connected'] = False
         self.state['logged in'] = False
         for tasks in asyncio.all_tasks():
@@ -83,19 +83,29 @@ class Session(object):
 
     def dispatch(self, msg, trail=True):
         if self.state['connected']:
-            asyncio.create_task(self.a_dispatch(msg, trail), name=self.session)
-
-    async def a_dispatch(self, msg, trail=True):
-        if trail:
-            msg = f'{msg}\n\r'
-        if self.ansi:
-            msg = color.colorize(msg)
-        else:
-            msg = color.decolorize(msg)
-        asyncio.create_task(self.out_buf.put(msg), name=self.session)
+            log.info('Dispatching something')
+            if trail:
+                msg = f'{msg}\n\r'
+            if self.ansi:
+                msg = color.colorize(msg)
+            else:
+                msg = color.decolorize(msg)
+            asyncio.create_task(self.out_buf.put(msg), name=self.session)
+        elif self.state['connected'] and self.state['logged in']:
+            log.info('Writing something')
+            if hasattr(self.owner, "editing"):
+                asyncio.create_task(self.out_buf.put(">"))
+            elif self.promptable:
+                if self.owner.oocflags["afk"]:
+                    pretext = "{W[{RAFK{W]{x "
+                else:
+                    pretext = ""
+                output = color.colorize(f"\n\r{pretext}{self.owner.prompt}\n\r")
+                asyncio.create_task(self.out_buf.put(output), name=self.session)
 
     async def write(self):
         if self.state['logged in']:
+            log.info('Writing something')
             if hasattr(self.owner, "editing"):
                 asyncio.create_task(self.out_buf.put(">"))
             elif self.promptable:
@@ -160,7 +170,7 @@ async def cmd_client_connected(options) -> None:
 async def cmd_client_disconnected(options) -> None:
     uuid, address, port = options
     if uuid in sessions:
-        sessions[uuid].status['link dead'] = True
+        sessions[uuid].state['link dead'] = True
 
 
 async def cmd_game_load_players(options) -> None:
@@ -275,6 +285,26 @@ async def handle_grapevine_messages() -> None:
             commands[event_type](values)
 
 
+async def main() -> None:
+    log.info('Calling main()')
+    tasks = [asyncio.create_task(frontend.connect(), name='frontend'),
+             asyncio.create_task(grapevine.connect(), name='grapevine'),
+             asyncio.create_task(handle_commands(), name='server-commands'),
+             asyncio.create_task(handle_messages(), name='server-messages'),
+             asyncio.create_task(handle_grapevine_messages(), name='grapevine'),
+             asyncio.create_task(handle_events(), name='server-events')]
+
+    log.info('Created engine task list')
+
+    something = await asyncio.gather(*tasks)
+
+    log.warning(something)
+
+    #  _, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+
+    log.info('After waiting on engine tasks.')
+
+
 async def handle_events() -> None:
     while status.server['running']:
         await asyncio.sleep(0.0625)
@@ -311,28 +341,25 @@ if __name__ == '__main__':
     races.init()
     area.init()
 
-    engine_tasks = [frontend.connect(),
-                    grapevine.connect(),
-                    handle_commands(),
-                    handle_messages(),
-                    handle_grapevine_messages(),
-                    handle_events()]
+    status.server['running'] = True
 
-    asyncio.gather(*engine_tasks, return_exceptions=True)
+    try:
+        loop.run_until_complete(main())
+    finally:
+        player_quit = 'quit force'
 
-    loop.run_forever()
+        if status.server['softboot']:
+            log.info('Softboot has been executed')
+            asyncio.create_task(frontend.msg_gen_game_softboot(wait_time=1))
+            player_quit = 'quit force no_notify'
 
-    player_quit = 'quit force'
+        # server.Server.done has been set to True
+        for each_player in sessions.values():
+            each_player.owner.interp(player_quit)
+            each_player.handle_close()
 
-    if status.server['softboot']:
-        log.info('Softboot has been executed')
-        asyncio.gather(frontend.msg_gen_game_softboot(wait_time=1), return_exceptions=True)
-        player_quit = 'quit force no_notify'
+        for each_task in asyncio.all_tasks():
+            each_task.cancel()
 
-    # server.Server.done has been set to True
-    for each_player in sessions.values():
-        each_player.owner.interp(player_quit)
-        each_player.handle_close()
-
-    log.info('Dark Waters shutdown.')
-    loop.close()
+        log.info('Dark Waters shutdown.')
+        loop.close()
